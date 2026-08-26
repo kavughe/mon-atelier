@@ -1,0 +1,476 @@
+/* Réinitialisation */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corps de page */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* En-tête */
+
+header {
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 15px;
+}
+
+/* Menu */
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Grande image */
+
+.hero {
+    height: 400px;
+
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.5),
+            rgba(0,0,0,0.5)
+        ),
+        url("../images/electricite.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.hero h2 {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+/* =========================
+   SERVICES
+   ========================= */
+
+.services {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+.services h2 {
+    font-size: 32px;
+    margin-bottom: 35px;
+}
+
+.cartes {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.carte {
+    background-color: white;
+
+    padding: 30px 20px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+    transition: 0.3s;
+}
+
+.carte:hover {
+    transform: translateY(-5px);
+}
+
+.icone {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.carte h3 {
+    margin-bottom: 10px;
+    font-size: 21px;
+}
+
+.carte p {
+    line-height: 1.5;
+}
+@media (max-width: 900px) {
+
+    .cartes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .cartes {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =========================
+   À PROPOS - ACCUEIL
+   ========================= */
+
+.apropos-accueil {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: white;
+}
+
+.apropos-accueil h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.apropos-accueil p {
+    max-width: 750px;
+    margin: 10px auto;
+    line-height: 1.7;
+}
+
+.bouton {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 25px;
+
+    background-color: #222;
+    color: white;
+
+    text-decoration: none;
+    border-radius: 6px;
+
+    transition: 0.3s;
+}
+
+.bouton:hover {
+    background-color: #555;
+}
+/* =========================
+   PAGE À PROPOS
+   ========================= */
+
+.page-apropos {
+    padding: 50px 20px;
+}
+
+.page-apropos > h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.intro {
+    max-width: 750px;
+    margin: 0 auto 40px;
+    text-align: center;
+    line-height: 1.7;
+}
+
+.presentation {
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.texte-apropos,
+.valeurs {
+    background-color: white;
+    padding: 30px;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.texte-apropos h3,
+.valeurs h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.texte-apropos p {
+    margin-bottom: 15px;
+    line-height: 1.7;
+}
+
+.valeurs > div {
+    margin-bottom: 20px;
+}
+
+.valeurs strong {
+    font-size: 18px;
+}
+
+.valeurs p {
+    margin-top: 5px;
+    line-height: 1.6;
+}
+
+
+/* Téléphone */
+
+@media (max-width: 600px) {
+
+    .presentation {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* =========================
+   PAGE SERVICES
+   ========================= */
+
+.page-services {
+    padding: 50px 20px;
+}
+
+.page-services > h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.intro-services {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.cartes-services {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 25px;
+}
+
+.carte-service {
+    background-color: white;
+
+    padding: 30px 20px;
+
+    text-align: center;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.15);
+
+    transition: 0.3s;
+}
+
+.carte-service:hover {
+    transform: translateY(-7px);
+}
+
+.icone-service {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.carte-service h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.carte-service p {
+    line-height: 1.6;
+}
+
+
+/* Tablette */
+
+@media (max-width: 900px) {
+
+    .cartes-services {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* Téléphone */
+
+@media (max-width: 600px) {
+
+    .cartes-services {
+        grid-template-columns: 1fr;
+    }
+
+}
+#boutonBienvenue {
+    margin-top: 20px;
+
+    padding: 12px 25px;
+
+    background-color: #222;
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+#boutonBienvenue:hover {
+    background-color: #555;
+}
+
+#messageBienvenue {
+    margin-top: 15px;
+    font-weight: bold;
+}
+#menuBouton {
+    display: none;
+    
+    padding: 10px 15px;
+
+    background-color: white;
+    color: #222;
+
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+
+/* Téléphone */
+
+@media (max-width: 600px) {
+
+    #menuBouton {
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    nav {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    nav.menu-ouvert {
+        display: flex;
+    }
+
+}
+#menuBouton {
+    display: none;
+}
+
+/* Sur téléphone */
+@media (max-width: 600px) {
+
+    #menuBouton {
+        display: inline-block;
+
+        padding: 10px 15px;
+
+        background-color: white;
+        color: #222;
+
+        border: none;
+        border-radius: 5px;
+
+        cursor: pointer;
+        font-size: 16px;
+
+        margin-bottom: 15px;
+    }
+
+    nav#menu {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+}
+#dateHeure {
+    margin-top: 20px;
+
+    font-size: 18px;
+    font-weight: bold;
+}
+/* ===============================
+   MODE SOMBRE
+   =============================== */
+
+body.mode-sombre {
+    background-color: #111;
+    color: white;
+}
+
+body.mode-sombre header {
+    background-color: #000;
+}
+
+body.mode-sombre .services {
+    background-color: #181818;
+}
+
+body.mode-sombre .apropos-accueil {
+    background-color: #111;
+    color: white;
+}
+
+body.mode-sombre .carte,
+body.mode-sombre .carte-service,
+body.mode-sombre .texte-apropos,
+body.mode-sombre .valeurs {
+    background-color: #222;
+    color: white;
+}
+
+body.mode-sombre .page-services,
+body.mode-sombre .page-apropos,
+body.mode-sombre .page-contact {
+    background-color: #111;
+    color: white;
+}
+
+body.mode-sombre input,
+body.mode-sombre textarea {
+    background-color: #222;
+    color: white;
+    border-color: #555;
+}
