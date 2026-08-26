@@ -1,53 +1,90 @@
-// =================================
-// 1. MENU
-// =================================
+// ==========================================
+// MON ATELIER - REPARATIONS
+// ==========================================
 
-const boutonMenu = document.getElementById("menuBouton");
-const menu = document.getElementById("menu");
+const formulaire = document.getElementById("formulaireReparation");
+const liste = document.getElementById("listeReparations");
+const recherche = document.getElementById("recherche");
 
-if (boutonMenu && menu) {
+let reparations = JSON.parse(
+    localStorage.getItem("mesReparations")
+) || [];
 
-    boutonMenu.addEventListener("click", function() {
 
-        if (menu.style.display === "flex") {
-            menu.style.display = "none";
-        } else {
-            menu.style.display = "flex";
-        }
+// ==========================================
+// AFFICHER LA LISTE
+// ==========================================
+
+function afficherReparations(donnees = reparations) {
+
+    if (!liste) return;
+
+    liste.innerHTML = "";
+
+    donnees.forEach(function(item) {
+
+        const ligne = document.createElement("tr");
+
+        ligne.innerHTML = `
+            <td>${item.numero}</td>
+            <td>${item.date}</td>
+            <td>${item.client}</td>
+            <td>${item.telephone}</td>
+            <td>${item.appareil}</td>
+            <td>${item.marque}</td>
+            <td>${item.panne}</td>
+            <td>${item.prix} $</td>
+            <td>${item.statut}</td>
+        `;
+
+        // Sélection de la réparation
+        ligne.addEventListener("click", function() {
+
+            const index = reparations.indexOf(item);
+
+            if (index === -1) return;
+
+            window.reparationSelectionnee = index;
+
+            document.getElementById("client").value =
+                item.client;
+
+            document.getElementById("telephone").value =
+                item.telephone;
+
+            document.getElementById("appareil").value =
+                item.appareil;
+
+            document.getElementById("marque").value =
+                item.marque;
+
+            document.getElementById("panne").value =
+                item.panne;
+
+            document.getElementById("prix").value =
+                item.prix;
+
+            document.getElementById("statut").value =
+                item.statut;
+
+            document.querySelectorAll("#listeReparations tr")
+                .forEach(function(tr) {
+                    tr.classList.remove("selection");
+                });
+
+            ligne.classList.add("selection");
+
+        });
+
+        liste.appendChild(ligne);
 
     });
-
 }
 
 
-// =================================
-// 2. BOUTON "CLIQUEZ ICI"
-// =================================
-
-const boutonBienvenue =
-    document.getElementById("boutonBienvenue");
-
-const messageBienvenue =
-    document.getElementById("messageBienvenue");
-
-if (boutonBienvenue && messageBienvenue) {
-
-    boutonBienvenue.addEventListener("click", function() {
-
-        messageBienvenue.textContent =
-            "Merci de visiter MON ATELIER !";
-
-    });
-
-}
-
-
-// =================================
-// 3. FORMULAIRE
-// =================================
-
-const formulaire =
-    document.getElementById("formulaireContact");
+// ==========================================
+// ENREGISTRER UN APPAREIL
+// ==========================================
 
 if (formulaire) {
 
@@ -55,113 +92,483 @@ if (formulaire) {
 
         event.preventDefault();
 
-        const nom =
-            document.getElementById("nom").value;
-
-        const email =
-            document.getElementById("email").value;
+        const client =
+            document.getElementById("client").value.trim();
 
         const telephone =
-            document.getElementById("telephone").value;
+            document.getElementById("telephone").value.trim();
 
-        const message =
-            document.getElementById("message").value;
+        const appareil =
+            document.getElementById("appareil").value;
 
-        const resultat =
-            document.getElementById("resultat");
+        const marque =
+            document.getElementById("marque").value.trim();
 
+        const panne =
+            document.getElementById("panne").value.trim();
+
+        const prix =
+            document.getElementById("prix").value;
+
+        const statut =
+            document.getElementById("statut").value;
+
+
+        // Vérification
 
         if (
-            nom === "" ||
-            email === "" ||
+            client === "" ||
             telephone === "" ||
-            message === ""
+            appareil === "" ||
+            marque === "" ||
+            panne === ""
         ) {
 
-            resultat.textContent =
-                "Veuillez remplir tous les champs.";
+            alert("Veuillez remplir tous les champs obligatoires.");
 
             return;
         }
-        // Vérification de l'email
 
-if (!email.includes("@") || !email.includes(".")) {
 
-    resultat.textContent =
-        "Veuillez entrer une adresse email valide.";
+        // Nouvel appareil
 
-    return;
-}
-// Vérification du téléphone
+        const nouvelAppareil = {
 
-if (isNaN(telephone)) {
+    numero: reparations.length + 1,
 
-    resultat.textContent =
-        "Veuillez entrer un numéro de téléphone valide.";
+    date: new Date().toLocaleDateString("fr-FR"),
 
-    return;
-}
+    client: client,
 
-       resultat.textContent =
-    "Préparation du message WhatsApp...";
+    telephone: telephone,
 
-const monNumero = "243977133845";
+    appareil: appareil,
 
-const texteWhatsApp =
-    "Bonjour MON ATELIER !%0A%0A" +
-    "Nom : " + nom + "%0A" +
-    "Email : " + email + "%0A" +
-    "Téléphone : " + telephone + "%0A" +
-    "Message : " + message;
+    marque: marque,
 
-const lienWhatsApp =
-    "https://wa.me/" + monNumero +
-    "?text=" + texteWhatsApp;
+    panne: panne,
 
-window.open(lienWhatsApp, "_blank");
+    prix: prix || "0",
+
+    acompte:
+        document.getElementById("acompte").value || "0",
+
+    reste:
+        document.getElementById("reste").value || "0",
+
+    statut: statut
+
+};
+
+
+        // Ajouter dans la liste
+
+        reparations.push(nouvelAppareil);
+        // Ajouter l'acompte dans Finance
+
+if (acompte > 0) {
+
+    let operationsFinance = JSON.parse(
+        localStorage.getItem("operationsFinance")
+    ) || [];
+
+    const maintenant = new Date();
+
+    const annee = maintenant.getFullYear();
+
+    const mois = String(
+        maintenant.getMonth() + 1
+    ).padStart(2, "0");
+
+    const jour = String(
+        maintenant.getDate()
+    ).padStart(2, "0");
+
+
+    operationsFinance.push({
+
+        date: `${annee}-${mois}-${jour}`,
+
+        type: "entrée",
+
+        description:
+            "Acompte réparation - " + client,
+
+        montant: Number(acompte)
 
     });
 
+
+    localStorage.setItem(
+        "operationsFinance",
+        JSON.stringify(operationsFinance)
+    );
+
 }
-// =================================
-// DATE ET HEURE
-// =================================
+        // ENREGISTRER LE PAIEMENT DANS FINANCE
 
-const dateHeure = document.getElementById("dateHeure");
+if (acompte > 0) {
 
-if (dateHeure) {
+    let operationsFinance =
+        JSON.parse(
+            localStorage.getItem("operationsFinance")
+        ) || [];
 
-    function afficherDateHeure() {
+    const maintenant = new Date();
 
-        const maintenant = new Date();
+    const annee =
+        maintenant.getFullYear();
 
-        dateHeure.textContent =
-            maintenant.toLocaleString("fr-FR");
+    const mois =
+        String(maintenant.getMonth() + 1)
+            .padStart(2, "0");
 
-    }
+    const jour =
+        String(maintenant.getDate())
+            .padStart(2, "0");
 
-    afficherDateHeure();
+    operationsFinance.push({
 
-    setInterval(afficherDateHeure, 1000);
+        date: `${annee}-${mois}-${jour}`,
+
+        type: "entrée",
+
+        description:
+            "Acompte - " + client,
+
+        montant: acompte
+
+    });
+
+    localStorage.setItem(
+        "operationsFinance",
+        JSON.stringify(operationsFinance)
+    );
 }
-// ===============================
-// MODE SOMBRE / MODE CLAIR
-// ===============================
+        // Ajouter automatiquement l'acompte dans Finance
+if (acompte > 0) {
 
-const modeBouton = document.getElementById("modeBouton");
+    let operations =
+        JSON.parse(
+            localStorage.getItem("operationsFinance")
+        ) || [];
 
-if (modeBouton) {
+    operations.push({
 
-    modeBouton.addEventListener("click", function() {
+        date: dateAujourdHuiFinance(),
 
-        document.body.classList.toggle("mode-sombre");
+        type: "entrée",
 
-        if (document.body.classList.contains("mode-sombre")) {
-            modeBouton.textContent = "☀️ Mode clair";
-        } else {
-            modeBouton.textContent = "🌙 Mode sombre";
+        description:
+            "Acompte réparation - " + client,
+
+        montant: acompte
+
+    });
+
+    localStorage.setItem(
+        "operationsFinance",
+        JSON.stringify(operations)
+    );
+}
+
+
+        // Sauvegarder
+
+        localStorage.setItem(
+            "mesReparations",
+            JSON.stringify(reparations)
+        );
+
+
+        // Actualiser la liste
+
+        afficherReparations();
+
+
+        // Vider le formulaire
+
+        formulaire.reset();
+
+
+        // Message
+
+        const message =
+            document.getElementById("messageReparation");
+
+        if (message) {
+
+            message.textContent =
+                "✅ Appareil enregistré avec succès.";
+
         }
 
     });
 
+}
+
+
+// ==========================================
+// RECHERCHE
+// ==========================================
+
+if (recherche) {
+
+    recherche.addEventListener("input", function() {
+
+        const texte =
+            recherche.value.toLowerCase().trim();
+
+
+        const resultats =
+            reparations.filter(function(item) {
+
+                return (
+
+                    item.client.toLowerCase().includes(texte) ||
+
+                    item.telephone.toLowerCase().includes(texte) ||
+
+                    item.appareil.toLowerCase().includes(texte) ||
+
+                    item.marque.toLowerCase().includes(texte) ||
+
+                    item.panne.toLowerCase().includes(texte) ||
+
+                    item.statut.toLowerCase().includes(texte)
+
+                );
+
+            });
+
+
+        afficherReparations(resultats);
+
+    });
+
+}
+
+
+// ==========================================
+// AFFICHAGE AU CHARGEMENT
+// ==========================================
+
+afficherReparations();
+const btnModifier =
+    document.getElementById("btnModifier");
+
+if (btnModifier) {
+
+    btnModifier.addEventListener("click", function() {
+
+        const index =
+            window.reparationSelectionnee;
+
+        if (index === undefined) {
+
+            alert(
+                "Sélectionnez d'abord une réparation dans la liste."
+            );
+
+            return;
+        }
+
+        reparations[index].client =
+            document.getElementById("client").value.trim();
+
+        reparations[index].telephone =
+            document.getElementById("telephone").value.trim();
+
+        reparations[index].appareil =
+            document.getElementById("appareil").value;
+
+        reparations[index].marque =
+            document.getElementById("marque").value.trim();
+
+        reparations[index].panne =
+            document.getElementById("panne").value.trim();
+
+        reparations[index].prix =
+            document.getElementById("prix").value;
+
+        reparations[index].statut =
+            document.getElementById("statut").value;
+
+
+        localStorage.setItem(
+            "mesReparations",
+            JSON.stringify(reparations)
+        );
+
+
+        afficherReparations();
+
+
+        document.getElementById(
+            "formulaireReparation"
+        ).reset();
+
+
+        window.reparationSelectionnee = undefined;
+
+
+        alert(
+            "✅ Réparation modifiée avec succès."
+        );
+
+    });
+
+}
+const btnEffacer =
+    document.getElementById("btnEffacer");
+
+if (btnEffacer) {
+
+    btnEffacer.addEventListener("click", function() {
+
+        const index =
+            window.reparationSelectionnee;
+
+
+        // Aucune réparation sélectionnée
+
+        if (index === undefined) {
+
+            alert(
+                "⚠️ Sélectionnez d'abord une réparation."
+            );
+
+            return;
+        }
+
+
+        // Confirmation
+
+        const confirmation = confirm(
+            "Voulez-vous vraiment supprimer cette réparation ?"
+        );
+
+
+        if (!confirmation) {
+            return;
+        }
+
+
+        // Suppression
+
+        reparations.splice(index, 1);
+
+
+        // Renumérotation
+
+        reparations.forEach(function(item, i) {
+
+            item.numero = i + 1;
+
+        });
+
+
+        // Sauvegarde
+
+        localStorage.setItem(
+            "mesReparations",
+            JSON.stringify(reparations)
+        );
+
+
+        // Actualiser la liste
+
+        afficherReparations();
+
+
+        // Vider le formulaire
+
+        document.getElementById(
+            "formulaireReparation"
+        ).reset();
+
+
+        window.reparationSelectionnee =
+            undefined;
+
+
+        // Message
+
+        const message =
+            document.getElementById(
+                "messageReparation"
+            );
+
+        if (message) {
+
+            message.textContent =
+                "🗑️ Réparation supprimée avec succès.";
+
+        }
+
+    });
+
+}
+const champPrix =
+    document.getElementById("prix");
+
+const champAcompte =
+    document.getElementById("acompte");
+
+const champReste =
+    document.getElementById("reste");
+
+
+function calculerReste() {
+
+    const prix =
+        parseFloat(champPrix.value) || 0;
+
+    const acompte =
+        parseFloat(champAcompte.value) || 0;
+
+
+    let reste =
+        prix - acompte;
+
+
+    if (reste < 0) {
+        reste = 0;
+    }
+
+
+    champReste.value =
+        reste.toFixed(2);
+}
+
+
+if (champPrix && champAcompte) {
+
+    champPrix.addEventListener(
+        "input",
+        calculerReste
+    );
+
+    champAcompte.addEventListener(
+        "input",
+        calculerReste
+    );
+
+}
+function dateAujourdHuiFinance() {
+
+    const maintenant = new Date();
+
+    const jour =
+        String(maintenant.getDate())
+            .padStart(2, "0");
+
+    const mois =
+        String(maintenant.getMonth() + 1)
+            .padStart(2, "0");
+
+    const annee =
+        maintenant.getFullYear();
+
+    return `${annee}-${mois}-${jour}`;
 }

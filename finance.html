@@ -1,0 +1,324 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Finance - MON ATELIER</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body>
+
+<header>
+
+    <h1>MON ATELIER</h1>
+
+    <button id="menuBouton" type="button">
+        ☰ Menu
+    </button>
+
+    <nav id="menu">
+
+        <a href="index.html">Accueil</a>
+
+        <a href="apropos.html">À propos</a>
+
+        <a href="services.html">Services</a>
+
+        <a href="galerie.html">Galerie</a>
+
+        <a href="contact.html">Contact</a>
+
+        <a href="reparation.html">Réparation</a>
+
+        <a href="finance.html">Finance</a>
+
+    </nav>
+
+    <p id="utilisateurConnecte"></p>
+
+    <button id="btnDeconnexion" type="button">
+        🚪 Déconnexion
+    </button>
+
+</header>
+
+
+<main class="page-finance">
+
+    <h2>💰 Gestion financière</h2>
+
+
+    <!-- ==========================
+         RÉSUMÉ DU JOUR
+    =========================== -->
+
+    <section class="resume-finance">
+
+        <div class="carte-finance">
+
+            <h3>💰 Entrées du jour</h3>
+
+            <p id="entreesJour">
+                0 FC
+            </p>
+
+        </div>
+
+
+        <div class="carte-finance">
+
+            <h3>💸 Sorties du jour</h3>
+
+            <p id="sortiesJour">
+                0 FC
+            </p>
+
+        </div>
+
+
+        <div class="carte-finance">
+
+            <h3>💵 Solde du jour</h3>
+
+            <p id="soldeJour">
+                0 FC
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================
+         RÉSUMÉ DU MOIS
+    =========================== -->
+
+    <section class="resume-finance">
+
+        <div class="carte-finance">
+
+            <h3>📅 Entrées du mois</h3>
+
+            <p id="entreesMois">
+                0 FC
+            </p>
+
+        </div>
+
+
+        <div class="carte-finance">
+
+            <h3>📅 Sorties du mois</h3>
+
+            <p id="sortiesMois">
+                0 FC
+            </p>
+
+        </div>
+
+
+        <div class="carte-finance">
+
+            <h3>📊 Solde du mois</h3>
+
+            <p id="soldeMois">
+                0 FC
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================
+         FORMULAIRE
+    =========================== -->
+
+    <section class="formulaire-finance">
+
+        <h2>➕ Nouvelle opération</h2>
+
+
+        <form id="formulaireFinance">
+
+            <label for="typeOperation">
+                Type d'opération
+            </label>
+
+            <select id="typeOperation" required>
+
+                <option value="">
+                    -- Choisir --
+                </option>
+
+                <option value="entrée">
+                    💰 Argent entrant
+                </option>
+
+                <option value="sortie">
+                    💸 Argent sortant
+                </option>
+
+            </select>
+
+
+            <label for="descriptionOperation">
+                Description
+            </label>
+
+            <input
+                type="text"
+                id="descriptionOperation"
+                placeholder="Ex : Réparation téléphone"
+                required
+            >
+
+
+            <label for="montantOperation">
+                Montant (FC)
+            </label>
+
+            <input
+                type="number"
+                id="montantOperation"
+                placeholder="Ex : 50000"
+                min="1"
+                required
+            >
+
+
+            <button
+                type="submit"
+                id="btnEnregistrerOperation">
+
+                ➕ Enregistrer
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ==========================
+         HISTORIQUE
+    =========================== -->
+
+    <section class="historique-finance">
+
+        <h2>📋 Historique des opérations</h2>
+
+
+        <input
+            type="search"
+            id="rechercheFinance"
+            placeholder="🔎 Rechercher une opération..."
+        >
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Type</th>
+
+                        <th>Description</th>
+
+                        <th>Montant</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="listeOperations">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- Protection -->
+
+<script>
+
+    if (
+        sessionStorage.getItem("accesReparation")
+        !== "autorise"
+    ) {
+
+        window.location.href =
+            "connexion.html";
+
+    }
+
+</script>
+
+
+<script src="finance.js"></script>
+
+
+<!-- Déconnexion -->
+
+<script>
+
+    const btnDeconnexion =
+        document.getElementById(
+            "btnDeconnexion"
+        );
+
+
+    if (btnDeconnexion) {
+
+        btnDeconnexion.addEventListener(
+            "click",
+            function() {
+
+                sessionStorage.removeItem(
+                    "accesReparation"
+                );
+
+                sessionStorage.removeItem(
+                    "role"
+                );
+
+                window.location.href =
+                    "connexion.html";
+
+            }
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
+```

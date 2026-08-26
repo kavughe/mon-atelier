@@ -268,3 +268,524 @@ footer {
     }
 
 }
+/* =========================
+   ENREGISTREMENT REPARATION
+   ========================= */
+
+.page-reparation {
+    width: 90%;
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.page-reparation h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#formulaireReparation {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding: 25px;
+
+    background-color: white;
+
+    border-radius: 10px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+#formulaireReparation label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#formulaireReparation input,
+#formulaireReparation select,
+#formulaireReparation textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    font-size: 16px;
+}
+
+#formulaireReparation button {
+    margin-top: 20px;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 5px;
+
+    background-color: #222;
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+#messageReparation {
+    text-align: center;
+
+    margin-top: 20px;
+
+    font-weight: bold;
+}
+/* =========================
+   BOUTONS REPARATION
+========================= */
+
+.boutons-reparation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.boutons-reparation button {
+    flex: 1;
+    min-width: 130px;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: #222;
+    color: white;
+
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.boutons-reparation button:hover {
+    background-color: #555;
+}
+
+
+/* Recherche */
+
+#recherche {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px;
+    margin-bottom: 20px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+
+/* Tableau */
+
+.table-container {
+    overflow-x: auto;
+}
+
+.liste-reparations table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.liste-reparations th,
+.liste-reparations td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.liste-reparations th {
+    background-color: #222;
+    color: white;
+}
+
+.liste-reparations tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+/* Téléphone */
+
+@media (max-width: 600px) {
+
+    .boutons-reparation {
+        flex-direction: column;
+    }
+
+    .boutons-reparation button {
+        width: 100%;
+    }
+
+}
+/* =========================================
+   CONNEXION - MON ATELIER
+========================================= */
+
+.connexion {
+    width: 90%;
+    max-width: 420px;
+
+    margin: 70px auto;
+
+    padding: 40px 35px;
+
+    box-sizing: border-box;
+
+    background: white;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.15);
+
+    text-align: center;
+}
+
+
+/* Logo / nom */
+
+.connexion h1 {
+    margin: 0;
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+/* Sous-titre */
+
+.connexion h2 {
+    margin: 10px 0 30px;
+
+    font-size: 20px;
+
+    font-weight: 500;
+}
+
+
+/* Petite icône */
+
+.connexion::before {
+    content: "🔐";
+
+    display: block;
+
+    font-size: 55px;
+
+    margin-bottom: 10px;
+}
+
+
+/* Formulaire */
+
+#formConnexion {
+    display: flex;
+
+    flex-direction: column;
+
+    text-align: left;
+
+    gap: 7px;
+}
+
+
+/* Labels */
+
+#formConnexion label {
+    margin-top: 12px;
+
+    font-weight: 600;
+
+    font-size: 15px;
+}
+
+
+/* Champs */
+
+#formConnexion input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 14px 15px;
+
+    border: 1px solid #d5d5d5;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: #fafafa;
+
+    outline: none;
+
+    transition: 0.3s;
+}
+
+
+/* Focus */
+
+#formConnexion input:focus {
+
+    background: white;
+
+    border-color: #333;
+
+    box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Bouton */
+
+#formConnexion button {
+
+    width: 100%;
+
+    margin-top: 25px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #222;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+/* Survol bouton */
+
+#formConnexion button:hover {
+
+    background: #444;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Appui */
+
+#formConnexion button:active {
+
+    transform: translateY(0);
+
+}
+
+
+/* Message d'erreur */
+
+#erreurConnexion {
+
+    min-height: 20px;
+
+    margin-top: 18px;
+
+    font-weight: 600;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   VERSION TELEPHONE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .connexion {
+
+        width: 92%;
+
+        margin: 40px auto;
+
+        padding: 30px 22px;
+
+        border-radius: 15px;
+    }
+
+
+    .connexion h1 {
+
+        font-size: 27px;
+    }
+
+
+    .connexion h2 {
+
+        font-size: 18px;
+    }
+
+
+    .connexion::before {
+
+        font-size: 45px;
+    }
+
+
+    #formConnexion input {
+
+        padding: 12px;
+
+        font-size: 15px;
+    }
+
+
+    #formConnexion button {
+
+        padding: 13px;
+
+        font-size: 15px;
+    }
+
+}
+#btnDeconnexion {
+    padding: 10px 15px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: #222;
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: bold;
+}
+
+#btnDeconnexion:hover {
+    background-color: #555;
+}
+#utilisateurConnecte {
+    margin: 0 15px;
+
+    font-weight: bold;
+
+    font-size: 14px;
+}
+#listeReparations tr {
+    cursor: pointer;
+}
+
+#listeReparations tr.selection {
+    outline: 3px solid #333;
+    background-color: #eee;
+}
+const btnEffacer =
+    document.getElementById("btnEffacer");
+
+if (btnEffacer) {
+
+    btnEffacer.addEventListener("click", function() {
+
+        const index =
+            window.reparationSelectionnee;
+
+
+        // Aucune réparation sélectionnée
+
+        if (index === undefined) {
+
+            alert(
+                "⚠️ Sélectionnez d'abord une réparation."
+            );
+
+            return;
+        }
+
+
+        // Confirmation
+
+        const confirmation = confirm(
+            "Voulez-vous vraiment supprimer cette réparation ?"
+        );
+
+
+        if (!confirmation) {
+            return;
+        }
+
+
+        // Suppression
+
+        reparations.splice(index, 1);
+
+
+        // Renumérotation
+
+        reparations.forEach(function(item, i) {
+
+            item.numero = i + 1;
+
+        });
+
+
+        // Sauvegarde
+
+        localStorage.setItem(
+            "mesReparations",
+            JSON.stringify(reparations)
+        );
+
+
+        // Actualiser la liste
+
+        afficherReparations();
+
+
+        // Vider le formulaire
+
+        document.getElementById(
+            "formulaireReparation"
+        ).reset();
+
+
+        window.reparationSelectionnee =
+            undefined;
+
+
+        // Message
+
+        const message =
+            document.getElementById(
+                "messageReparation"
+            );
+
+        if (message) {
+
+            message.textContent =
+                "🗑️ Réparation supprimée avec succès.";
+
+        }
+
+    });
+
+}

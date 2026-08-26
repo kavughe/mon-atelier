@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Connexion - MON ATELIER</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="connexion">
+
+        <h1>MON ATELIER</h1>
+
+        <h2>Accès réparation</h2>
+
+        <form id="formConnexion">
+
+            <label>Nom d'utilisateur</label>
+
+            <input
+                type="text"
+                id="utilisateur"
+                required
+            >
+
+            <label>Mot de passe</label>
+
+            <input
+                type="password"
+                id="motDePasse"
+                required
+            >
+
+            <button type="submit">
+                🔐 Se connecter
+            </button>
+
+        </form>
+
+        <p id="erreurConnexion"></p>
+
+    </main>
+
+    <script src="script.js"></script>
+    <script src="connexion.js"></script>
+
+</body>
+
+</html>
