@@ -2,192 +2,356 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Services - Mon Atelier</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Services</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <header>
 
-        <h1>MON ATELIER</h1>
+<!-- ==============================
+     HEADER
+     ============================== -->
 
-        <nav>
-            <a href="index.html">Accueil</a>
-            <a href="apropos.html">À propos</a>
-            <a href="services.html">Services</a>
-            <a href="galerie.html">Galerie</a>
-            <a href="contact.html">Contact</a>
-            <a href="reparation.html">Réparation</a>
-        </nav>
+<header class="header">
 
-    </header>
+    <div class="logo">
 
+        <div class="logo-icon">
+            🔧
+        </div>
 
-    <main>
+        <div>
 
-        <h2>Nos services</h2>
+            <h1>Mon Atelier</h1>
 
-        <p>
-            Découvrez les services proposés par notre atelier.
-        </p>
-
-
-        <div class="service">
-
-            <div class="service">
-                <div class="service-icon">⚡</div>
-
-                <h3>Électricité</h3>
-
-                <p>
-                    Installation, dépannage et maintenance
-                    des systèmes électriques.
-                </p>
-
-                <a href="contact.html">
-                    Demander ce service
-                </a>
-            </div>
-
-
-            <div class="service">
-                <div class="service-icon">🔧</div>
-
-                <h3>Électronique</h3>
-
-                <p>
-                    Conception, diagnostic et réparation
-                    des circuits électroniques.
-                </p>
-
-                <a href="contact.html">
-                    Demander ce service
-                </a>
-            </div>
-
-
-            <div class="service">
-                <div class="service-icon">☀️</div>
-
-                <h3>Énergie solaire</h3>
-
-                <p>
-                    Installation de panneaux solaires,
-                    batteries et systèmes photovoltaïques.
-                </p>
-
-                <a href="contact.html">
-                    Demander ce service
-                </a>
-            </div>
-
-
-            <div class="service">
-                <div class="service-icon">📹</div>
-
-                <h3>Vidéosurveillance</h3>
-
-                <p>
-                    Installation et configuration
-                    de caméras de surveillance.
-                </p>
-
-                <a href="contact.html">
-                    Demander ce service
-                </a>
-            </div>
-
-
-            <div class="service">
-                <div class="service-icon">🔌</div>
-
-                <h3>Câblage électrique</h3>
-
-                <p>
-                    Réalisation de câblages et
-                    tableaux électriques.
-                </p>
-
-                <a href="contact.html">
-                    Demander ce service
-                </a>
-            </div>
-
-
-            <div class="service">
-                <div class="service-icon">🛠️</div>
-
-                <h3>Réparation</h3>
-
-                <p>
-                    Diagnostic et réparation
-                    des appareils électroniques.
-                </p>
-
-                <a href="contact.html">
-                    Demander ce service
-                </a>
-            </div>
+            <p>Gestion de l'atelier</p>
 
         </div>
 
-    </main>
+    </div>
 
 
-    <footer>
+    <button
+        class="menu-btn"
+        onclick="ouvrirMenu()">
 
-        <div class="footer-content">
+        ☰
 
-            <div>
-                <h3>MON ATELIER</h3>
-                <p>
-                    Électricité, électronique,
-                    énergie solaire et technologie.
-                </p>
-            </div>
+    </button>
 
-            <div>
-                <h3>Navigation</h3>
-
-                <a href="index.html">Accueil</a>
-                <a href="apropos.html">À propos</a>
-                <a href="service.html">Services</a>
-                <a href="galerie.html">Galerie</a>
-                <a href="contact.html">Contact</a>
-            </div>
-
-            <div>
-                <h3>Contact</h3>
-
-                <p>📞 Votre numéro</p>
-                <p>📧 votre@email.com</p>
-                <p>📍 Votre adresse</p>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            <p>
-                &copy; 2026 Mon Atelier -
-                Tous droits réservés
-            </p>
-        </div>
-
-    </footer>
+</header>
 
 
-    <a href="https://wa.me/243977133845"
-       class="whatsapp"
-       target="_blank">
-        WhatsApp
+<!-- ==============================
+     MENU
+     ============================== -->
+
+<nav id="menu" class="menu">
+
+    <a href="index.html">
+        🏠 Accueil
     </a>
 
-    <script src="script.js"></script>
+    <a href="clients.html">
+        👥 Clients
+    </a>
+
+    <a href="reparations.html">
+        🔧 Réparations
+    </a>
+
+    <a href="historique.html">
+        📜 Historique
+    </a>
+
+    <a href="services.html" class="active">
+        🛠️ Services
+    </a>
+
+    <a href="depenses.html">
+        💸 Dépenses
+    </a>
+
+    <a href="rapports.html">
+        📊 Rapports
+    </a>
+    <a href="motdepasse.html">
+    🔑 Mot de passe
+</a>
+
+<a href="#" onclick="deconnexion(); return false;">
+    🚪 Déconnexion
+</a>
+
+</nav>
+
+
+<!-- ==============================
+     CONTENU
+     ============================== -->
+
+<main class="container">
+
+
+    <!-- TITRE -->
+
+    <section class="page-title">
+
+        <div>
+
+            <h2>🛠️ Nos services</h2>
+
+            <p>
+                Découvrez les services proposés par
+                votre atelier.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==============================
+         SERVICES
+         ============================== -->
+
+    <section class="services-grid">
+
+
+        <!-- SERVICE 1 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                📱
+            </div>
+
+            <div class="service-content">
+
+                <h3>Réparation téléphone</h3>
+
+                <p>
+                    Diagnostic et réparation des
+                    téléphones et smartphones.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 2 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                💻
+            </div>
+
+            <div class="service-content">
+
+                <h3>Réparation ordinateur</h3>
+
+                <p>
+                    Réparation des ordinateurs,
+                    PC et problèmes matériels.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 3 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                📺
+            </div>
+
+            <div class="service-content">
+
+                <h3>Remplacement écran</h3>
+
+                <p>
+                    Remplacement des écrans cassés
+                    ou endommagés.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 4 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🔋
+            </div>
+
+            <div class="service-content">
+
+                <h3>Remplacement batterie</h3>
+
+                <p>
+                    Remplacement des batteries
+                    faibles ou défectueuses.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 5 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🔌
+            </div>
+
+            <div class="service-content">
+
+                <h3>Connecteur de charge</h3>
+
+                <p>
+                    Réparation et remplacement
+                    des ports de charge.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 6 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                ⚡
+            </div>
+
+            <div class="service-content">
+
+                <h3>Diagnostic électronique</h3>
+
+                <p>
+                    Recherche de pannes et
+                    diagnostic électronique.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 7 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                💾
+            </div>
+
+            <div class="service-content">
+
+                <h3>Logiciels & système</h3>
+
+                <p>
+                    Installation, configuration et
+                    dépannage des logiciels.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- SERVICE 8 -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🛠️
+            </div>
+
+            <div class="service-content">
+
+                <h3>Autres réparations</h3>
+
+                <p>
+                    Nous étudions également les
+                    autres types de pannes.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==============================
+         APPEL
+         ============================== -->
+
+    <section class="service-contact">
+
+        <div>
+
+            <h2>Besoin d'une réparation ?</h2>
+
+            <p>
+                Enregistrez directement une nouvelle
+                réparation dans votre atelier.
+            </p>
+
+        </div>
+
+
+        <a
+            href="reparations.html"
+            class="btn-primary">
+
+            ➕ Nouvelle réparation
+
+        </a>
+
+    </section>
+
+
+</main>
+
+
+<!-- ==============================
+     FOOTER
+     ============================== -->
+
+<footer>
+
+    <p>
+        © 2026 Mon Atelier — Gestion d'atelier
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 

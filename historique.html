@@ -1,0 +1,179 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Historique</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         EN-TÊTE
+         ===================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            🔧
+
+            <div>
+
+                <h1>Mon Atelier</h1>
+
+                <p>
+                    Gestion de réparations
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menu-btn"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         MENU
+         ===================================== -->
+
+    <nav id="menu" class="menu">
+
+        <a href="index.html">
+            🏠 Tableau de bord
+        </a>
+
+        <a href="clients.html">
+            👥 Clients
+        </a>
+
+        <a href="reparations.html">
+            🔧 Réparations
+        </a>
+
+        <a href="historique.html">
+            📜 Historique
+        </a>
+
+        <a href="rapports.html">
+            📊 Rapports
+        </a>
+
+        <a href="depenses.html">
+            💸 Dépenses
+        </a>
+
+        <a href="services.html">
+            ⚙️ Services
+        </a>
+
+        <a href="apropos.html">
+            ℹ️ À propos
+        </a>
+        <a href="motdepasse.html">
+    🔑 Mot de passe
+</a>
+
+<a href="#" onclick="deconnexion(); return false;">
+    🚪 Déconnexion
+</a>
+
+    </nav>
+
+
+
+    <!-- =====================================
+         CONTENU PRINCIPAL
+         ===================================== -->
+
+    <main class="container">
+
+
+        <!-- =====================================
+             TITRE
+             ===================================== -->
+
+        <section class="recent">
+
+            <h2>
+                📜 Historique des réparations
+            </h2>
+
+            <p>
+                Retrouvez toutes les réparations
+                enregistrées dans votre atelier.
+            </p>
+
+        </section>
+
+
+
+        <!-- =====================================
+             LISTE DES REPARATIONS
+             ===================================== -->
+
+        <section class="recent">
+
+            <div id="listeHistorique">
+
+                <p class="empty">
+                    📭 Aucune réparation enregistrée.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================
+         PIED DE PAGE
+         ===================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Mon Atelier —
+            Gestion de réparations
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================
+         JAVASCRIPT
+         ===================================== -->
+
+    <script src="script.js"></script>
+
+    <script src="historique.js"></script>
+
+
+</body>
+
+</html>

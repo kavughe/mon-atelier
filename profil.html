@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Profil - Mon Atelier</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         EN-TÊTE
+    ====================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            <span class="logo-icon">
+                🔧
+            </span>
+
+            <div>
+
+                <h1>
+                    Mon Atelier
+                </h1>
+
+                <p>
+                    Gestion de l'atelier
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menu-button"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+
+        <nav id="menu">
+
+            <a href="index.html">
+                🏠 Accueil
+            </a>
+
+            <a href="clients.html">
+                👥 Clients
+            </a>
+
+            <a href="reparations.html">
+                🔧 Réparations
+            </a>
+
+            <a href="historique.html">
+                📋 Historique
+            </a>
+
+            <a href="services.html">
+                🛠️ Services
+            </a>
+
+            <a href="depenses.html">
+                💸 Dépenses
+            </a>
+
+            <a href="rapports.html">
+                📊 Rapports
+            </a>
+
+            <a href="profil.html"
+               class="active">
+                👤 Profil
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =====================================
+         CONTENU
+    ====================================== -->
+
+    <main class="container profil-page">
+
+
+        <!-- TITRE -->
+
+        <div class="page-title">
+
+            <div>
+
+                <h2>
+                    👤 Mon profil
+                </h2>
+
+                <p>
+                    Gérez les informations de votre compte
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             CARTE PROFIL
+        ================================== -->
+
+        <section class="profil-card">
+
+
+            <div class="profil-avatar">
+
+                <span>
+                    👤
+                </span>
+
+            </div>
+
+
+            <div class="profil-identite">
+
+                <h2 class="nomUtilisateur">
+                    Utilisateur
+                </h2>
+
+                <p class="role-badge">
+
+                    <span class="roleUtilisateur">
+                        Utilisateur
+                    </span>
+
+                </p>
+
+                <p class="username-line">
+
+                    Nom d'utilisateur :
+
+                    <strong class="utilisateurConnecte">
+                        -
+                    </strong>
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================
+             INFORMATIONS DU COMPTE
+        ================================== -->
+
+        <section class="profil-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+                        🔐 Informations du compte
+                    </h3>
+
+                    <p>
+                        Informations relatives à votre session
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="profil-info-grid">
+
+
+                <div class="profil-info">
+
+                    <span class="info-icon">
+                        👤
+                    </span>
+
+                    <div>
+
+                        <small>
+                            Nom
+                        </small>
+
+                        <strong class="nomUtilisateur">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profil-info">
+
+                    <span class="info-icon">
+                        🔑
+                    </span>
+
+                    <div>
+
+                        <small>
+                            Nom d'utilisateur
+                        </small>
+
+                        <strong class="utilisateurConnecte">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profil-info">
+
+                    <span class="info-icon">
+                        🛡️
+                    </span>
+
+                    <div>
+
+                        <small>
+                            Rôle
+                        </small>
+
+                        <strong class="roleUtilisateur">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profil-info">
+
+                    <span class="info-icon">
+                        🟢
+                    </span>
+
+                    <div>
+
+                        <small>
+                            État du compte
+                        </small>
+
+                        <strong>
+                            Connecté
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             SECURITE
+        ================================== -->
+
+        <section class="profil-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+                        🔒 Sécurité
+                    </h3>
+
+                    <p>
+                        Protégez l'accès à votre compte
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="security-card">
+
+                <div class="security-icon">
+                    🔑
+                </div>
+
+
+                <div class="security-content">
+
+                    <h4>
+                        Mot de passe
+                    </h4>
+
+                    <p>
+                        Modifiez régulièrement votre mot de passe
+                        pour sécuriser votre compte.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="motdepasse.html"
+                    class="btn-primary">
+
+                    🔑 Changer le mot de passe
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             DECONNEXION
+        ================================== -->
+
+        <section class="profil-section logout-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h3>
+                        🚪 Session
+                    </h3>
+
+                    <p>
+                        Fermer votre session actuelle
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-danger"
+                onclick="confirmerDeconnexion()">
+
+                🚪 Se déconnecter
+
+            </button>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================
+         PIED DE PAGE
+    ====================================== -->
+
+    <footer class="footer">
+
+        <p>
+            © 2026 Mon Atelier
+        </p>
+
+        <p>
+            Gestion professionnelle d'atelier
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================
+         CONNEXION.JS
+    ====================================== -->
+
+    <script src="connexion.js"></script>
+
+
+
+    <!-- =====================================
+         PROTECTION DE LA PAGE
+    ====================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                if (
+                    typeof estConnecte ===
+                    "function"
+                ) {
+
+                    if (!estConnecte()) {
+
+                        window.location.href =
+                            "connexion.html";
+
+                        return;
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        function ouvrirMenu() {
+
+            const menu =
+                document.getElementById("menu");
+
+            if (menu) {
+
+                menu.classList.toggle("active");
+
+            }
+
+        }
+
+
+        function confirmerDeconnexion() {
+
+            const confirmation =
+                confirm(
+                    "Voulez-vous vraiment vous déconnecter ?"
+                );
+
+
+            if (!confirmation) {
+                return;
+            }
+
+
+            if (
+                typeof deconnecter ===
+                "function"
+            ) {
+
+                deconnecter();
+
+            } else {
+
+                sessionStorage.clear();
+
+                window.location.href =
+                    "connexion.html";
+
+            }
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

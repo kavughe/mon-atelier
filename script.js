@@ -1,574 +1,673 @@
 // ==========================================
-// MON ATELIER - REPARATIONS
+// MON ATELIER - SCRIPT PRINCIPAL
 // ==========================================
-
-const formulaire = document.getElementById("formulaireReparation");
-const liste = document.getElementById("listeReparations");
-const recherche = document.getElementById("recherche");
-
-let reparations = JSON.parse(
-    localStorage.getItem("mesReparations")
-) || [];
 
 
 // ==========================================
-// AFFICHER LA LISTE
+// MENU MOBILE
 // ==========================================
 
-function afficherReparations(donnees = reparations) {
+function ouvrirMenu() {
+    const menu = document.getElementById("menu");
 
-    if (!liste) return;
-
-    liste.innerHTML = "";
-
-    donnees.forEach(function(item) {
-
-        const ligne = document.createElement("tr");
-
-        ligne.innerHTML = `
-            <td>${item.numero}</td>
-            <td>${item.date}</td>
-            <td>${item.client}</td>
-            <td>${item.telephone}</td>
-            <td>${item.appareil}</td>
-            <td>${item.marque}</td>
-            <td>${item.panne}</td>
-            <td>${item.prix} $</td>
-            <td>${item.statut}</td>
-        `;
-
-        // Sélection de la réparation
-        ligne.addEventListener("click", function() {
-
-            const index = reparations.indexOf(item);
-
-            if (index === -1) return;
-
-            window.reparationSelectionnee = index;
-
-            document.getElementById("client").value =
-                item.client;
-
-            document.getElementById("telephone").value =
-                item.telephone;
-
-            document.getElementById("appareil").value =
-                item.appareil;
-
-            document.getElementById("marque").value =
-                item.marque;
-
-            document.getElementById("panne").value =
-                item.panne;
-
-            document.getElementById("prix").value =
-                item.prix;
-
-            document.getElementById("statut").value =
-                item.statut;
-
-            document.querySelectorAll("#listeReparations tr")
-                .forEach(function(tr) {
-                    tr.classList.remove("selection");
-                });
-
-            ligne.classList.add("selection");
-
-        });
-
-        liste.appendChild(ligne);
-
-    });
+    if (menu) {
+        menu.classList.toggle("active");
+    }
 }
 
 
 // ==========================================
-// ENREGISTRER UN APPAREIL
+// DONNÉES
 // ==========================================
 
-if (formulaire) {
-
-    formulaire.addEventListener("submit", function(event) {
-
-        event.preventDefault();
-
-        const client =
-            document.getElementById("client").value.trim();
-
-        const telephone =
-            document.getElementById("telephone").value.trim();
-
-        const appareil =
-            document.getElementById("appareil").value;
-
-        const marque =
-            document.getElementById("marque").value.trim();
-
-        const panne =
-            document.getElementById("panne").value.trim();
-
-        const prix =
-            document.getElementById("prix").value;
-
-        const statut =
-            document.getElementById("statut").value;
-
-
-        // Vérification
-
-        if (
-            client === "" ||
-            telephone === "" ||
-            appareil === "" ||
-            marque === "" ||
-            panne === ""
-        ) {
-
-            alert("Veuillez remplir tous les champs obligatoires.");
-
-            return;
-        }
-
-
-        // Nouvel appareil
-
-        const nouvelAppareil = {
-
-    numero: reparations.length + 1,
-
-    date: new Date().toLocaleDateString("fr-FR"),
-
-    client: client,
-
-    telephone: telephone,
-
-    appareil: appareil,
-
-    marque: marque,
-
-    panne: panne,
-
-    prix: prix || "0",
-
-    acompte:
-        document.getElementById("acompte").value || "0",
-
-    reste:
-        document.getElementById("reste").value || "0",
-
-    statut: statut
-
-};
-
-
-        // Ajouter dans la liste
-
-        reparations.push(nouvelAppareil);
-        // Ajouter l'acompte dans Finance
-
-if (acompte > 0) {
-
-    let operationsFinance = JSON.parse(
-        localStorage.getItem("operationsFinance")
-    ) || [];
-
-    const maintenant = new Date();
-
-    const annee = maintenant.getFullYear();
-
-    const mois = String(
-        maintenant.getMonth() + 1
-    ).padStart(2, "0");
-
-    const jour = String(
-        maintenant.getDate()
-    ).padStart(2, "0");
-
-
-    operationsFinance.push({
-
-        date: `${annee}-${mois}-${jour}`,
-
-        type: "entrée",
-
-        description:
-            "Acompte réparation - " + client,
-
-        montant: Number(acompte)
-
-    });
-
-
-    localStorage.setItem(
-        "operationsFinance",
-        JSON.stringify(operationsFinance)
-    );
-
+// Récupérer les clients
+function getClients() {
+    return JSON.parse(localStorage.getItem("clients")) || [];
 }
-        // ENREGISTRER LE PAIEMENT DANS FINANCE
 
-if (acompte > 0) {
 
-    let operationsFinance =
-        JSON.parse(
-            localStorage.getItem("operationsFinance")
-        ) || [];
-
-    const maintenant = new Date();
-
-    const annee =
-        maintenant.getFullYear();
-
-    const mois =
-        String(maintenant.getMonth() + 1)
-            .padStart(2, "0");
-
-    const jour =
-        String(maintenant.getDate())
-            .padStart(2, "0");
-
-    operationsFinance.push({
-
-        date: `${annee}-${mois}-${jour}`,
-
-        type: "entrée",
-
-        description:
-            "Acompte - " + client,
-
-        montant: acompte
-
-    });
-
-    localStorage.setItem(
-        "operationsFinance",
-        JSON.stringify(operationsFinance)
-    );
+// Récupérer les réparations
+function getReparations() {
+    return JSON.parse(localStorage.getItem("reparations")) || [];
 }
-        // Ajouter automatiquement l'acompte dans Finance
-if (acompte > 0) {
 
-    let operations =
-        JSON.parse(
-            localStorage.getItem("operationsFinance")
-        ) || [];
 
-    operations.push({
+// Sauvegarder les clients
+function sauvegarderClients(clients) {
+    localStorage.setItem("clients", JSON.stringify(clients));
+}
 
-        date: dateAujourdHuiFinance(),
 
-        type: "entrée",
-
-        description:
-            "Acompte réparation - " + client,
-
-        montant: acompte
-
-    });
-
+// Sauvegarder les réparations
+function sauvegarderReparations(reparations) {
     localStorage.setItem(
-        "operationsFinance",
-        JSON.stringify(operations)
+        "reparations",
+        JSON.stringify(reparations)
     );
 }
 
 
-        // Sauvegarder
+// ==========================================
+// FORMATAGE DES MONTANTS
+// ==========================================
 
-        localStorage.setItem(
-            "mesReparations",
-            JSON.stringify(reparations)
-        );
+function formatMontant(montant) {
 
+    montant = Number(montant) || 0;
 
-        // Actualiser la liste
-
-        afficherReparations();
-
-
-        // Vider le formulaire
-
-        formulaire.reset();
-
-
-        // Message
-
-        const message =
-            document.getElementById("messageReparation");
-
-        if (message) {
-
-            message.textContent =
-                "✅ Appareil enregistré avec succès.";
-
-        }
-
-    });
-
+    return montant.toLocaleString("fr-FR") + " FC";
 }
 
 
 // ==========================================
-// RECHERCHE
+// CALCUL DES STATISTIQUES
 // ==========================================
 
-if (recherche) {
+function afficherStatistiques() {
 
-    recherche.addEventListener("input", function() {
+    const clients = getClients();
+    const reparations = getReparations();
 
-        const texte =
-            recherche.value.toLowerCase().trim();
+    // Nombre de clients
+    const nombreClients =
+        document.getElementById("nombreClients");
 
-
-        const resultats =
-            reparations.filter(function(item) {
-
-                return (
-
-                    item.client.toLowerCase().includes(texte) ||
-
-                    item.telephone.toLowerCase().includes(texte) ||
-
-                    item.appareil.toLowerCase().includes(texte) ||
-
-                    item.marque.toLowerCase().includes(texte) ||
-
-                    item.panne.toLowerCase().includes(texte) ||
-
-                    item.statut.toLowerCase().includes(texte)
-
-                );
-
-            });
-
-
-        afficherReparations(resultats);
-
-    });
-
-}
-
-
-// ==========================================
-// AFFICHAGE AU CHARGEMENT
-// ==========================================
-
-afficherReparations();
-const btnModifier =
-    document.getElementById("btnModifier");
-
-if (btnModifier) {
-
-    btnModifier.addEventListener("click", function() {
-
-        const index =
-            window.reparationSelectionnee;
-
-        if (index === undefined) {
-
-            alert(
-                "Sélectionnez d'abord une réparation dans la liste."
-            );
-
-            return;
-        }
-
-        reparations[index].client =
-            document.getElementById("client").value.trim();
-
-        reparations[index].telephone =
-            document.getElementById("telephone").value.trim();
-
-        reparations[index].appareil =
-            document.getElementById("appareil").value;
-
-        reparations[index].marque =
-            document.getElementById("marque").value.trim();
-
-        reparations[index].panne =
-            document.getElementById("panne").value.trim();
-
-        reparations[index].prix =
-            document.getElementById("prix").value;
-
-        reparations[index].statut =
-            document.getElementById("statut").value;
-
-
-        localStorage.setItem(
-            "mesReparations",
-            JSON.stringify(reparations)
-        );
-
-
-        afficherReparations();
-
-
-        document.getElementById(
-            "formulaireReparation"
-        ).reset();
-
-
-        window.reparationSelectionnee = undefined;
-
-
-        alert(
-            "✅ Réparation modifiée avec succès."
-        );
-
-    });
-
-}
-const btnEffacer =
-    document.getElementById("btnEffacer");
-
-if (btnEffacer) {
-
-    btnEffacer.addEventListener("click", function() {
-
-        const index =
-            window.reparationSelectionnee;
-
-
-        // Aucune réparation sélectionnée
-
-        if (index === undefined) {
-
-            alert(
-                "⚠️ Sélectionnez d'abord une réparation."
-            );
-
-            return;
-        }
-
-
-        // Confirmation
-
-        const confirmation = confirm(
-            "Voulez-vous vraiment supprimer cette réparation ?"
-        );
-
-
-        if (!confirmation) {
-            return;
-        }
-
-
-        // Suppression
-
-        reparations.splice(index, 1);
-
-
-        // Renumérotation
-
-        reparations.forEach(function(item, i) {
-
-            item.numero = i + 1;
-
-        });
-
-
-        // Sauvegarde
-
-        localStorage.setItem(
-            "mesReparations",
-            JSON.stringify(reparations)
-        );
-
-
-        // Actualiser la liste
-
-        afficherReparations();
-
-
-        // Vider le formulaire
-
-        document.getElementById(
-            "formulaireReparation"
-        ).reset();
-
-
-        window.reparationSelectionnee =
-            undefined;
-
-
-        // Message
-
-        const message =
-            document.getElementById(
-                "messageReparation"
-            );
-
-        if (message) {
-
-            message.textContent =
-                "🗑️ Réparation supprimée avec succès.";
-
-        }
-
-    });
-
-}
-const champPrix =
-    document.getElementById("prix");
-
-const champAcompte =
-    document.getElementById("acompte");
-
-const champReste =
-    document.getElementById("reste");
-
-
-function calculerReste() {
-
-    const prix =
-        parseFloat(champPrix.value) || 0;
-
-    const acompte =
-        parseFloat(champAcompte.value) || 0;
-
-
-    let reste =
-        prix - acompte;
-
-
-    if (reste < 0) {
-        reste = 0;
+    if (nombreClients) {
+        nombreClients.textContent = clients.length;
     }
 
 
-    champReste.value =
-        reste.toFixed(2);
+    // Nombre de réparations
+    const nombreReparations =
+        document.getElementById("nombreReparations");
+
+    if (nombreReparations) {
+        nombreReparations.textContent =
+            reparations.length;
+    }
+
+
+    // Total payé
+    let montantTotal = 0;
+
+    reparations.forEach(function(reparation) {
+
+        montantTotal +=
+            Number(reparation.paye) || 0;
+
+    });
+
+
+    const totalElement =
+        document.getElementById("montantTotal");
+
+    if (totalElement) {
+        totalElement.textContent =
+            formatMontant(montantTotal);
+    }
+
+
+    // Total restant
+    let montantRestant = 0;
+
+    reparations.forEach(function(reparation) {
+
+        const prix =
+            Number(reparation.prix) || 0;
+
+        const paye =
+            Number(reparation.paye) || 0;
+
+        montantRestant +=
+            Math.max(prix - paye, 0);
+
+    });
+
+
+    const restantElement =
+        document.getElementById("montantRestant");
+
+    if (restantElement) {
+        restantElement.textContent =
+            formatMontant(montantRestant);
+    }
 }
 
 
-if (champPrix && champAcompte) {
+// ==========================================
+// DERNIÈRES RÉPARATIONS
+// ==========================================
 
-    champPrix.addEventListener(
-        "input",
-        calculerReste
+function afficherDernieresReparations() {
+
+    const zone =
+        document.getElementById(
+            "dernieresReparations"
+        );
+
+    if (!zone) {
+        return;
+    }
+
+
+    const reparations = getReparations();
+
+
+    if (reparations.length === 0) {
+
+        zone.innerHTML = `
+            <p class="empty">
+                Aucune réparation enregistrée.
+            </p>
+        `;
+
+        return;
+    }
+
+
+    // Les plus récentes en premier
+    const recentes =
+        reparations.slice(-5).reverse();
+
+
+    zone.innerHTML = "";
+
+
+    recentes.forEach(function(reparation) {
+
+        const prix =
+            Number(reparation.prix) || 0;
+
+        const paye =
+            Number(reparation.paye) || 0;
+
+        const reste =
+            Math.max(prix - paye, 0);
+
+
+        const element =
+            document.createElement("div");
+
+        element.style.padding = "15px";
+        element.style.borderBottom =
+            "1px solid #eee";
+
+
+        element.innerHTML = `
+            <strong>
+                ${reparation.client || "Client inconnu"}
+            </strong>
+
+            <br>
+
+            <span>
+                ${reparation.appareil || "Appareil"}
+            </span>
+
+            <br>
+
+            <small>
+                Prix : ${formatMontant(prix)}
+                |
+                Payé : ${formatMontant(paye)}
+                |
+                Reste : ${formatMontant(reste)}
+            </small>
+        `;
+
+
+        zone.appendChild(element);
+
+    });
+}
+
+// ==========================================
+// CHARGER LES SERVICES DANS REPARATION
+// ==========================================
+
+function chargerServicesReparation() {
+
+    const select =
+        document.getElementById("service");
+
+    if (!select) {
+        return;
+    }
+
+
+    const services =
+        JSON.parse(
+            localStorage.getItem("services")
+        ) || [];
+
+
+    // Garder la première option
+
+    select.innerHTML = `
+        <option value="">
+            Sélectionner un service
+        </option>
+    `;
+
+
+    services.forEach(function(service) {
+
+        const option =
+            document.createElement("option");
+
+
+        option.value =
+            service.id;
+
+
+        option.textContent =
+            service.nom
+            +
+            " — "
+            +
+            Number(service.prix || 0)
+                .toLocaleString("fr-FR")
+            +
+            " FC";
+
+
+        option.dataset.prix =
+            service.prix || 0;
+
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+// ==========================================
+// SELECTIONNER UN SERVICE
+// ==========================================
+
+function selectionnerService() {
+
+    const select =
+        document.getElementById("service");
+
+
+    const prix =
+        document.getElementById("prix");
+
+
+    if (!select || !prix) {
+        return;
+    }
+
+
+    const option =
+        select.options[
+            select.selectedIndex
+        ];
+
+
+    if (!option) {
+        return;
+    }
+
+
+    const montant =
+        Number(
+            option.dataset.prix
+        ) || 0;
+
+
+    if (montant > 0) {
+
+        prix.value =
+            montant;
+
+        // Recalculer le reste
+
+        if (
+            typeof calculerReste ===
+            "function"
+        ) {
+
+            calculerReste();
+
+        }
+
+    }
+
+}
+
+
+
+// ==========================================
+// EVENEMENT SERVICE
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        chargerServicesReparation();
+
+
+        const service =
+            document.getElementById(
+                "service"
+            );
+
+
+        if (service) {
+
+            service.addEventListener(
+                "change",
+                selectionnerService
+            );
+
+        }
+
+    }
+);
+// ==========================================
+// SERVICES : CHOISIR OU ECRIRE
+// ==========================================
+
+function chargerServicesDansReparation() {
+
+    const liste =
+        document.getElementById(
+            "listeServicesReparation"
+        );
+
+    if (!liste) {
+        return;
+    }
+
+
+    const services =
+        JSON.parse(
+            localStorage.getItem("services")
+        ) || [];
+
+
+    liste.innerHTML = "";
+
+
+    services.forEach(function(service) {
+
+        const option =
+            document.createElement("option");
+
+
+        option.value =
+            service.nom;
+
+
+        /*
+         * Le prix est affiché dans la liste
+         * mais le service reste sélectionnable
+         */
+
+        option.label =
+            Number(service.prix || 0)
+                .toLocaleString("fr-FR")
+            + " FC";
+
+
+        liste.appendChild(option);
+
+    });
+
+}
+
+
+// ==========================================
+// REMPLIR AUTOMATIQUEMENT LE PRIX
+// ==========================================
+
+function prixServiceAutomatique() {
+
+    const champService =
+        document.getElementById("service");
+
+
+    const champPrix =
+        document.getElementById("prix");
+
+
+    if (!champService || !champPrix) {
+        return;
+    }
+
+
+    const nomService =
+        champService.value.trim();
+
+
+    const services =
+        JSON.parse(
+            localStorage.getItem("services")
+        ) || [];
+
+
+    const service =
+        services.find(function(item) {
+
+            return item.nom.toLowerCase()
+                === nomService.toLowerCase();
+
+        });
+
+
+    // Si le service existe
+
+    if (service) {
+
+        champPrix.value =
+            Number(service.prix) || 0;
+
+
+        if (
+            typeof calculerReste ===
+            "function"
+        ) {
+
+            calculerReste();
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// INITIALISATION
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        chargerServicesDansReparation();
+
+
+        const service =
+            document.getElementById(
+                "service"
+            );
+
+
+        if (service) {
+
+            service.addEventListener(
+                "change",
+                prixServiceAutomatique
+            );
+
+
+            service.addEventListener(
+                "input",
+                prixServiceAutomatique
+            );
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// DECONNEXION
+// ==========================================
+
+function deconnexion() {
+
+    const confirmation = confirm(
+        "Voulez-vous vraiment vous déconnecter ?"
     );
 
-    champAcompte.addEventListener(
-        "input",
-        calculerReste
+    if (!confirmation) {
+        return;
+    }
+
+    // Supprimer la connexion
+    sessionStorage.removeItem(
+        "monAtelierConnecte"
     );
 
+    // Retour à la connexion
+    window.location.replace(
+        "connexion.html"
+    );
 }
-function dateAujourdHuiFinance() {
 
-    const maintenant = new Date();
+// ==========================================
+// GESTION DES DROITS UTILISATEUR
+// ==========================================
 
-    const jour =
-        String(maintenant.getDate())
-            .padStart(2, "0");
+function appliquerPermissions() {
 
-    const mois =
-        String(maintenant.getMonth() + 1)
-            .padStart(2, "0");
+    const role =
+        sessionStorage.getItem(
+            "monAtelierRole"
+        );
 
-    const annee =
-        maintenant.getFullYear();
 
-    return `${annee}-${mois}-${jour}`;
+    if (!role) {
+        return;
+    }
+
+
+    // ==========================================
+    // ELEMENTS ADMIN UNIQUEMENT
+    // ==========================================
+
+    const elementsAdmin =
+        document.querySelectorAll(
+            ".admin-only"
+        );
+
+
+    elementsAdmin.forEach(function(element) {
+
+        if (role !== "admin") {
+
+            element.style.display = "none";
+
+        }
+
+    });
+
+
+    // ==========================================
+    // ELEMENTS ADMIN + RECEPTION
+    // ==========================================
+
+    const elementsModification =
+        document.querySelectorAll(
+            ".modification-only"
+        );
+
+
+    elementsModification.forEach(function(element) {
+
+        if (
+            role !== "admin" &&
+            role !== "reception"
+        ) {
+
+            element.style.display = "none";
+
+        }
+
+    });
+
+
+    // ==========================================
+    // ELEMENTS CONSULTATION
+    // ==========================================
+
+    const elementsConsultation =
+        document.querySelectorAll(
+            ".consultation-only"
+        );
+
+
+    elementsConsultation.forEach(function(element) {
+
+        if (role !== "consultation") {
+
+            element.style.display = "none";
+
+        }
+
+    });
+
+
+    // ==========================================
+    // AFFICHER LE ROLE
+    // ==========================================
+
+    const roleElements =
+        document.querySelectorAll(
+            ".role-utilisateur"
+        );
+
+
+    roleElements.forEach(function(element) {
+
+        if (role === "admin") {
+
+            element.textContent =
+                "Administrateur";
+
+        } else if (role === "reception") {
+
+            element.textContent =
+                "Réception";
+
+        } else {
+
+            element.textContent =
+                "Consultation";
+
+        }
+
+    });
+
 }
+
+
+// ==========================================
+// INITIALISATION
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        appliquerPermissions();
+
+    }
+);

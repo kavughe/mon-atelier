@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Clients - Mon Atelier</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Protection connexion -->
+    <script src="protection.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     HEADER
+     ========================================== -->
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🔧
+        </div>
+
+        <div>
+            <h1>Mon Atelier</h1>
+
+            <p>
+                Gestion de l'atelier
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <div class="user-role">
+            👤
+            <span class="role-utilisateur">
+                Utilisateur
+            </span>
+        </div>
+
+
+        <button
+            type="button"
+            class="menu-btn"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ==========================================
+     MENU
+     ========================================== -->
+
+<nav id="menu" class="menu">
+
+    <a href="index.html">
+        🏠 Accueil
+    </a>
+
+    <a href="clients.html"
+       class="active">
+
+        👥 Clients
+
+    </a>
+
+    <a href="reparations.html">
+        🔧 Réparations
+    </a>
+
+    <a href="historique.html">
+        📜 Historique
+    </a>
+
+    <a href="services.html">
+        🛠️ Services
+    </a>
+
+    <a href="depenses.html">
+        💸 Dépenses
+    </a>
+
+    <a href="rapports.html">
+        📊 Rapports
+    </a>
+
+    <a href="apropos.html">
+        ℹ️ À propos
+    </a>
+
+    <a href="profil.html">
+        👤 Profil
+    </a>
+
+    <a href="motdepasse.html">
+        🔑 Mot de passe
+    </a>
+
+    <a href="#"
+       onclick="deconnexion(); return false;">
+
+        🚪 Déconnexion
+
+    </a>
+
+</nav>
+
+
+<!-- ==========================================
+     CONTENU PRINCIPAL
+     ========================================== -->
+
+<main class="container">
+
+
+    <!-- ======================================
+         TITRE
+         ====================================== -->
+
+    <section class="page-header">
+
+        <div>
+
+            <span class="page-label">
+                GESTION
+            </span>
+
+            <h2>
+                👥 Clients
+            </h2>
+
+            <p>
+                Gérez les clients de votre atelier.
+            </p>
+
+        </div>
+
+
+        <div class="page-header-badge">
+
+            <span id="nombreClients">
+                0
+            </span>
+
+            <small>
+                Clients
+            </small>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         RECHERCHE
+         ====================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    🔎 Rechercher un client
+                </h2>
+
+                <p>
+                    Recherchez par nom ou téléphone.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="search-box">
+
+            <input
+                type="search"
+                id="rechercheClient"
+                placeholder="Rechercher un nom ou un numéro..."
+                autocomplete="off">
+
+            <button
+                type="button"
+                onclick="rechercherClient()">
+
+                🔎 Rechercher
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         AJOUTER / MODIFIER CLIENT
+         ADMIN + RECEPTION
+         ====================================== -->
+
+    <section
+        class="card modification-only"
+        id="zoneFormulaireClient">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-label">
+                    CLIENT
+                </span>
+
+                <h2 id="titreFormulaireClient">
+                    ➕ Ajouter un client
+                </h2>
+
+                <p>
+                    Enregistrez les informations
+                    du client.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            id="formClient"
+            autocomplete="off">
+
+
+            <input
+                type="hidden"
+                id="clientId">
+
+
+            <!-- NOM -->
+
+            <div class="form-group">
+
+                <label for="nom">
+                    👤 Nom du client
+                </label>
+
+                <input
+                    type="text"
+                    id="nom"
+                    name="nom"
+                    placeholder="Ex : Jean Kasereka"
+                    required>
+
+            </div>
+
+
+            <!-- TELEPHONE -->
+
+            <div class="form-group">
+
+                <label for="telephone">
+                    📞 Téléphone
+                </label>
+
+                <input
+                    type="tel"
+                    id="telephone"
+                    name="telephone"
+                    placeholder="Ex : 099 000 0000"
+                    required>
+
+            </div>
+
+
+            <!-- BOUTONS -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btnEnregistrerClient">
+
+                    💾 Enregistrer le client
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    id="btnAnnulerClient"
+                    onclick="annulerModificationClient()">
+
+                    ✖️ Annuler
+
+                </button>
+
+            </div>
+
+
+            <p
+                id="messageClient"
+                class="form-message">
+            </p>
+
+
+        </form>
+
+    </section>
+
+
+    <!-- ======================================
+         LISTE DES CLIENTS
+         ====================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-label">
+                    LISTE
+                </span>
+
+                <h2>
+                    📋 Clients enregistrés
+                </h2>
+
+                <p>
+                    Retrouvez tous les clients
+                    enregistrés dans Mon Atelier.
+                </p>
+
+            </div>
+
+
+            <div class="list-count">
+
+                <span id="totalClients">
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- LISTE DYNAMIQUE -->
+
+        <div
+            id="listeClients"
+            class="clients-list">
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    👥
+                </div>
+
+                <h3>
+                    Aucun client
+                </h3>
+
+                <p>
+                    Aucun client n'est encore
+                    enregistré.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         INFORMATION CONSULTATION
+         ====================================== -->
+
+    <section
+        class="info-box consultation-only">
+
+        <div class="info-icon">
+            👁️
+        </div>
+
+        <div>
+
+            <strong>
+                Mode consultation
+            </strong>
+
+            <p>
+                Vous pouvez consulter les clients,
+                mais vous ne pouvez pas les modifier
+                ou les supprimer.
+            </p>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+
+<footer>
+
+    <p>
+        © 2026 Mon Atelier — Gestion d'atelier
+    </p>
+
+</footer>
+
+
+<!-- ==========================================
+     JAVASCRIPT
+     ========================================== -->
+
+<script src="script.js"></script>
+
+<script src="clients.js"></script>
+
+
+</body>
+
+</html>
+

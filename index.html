@@ -2,142 +2,447 @@
 <html lang="fr">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Atelier</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Tableau de bord</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
-  <header>
 
-    <h1>MON ATELIER</h1>
-    <button id="modeBouton">🌙 Mode sombre</button>
+    <!-- =====================================
+         EN-TÊTE
+         ===================================== -->
 
-    <button id="menuBouton">☰ Menu</button>
+    <header class="header">
 
-    <nav id="menu">
-        <a href="index.html">Accueil</a>
-        <a href="apropos.html">À propos</a>
-        <a href="services.html">Services</a>
-        <a href="galerie.html">Galerie</a>
-        <a href="contact.html">Contact</a>
-        <a href="reparation.html">Réparation</a>
+        <div class="logo">
+
+            🔧
+
+            <div>
+
+                <h1>Mon Atelier</h1>
+
+                <p>
+                    Gestion de réparations
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menu-btn"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         MENU
+         ===================================== -->
+
+    <nav id="menu" class="menu">
+
+        <a href="index.html">
+            🏠 Tableau de bord
+        </a>
+
+        <a href="clients.html">
+            👥 Clients
+        </a>
+
+        <a href="reparations.html">
+            🔧 Réparations
+        </a>
+
+        <a href="historique.html">
+            📜 Historique
+        </a>
+
+        <a href="rapports.html">
+            📊 Rapports
+        </a>
+
+        <a href="depenses.html">
+            💸 Dépenses
+        </a>
+
+        <a href="services.html">
+            ⚙️ Services
+        </a>
+
+        <a href="apropos.html">
+            ℹ️ À propos
+        </a>
+        
+
+<a href="profil.html">
+    👤 Profil
+</a>
+
+<a href="motdepasse.html">
+    🔑 Mot de passe
+</a>
+
+<a href="#" onclick="deconnexion(); return false;">
+    🚪 Déconnexion
+</a>
+
     </nav>
 
-</header>
+
+
+    <!-- =====================================
+         CONTENU PRINCIPAL
+         ===================================== -->
+
+    <main class="container">
+
+
+        <!-- =====================================
+             BIENVENUE
+             ===================================== -->
+
+        <section class="welcome">
+
+            <h2>
+                👋 Bienvenue dans Mon Atelier
+            </h2>
+
+            <p>
+                Gérez vos clients, réparations,
+                paiements et dépenses facilement.
+            </p>
+
+        </section>
 
 
 
-    <section class="hero">
+        <!-- =====================================
+             STATISTIQUES
+             ===================================== -->
 
-        <h2>Bienvenue dans notre atelier</h2>
+        <section class="stats">
+
+
+            <!-- CLIENTS -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <h3 id="totalClients">
+                        0
+                    </h3>
+
+                    <p>
+                        Clients
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REPARATIONS -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    🔧
+                </div>
+
+                <div>
+
+                    <h3 id="totalReparations">
+                        0
+                    </h3>
+
+                    <p>
+                        Réparations
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ARGENT REÇU -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    💵
+                </div>
+
+                <div>
+
+                    <h3 id="totalPaye">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Argent reçu
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DEPENSES -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    💸
+                </div>
+
+                <div>
+
+                    <h3 id="totalDepenses">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Dépenses
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BENEFICE -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📈
+                </div>
+
+                <div>
+
+                    <h3 id="totalBenefice">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Bénéfice
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REPARATIONS TERMINEES -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    ✅
+                </div>
+
+                <div>
+
+                    <h3 id="reparationsTerminees">
+                        0
+                    </h3>
+
+                    <p>
+                        Réparations terminées
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REPARATIONS EN COURS -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    🔄
+                </div>
+
+                <div>
+
+                    <h3 id="reparationsEnCours">
+                        0
+                    </h3>
+
+                    <p>
+                        Réparations en cours
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REPARATIONS NON PAYEES -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <h3 id="reparationsNonPayees">
+                        0
+                    </h3>
+
+                    <p>
+                        Réparations non payées
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             ACCÈS RAPIDE
+             ===================================== -->
+
+        <section class="recent">
+
+            <h2>
+                ⚡ Accès rapide
+            </h2>
+
+
+            <div class="quick-actions">
+
+
+                <a
+                    href="clients.html"
+                    class="btn-primary">
+
+                    👥 Ajouter un client
+
+                </a>
+
+
+                <a
+                    href="reparations.html"
+                    class="btn-primary">
+
+                    🔧 Nouvelle réparation
+
+                </a>
+
+
+                <a
+                    href="depenses.html"
+                    class="btn-primary">
+
+                    💸 Ajouter une dépense
+
+                </a>
+
+
+                <a
+                    href="rapports.html"
+                    class="btn-primary">
+
+                    📊 Voir les rapports
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================
+             DERNIÈRES RÉPARATIONS
+             ===================================== -->
+
+        <section class="recent">
+
+            <h2>
+                🔧 Dernières réparations
+            </h2>
+
+
+            <div id="dernieresReparations">
+
+                <p class="empty">
+                    Aucune réparation enregistrée.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================
+         PIED DE PAGE
+         ===================================== -->
+
+    <footer>
 
         <p>
-            Électricité - Électronique -
-            Énergie solaire - Vidéosurveillance
+            © 2026 Mon Atelier —
+            Gestion de réparations
         </p>
-        <div id="dateHeure"></div>
 
-    </section>
-    <section class="services">
+    </footer>
 
-    <h2>Nos services</h2>
 
-    <div class="cartes">
 
-        <div class="carte">
-            <div class="icone">⚡</div>
-            <h3>Électricité</h3>
-            <p>
-                Installation, dépannage et maintenance
-                des installations électriques.
-            </p>
-        </div>
+    <!-- =====================================
+         JAVASCRIPT
+         ===================================== -->
 
-        <div class="carte">
-            <div class="icone">🔧</div>
-            <h3>Électronique</h3>
-            <p>
-                Conception, diagnostic et réparation
-                des appareils électroniques.
-            </p>
-        </div>
+    <script src="script.js"></script>
 
-        <div class="carte">
-            <div class="icone">☀️</div>
-            <h3>Énergie solaire</h3>
-            <p>
-                Installation de panneaux solaires,
-                batteries et systèmes photovoltaïques.
-            </p>
-        </div>
+    <script src="index.js"></script>
 
-        <div class="carte">
-            <div class="icone">📹</div>
-            <h3>Vidéosurveillance</h3>
-            <p>
-                Installation et configuration
-                des caméras de surveillance.
-            </p>
-        </div>
 
-    </div>
-
-</section>
-<section class="apropos-accueil">
-
-    <h2>À propos de notre atelier</h2>
-
-    <p>
-        Notre atelier est spécialisé dans
-        l'électricité, l'électronique,
-        l'énergie solaire et la vidéosurveillance.
-    </p>
-
-    <button id="boutonBienvenue">
-        Cliquez ici
-    </button>
-
-    <p id="messageBienvenue"></p>
-
-</section>
- <footer>
-
-    <div class="footer-content">
-
-        <div>
-            <h3>MON ATELIER</h3>
-            <p>
-                Électricité, électronique,
-                énergie solaire et technologie.
-            </p>
-        </div>
-
-        <div>
-            <h3>Navigation</h3>
-            <a href="index.html">Accueil</a>
-            <a href="apropos.html">À propos</a>
-            <a href="service.html">Services</a>
-            <a href="galerie.html">Galerie</a>
-            <a href="contact.html">Contact</a>
-        </div>
-
-        <div>
-            <h3>Contact</h3>
-            <p>📞 +243977133845</p>
-            <p>📧 irkavughemagnifique@email.com</p>
-            <p>📍Butembo/ Bulengera /kamisembonzo/ Mihake luvika </p>
-        </div>
-
-    </div>
-
-    <div class="footer-bottom">
-        <p>&copy; 2026 Mon Atelier - Tous droits réservés</p>
-    </div>
-<script src="script.js"></script>
 </body>
 
 </html>
+

@@ -1,154 +1,491 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>À propos - Mon Atelier</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - À propos</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <!-- EN-TÊTE -->
 
-    <header>
+<!-- ==========================================
+     HEADER
+     ========================================== -->
 
-        <h1>MON ATELIER</h1>
+<header class="header">
 
-        <nav>
-            <a href="index.html">Accueil</a>
-            <a href="apropos.html">À propos</a>
-            <a href="services.html">Services</a>
-            <a href="galerie.html">Galerie</a>
-            <a href="contact.html">Contact</a>
-            <a href="reparation.html">Réparation</a>
-        </nav>
+    <div class="logo">
 
-    </header>
-
-
-    <!-- CONTENU -->
-
-    <main class="page-apropos">
-
-        <h2>À propos de notre atelier</h2>
-
-        <p class="intro">
-            Bienvenue dans notre atelier spécialisé dans
-            les solutions électriques, électroniques
-            et technologiques.
-        </p>
-
-
-        <section class="presentation">
-
-            <div class="texte-apropos">
-
-                <h3>Qui sommes-nous ?</h3>
-
-                <p>
-                    Notre atelier propose des solutions
-                    adaptées aux particuliers, entreprises
-                    et différents projets techniques.
-                </p>
-
-                <p>
-                    Nous travaillons dans plusieurs domaines :
-                    l'électricité, l'électronique,
-                    l'énergie solaire et la vidéosurveillance.
-                </p>
-
-                <p>
-                    Notre objectif est de fournir un travail
-                    sérieux, fiable et adapté aux besoins
-                    de chaque client.
-                </p>
-
-            </div>
-
-
-            <div class="valeurs">
-
-                <h3>Nos valeurs</h3>
-
-                <div>
-                    <strong>✓ Qualité</strong>
-                    <p>
-                        Nous accordons une grande importance
-                        à la qualité de notre travail.
-                    </p>
-                </div>
-
-                <div>
-                    <strong>✓ Fiabilité</strong>
-                    <p>
-                        Nous recherchons des solutions
-                        fiables et durables.
-                    </p>
-                </div>
-
-                <div>
-                    <strong>✓ Innovation</strong>
-                    <p>
-                        Nous utilisons les nouvelles
-                        technologies pour améliorer nos solutions.
-                    </p>
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- PIED DE PAGE -->
-
-    <footer>
-
-        <p>
-            &copy; 2026 Mon Atelier -
-            Tous droits réservés
-        </p>
-
-    </footer>
-     <footer>
-
-    <div class="footer-content">
+        <div class="logo-icon">
+            🔧
+        </div>
 
         <div>
-            <h3>MON ATELIER</h3>
+            <h1>Mon Atelier</h1>
+            <p>Gestion de l'atelier</p>
+        </div>
+        <script src="protection.js"></script>
+
+    </div>
+
+
+    <button
+        class="menu-btn"
+        onclick="ouvrirMenu()">
+
+        ☰
+
+    </button>
+
+</header>
+
+
+<!-- ==========================================
+     MENU
+     ========================================== -->
+
+<nav id="menu" class="menu">
+
+    <a href="index.html">
+        🏠 Accueil
+    </a>
+
+    <a href="clients.html">
+        👥 Clients
+    </a>
+
+    <a href="reparations.html">
+        🔧 Réparations
+    </a>
+
+    <a href="historique.html">
+        📜 Historique
+    </a>
+
+    <a href="services.html">
+        🛠️ Services
+    </a>
+
+    <a href="depenses.html">
+        💸 Dépenses
+    </a>
+
+    <a href="rapports.html">
+        📊 Rapports
+    </a>
+
+    <a href="apropos.html" class="active">
+        ℹ️ À propos
+    </a>
+    <a href="motdepasse.html">
+    🔑 Mot de passe
+</a>
+
+<a href="#" onclick="deconnexion(); return false;">
+    🚪 Déconnexion
+</a>
+
+</nav>
+
+
+<!-- ==========================================
+     CONTENU
+     ========================================== -->
+
+<main class="container">
+
+
+    <!-- ======================================
+         HERO
+         ====================================== -->
+
+    <section class="about-hero">
+
+        <div class="about-logo">
+            🔧
+        </div>
+
+        <div>
+
+            <h2>Mon Atelier</h2>
+
             <p>
-                Électricité, électronique,
-                énergie solaire et technologie.
+                Une solution simple et moderne pour
+                gérer efficacement votre atelier.
             </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         PRESENTATION
+         ====================================== -->
+
+    <section class="about-card">
+
+        <div class="about-card-icon">
+            💡
         </div>
 
         <div>
-            <h3>Navigation</h3>
-            <a href="index.html">Accueil</a>
-            <a href="apropos.html">À propos</a>
-            <a href="service.html">Services</a>
-            <a href="galerie.html">Galerie</a>
-            <a href="contact.html">Contact</a>
+
+            <h2>À propos de Mon Atelier</h2>
+
+            <p>
+                <strong>Mon Atelier</strong> est une
+                application de gestion conçue pour
+                faciliter le suivi quotidien des
+                activités d'un atelier de réparation.
+            </p>
+
+            <p>
+                Elle permet de gérer les clients,
+                enregistrer les réparations, suivre
+                les paiements, consulter l'historique
+                et analyser les résultats de l'atelier.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         FONCTIONNALITES
+         ====================================== -->
+
+    <section class="about-section">
+
+        <div class="about-section-title">
+
+            <h2>⚙️ Fonctionnalités</h2>
+
+            <p>
+                Tout ce dont vous avez besoin pour
+                organiser votre atelier.
+            </p>
+
+        </div>
+
+
+        <div class="about-features">
+
+
+            <div class="about-feature">
+
+                <span>👥</span>
+
+                <div>
+
+                    <h3>Gestion des clients</h3>
+
+                    <p>
+                        Enregistrez et retrouvez
+                        facilement vos clients.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-feature">
+
+                <span>🔧</span>
+
+                <div>
+
+                    <h3>Gestion des réparations</h3>
+
+                    <p>
+                        Suivez chaque réparation,
+                        son service, son prix et son statut.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-feature">
+
+                <span>💵</span>
+
+                <div>
+
+                    <h3>Suivi des paiements</h3>
+
+                    <p>
+                        Enregistrez les paiements
+                        complets ou par tranches.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-feature">
+
+                <span>📜</span>
+
+                <div>
+
+                    <h3>Historique</h3>
+
+                    <p>
+                        Consultez facilement les
+                        anciennes réparations.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-feature">
+
+                <span>🛠️</span>
+
+                <div>
+
+                    <h3>Services</h3>
+
+                    <p>
+                        Créez et gérez les services
+                        proposés par votre atelier.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-feature">
+
+                <span>📊</span>
+
+                <div>
+
+                    <h3>Rapports</h3>
+
+                    <p>
+                        Analysez les recettes,
+                        dépenses et résultats.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         OBJECTIF
+         ====================================== -->
+
+    <section class="about-card about-objective">
+
+        <div class="about-card-icon">
+            🎯
         </div>
 
         <div>
-            <h3>Contact</h3>
-            <p>📞 +243977133845</p>
-            <p>📧 irkavughemagnifique@email.com</p>
-            <p>📍Butembo/ Bulengera /kamisembonzo/ Mihake luvika </p>
+
+            <h2>Notre objectif</h2>
+
+            <p>
+                Simplifier la gestion de l'atelier
+                afin de vous permettre de vous
+                concentrer sur votre travail et
+                vos clients.
+            </p>
+
         </div>
 
-    </div>
+    </section>
 
-    <div class="footer-bottom">
-        <p>&copy; 2026 Mon Atelier - Tous droits réservés</p>
-    </div>
 
+    <!-- ======================================
+         DEVELOPPEUR
+         ====================================== -->
+
+    <section class="developer-card">
+
+        <div class="developer-photo">
+            👨‍💻
+        </div>
+
+
+        <div class="developer-content">
+
+            <span class="developer-label">
+                DÉVELOPPÉ PAR
+            </span>
+
+
+            <h2>
+                Kavughe
+            </h2>
+
+
+            <h3>
+                Développeur & Ingénieur électrotechnicien
+            </h3>
+
+
+            <p>
+                Passionné par la programmation,
+                l'électronique et les nouvelles
+                technologies, je développe des
+                solutions numériques simples,
+                pratiques et adaptées aux besoins
+                réels.
+            </p>
+
+
+            <!-- COMPETENCES -->
+
+            <div class="developer-skills">
+
+                <span>HTML</span>
+
+                <span>CSS</span>
+
+                <span>JavaScript</span>
+
+                <span>Python</span>
+
+                <span>Flask</span>
+
+                <span>Arduino</span>
+
+            </div>
+
+
+            <!-- PROJET -->
+
+            <div class="developer-project">
+
+                <strong>
+                    🚀 Projet actuel
+                </strong>
+
+                <p>
+                    <b>Mon Atelier</b> — application
+                    de gestion destinée aux ateliers
+                    de réparation.
+                </p>
+
+            </div>
+
+
+            <!-- CONTACT -->
+
+            <div class="developer-contact">
+
+                <a
+                    href="https://wa.me/243977133845"
+                    target="_blank"
+                    class="whatsapp-btn">
+
+                    📱 WhatsApp
+
+                </a>
+
+
+                <a
+                    href="#"
+                    onclick="return false;">
+
+                    📧 Email
+
+                </a>
+
+
+                <a
+                    href="#"
+                    onclick="return false;">
+
+                    💻 GitHub
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         VERSION
+         ====================================== -->
+
+    <section class="about-version">
+
+        <div>
+
+            <span>Version</span>
+
+            <strong>1.0</strong>
+
+        </div>
+
+
+        <div>
+
+            <span>Application</span>
+
+            <strong>Mon Atelier</strong>
+
+        </div>
+
+
+        <div>
+
+            <span>Année</span>
+
+            <strong>2026</strong>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+
+<footer>
+
+    <p>
+        © 2026 Mon Atelier — Gestion d'atelier
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 
