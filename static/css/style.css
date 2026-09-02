@@ -1,0 +1,1315 @@
+
+/* =========================================================
+   MON ATELIER - STYLE GENERAL
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =========================================================
+   PAGE DE CONNEXION
+========================================================= */
+
+.login-page {
+    min-height: 100vh;
+    background: #f4f6f9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 1000px;
+    min-height: 600px;
+
+    display: flex;
+
+    background: white;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   PARTIE GAUCHE CONNEXION
+========================================================= */
+
+.login-brand {
+    width: 45%;
+
+    background: #1f2937;
+
+    color: white;
+
+    padding: 60px 45px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-brand h1 {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+.brand-description {
+    font-size: 17px;
+    color: #d1d5db;
+
+    margin-bottom: 45px;
+}
+
+.brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.feature span {
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    background: #16a34a;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+}
+
+.feature p {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   PARTIE DROITE CONNEXION
+========================================================= */
+
+.login-form-container {
+    width: 55%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 50px;
+}
+
+.login-form-box {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-form-box h2 {
+    font-size: 32px;
+
+    color: #111827;
+
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    color: #6b7280;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================================================
+   FORMULAIRE
+========================================================= */
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #374151;
+
+    font-weight: 600;
+}
+
+.input-box {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+
+    left: 14px;
+
+    font-size: 18px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 52px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    padding: 0 45px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+.input-box input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.show-password {
+    position: absolute;
+
+    right: 12px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   BOUTON CONNEXION
+========================================================= */
+
+.login-button {
+    width: 100%;
+    height: 52px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.login-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   ERREUR CONNEXION
+========================================================= */
+
+.login-error {
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+    border: 1px solid #fecaca;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CONNEXION SECURISEE
+========================================================= */
+
+.secure-login {
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PIED DE PAGE CONNEXION
+========================================================= */
+
+.login-footer {
+    text-align: center;
+
+    margin-top: 30px;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+}
+
+
+/* ANCIENS LOGOS */
+
+.brand-logo,
+.mobile-logo {
+    display: none !important;
+}
+
+
+/* =========================================================
+   APPLICATION MON ATELIER
+========================================================= */
+
+.app {
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   MENU LATERAL VERTICAL
+========================================================= */
+
+.sidebar {
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    background: #111827;
+
+    color: white;
+
+    padding: 25px 15px;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+    text-align: center;
+
+    margin-bottom: 35px;
+}
+
+.logo-icon {
+    font-size: 42px;
+}
+
+.logo h2 {
+    margin-top: 8px;
+
+    font-size: 21px;
+}
+
+.logo p {
+    font-size: 12px;
+
+    color: #9ca3af;
+
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   MENU VERTICAL
+========================================================= */
+
+.menu {
+    display: flex;
+
+    flex-direction: column;
+
+    width: 100%;
+}
+
+
+/* TITRES */
+
+.menu-title {
+    font-size: 11px;
+
+    color: #6b7280;
+
+    text-transform: uppercase;
+
+    margin: 20px 10px 8px;
+
+    font-weight: bold;
+}
+
+
+/* LIENS */
+
+.menu a {
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: 100%;
+
+    padding: 12px 14px;
+
+    margin-bottom: 5px;
+
+    border-radius: 8px;
+
+    color: #d1d5db;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+.menu a:hover {
+    background: #1f2937;
+
+    color: white;
+}
+
+.menu a.active {
+    background: #2563eb;
+
+    color: white;
+}
+
+
+/* =========================================================
+   DECONNEXION
+========================================================= */
+
+.logout {
+    margin-top: 30px;
+
+    border-top: 1px solid #374151;
+
+    padding-top: 20px;
+}
+
+.logout a {
+    color: #fca5a5;
+}
+
+.logout a:hover {
+    background: #7f1d1d;
+
+    color: white;
+}
+
+
+/* =========================================================
+   CONTENU PRINCIPAL
+========================================================= */
+
+.main {
+    margin-left: 250px;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   BARRE SUPERIEURE
+========================================================= */
+
+.topbar {
+    height: 75px;
+
+    background: white;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 30px;
+}
+
+.topbar h1 {
+    font-size: 22px;
+
+    color: #111827;
+}
+
+
+/* =========================================================
+   UTILISATEUR
+========================================================= */
+
+.user-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+}
+
+.user-text {
+    text-align: right;
+}
+
+.user-name {
+    font-weight: bold;
+
+    font-size: 14px;
+}
+
+.user-role {
+    font-size: 12px;
+
+    color: #6b7280;
+
+    text-transform: capitalize;
+}
+
+
+/* =========================================================
+   CONTENU DES PAGES
+========================================================= */
+
+.content {
+    padding: 30px;
+}
+
+
+/* =========================================================
+   BOUTONS
+========================================================= */
+
+.btn-add {
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    font-weight: bold;
+
+    display: inline-block;
+
+    transition: 0.2s;
+}
+
+.btn-add:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   RECHERCHE
+========================================================= */
+
+.search-box {
+    background: white;
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.search-box input {
+    width: 100%;
+
+    padding: 11px 14px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: #2563eb;
+}
+
+
+/* =========================================================
+   TABLEAUX
+========================================================= */
+
+.table-container {
+    width: 100%;
+
+    overflow-x: auto;
+
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+table {
+    width: 100%;
+
+    min-width: 950px;
+
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 14px 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+table th {
+    background: #f9fafb;
+
+    color: #374151;
+
+    font-size: 13px;
+}
+
+table td {
+    font-size: 13px;
+}
+
+table tr:hover {
+    background: #f9fafb;
+}
+
+
+/* =========================================================
+   STATUTS
+========================================================= */
+
+.status {
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+.status-success {
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+.status-warning {
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+.status-pending {
+    background: #e5e7eb;
+
+    color: #374151;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.action-edit,
+.action-delete {
+    display: inline-block;
+
+    text-decoration: none;
+
+    padding: 7px 10px;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.action-edit {
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+.action-edit:hover {
+    background: #dbeafe;
+}
+
+.action-delete {
+    background: #fef2f2;
+
+    color: #dc2626;
+
+    margin-left: 5px;
+}
+
+.action-delete:hover {
+    background: #fee2e2;
+}
+
+.btn-delete {
+    background: #dc2626;
+
+    color: white;
+
+    padding: 8px 12px;
+
+    border-radius: 7px;
+
+    border: none;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    margin-left: 5px;
+}
+
+.btn-delete:hover {
+    background: #b91c1c;
+}
+
+
+/* =========================================================
+   BOUTONS PDF / PARTAGE
+========================================================= */
+
+.btn-pdf {
+    background: #dc2626;
+
+    color: white;
+
+    margin-right: 8px;
+}
+
+.btn-share {
+    background: #16a34a;
+
+    color: white;
+
+    margin-right: 8px;
+}
+
+
+/* =========================================================
+   BOUTONS EN-TETE
+========================================================= */
+
+.header-buttons {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.btn-history {
+    background: #6b7280;
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    font-weight: bold;
+
+    display: inline-block;
+}
+
+.btn-history:hover {
+    background: #4b5563;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.flash {
+    padding: 12px 15px;
+
+    margin-bottom: 20px;
+
+    border-radius: 7px;
+
+    background: #dcfce7;
+
+    color: #166534;
+
+    font-weight: 600;
+}
+
+.empty-message {
+    text-align: center !important;
+
+    padding: 40px !important;
+
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   TABLEAU DE BORD
+========================================================= */
+
+.dashboard-stats {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+
+    padding: 22px;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    box-shadow:
+        0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+
+    background: #eff6ff;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 23px;
+
+    flex-shrink: 0;
+}
+
+.stat-card span {
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+.stat-card strong {
+    display: block;
+
+    font-size: 23px;
+
+    color: #111827;
+
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   SECTIONS TABLEAU DE BORD
+========================================================= */
+
+.dashboard-section {
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.section-header h2 {
+    font-size: 20px;
+
+    margin-bottom: 5px;
+}
+
+.section-header p {
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+.view-all {
+    color: #2563eb;
+
+    font-size: 14px;
+
+    font-weight: bold;
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   ACTIONS RAPIDES
+========================================================= */
+
+.quick-actions {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.quick-card {
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    transition: 0.2s;
+}
+
+.quick-card:hover {
+    border-color: #2563eb;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px rgba(37, 99, 235, 0.1);
+}
+
+.quick-icon {
+    width: 45px;
+    height: 45px;
+
+    background: #f3f4f6;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+
+    flex-shrink: 0;
+}
+
+.quick-card h3 {
+    font-size: 14px;
+
+    margin-bottom: 5px;
+}
+
+.quick-card p {
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   ACTIVITE VIDE
+========================================================= */
+
+.empty-dashboard {
+    text-align: center;
+
+    padding: 45px 20px;
+
+    border: 1px dashed #d1d5db;
+
+    border-radius: 12px;
+}
+
+.empty-icon {
+    font-size: 40px;
+
+    margin-bottom: 12px;
+}
+
+.empty-dashboard h3 {
+    font-size: 17px;
+
+    margin-bottom: 7px;
+}
+
+.empty-dashboard p {
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   PIED DE PAGE TABLEAU DE BORD
+========================================================= */
+
+.dashboard-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 20px 5px;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE TABLETTE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* =========================================================
+   TELEPHONE
+   IMPORTANT : LE MENU RESTE VERTICAL
+========================================================= */
+
+@media (max-width: 750px) {
+
+    /* Connexion */
+
+    .login-container {
+        min-height: auto;
+
+        flex-direction: column;
+    }
+
+    .login-brand {
+        width: 100%;
+
+        padding: 35px 25px;
+    }
+
+    .login-brand h1 {
+        font-size: 30px;
+    }
+
+    .brand-description {
+        margin-bottom: 25px;
+    }
+
+    .login-form-container {
+        width: 100%;
+
+        padding: 35px 25px;
+    }
+
+    .login-form-box h2 {
+        font-size: 28px;
+    }
+
+
+    /* MENU */
+
+    .sidebar {
+        width: 250px;
+
+        position: fixed;
+
+        height: 100vh;
+
+        overflow-y: auto;
+    }
+
+    .logo {
+        display: block;
+    }
+
+    .logo h2 {
+        font-size: 21px;
+    }
+
+    .logo p {
+        display: block;
+    }
+
+    .menu {
+        display: flex;
+
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .menu a {
+        display: flex;
+
+        flex-direction: row;
+
+        justify-content: flex-start;
+
+        width: 100%;
+    }
+
+    .menu a span {
+        display: inline;
+    }
+
+    .main {
+        margin-left: 250px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+
+    /* TOPBAR */
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .user-text {
+        display: none;
+    }
+
+
+    /* DASHBOARD */
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-section {
+        padding: 18px;
+    }
+
+    .dashboard-footer {
+        flex-direction: column;
+
+        gap: 7px;
+
+        text-align: center;
+    }
+
+
+    /* BOUTONS */
+
+    .header-buttons {
+        width: 100%;
+
+        flex-direction: column;
+    }
+
+    .header-buttons a {
+        width: 100%;
+
+        text-align: center;
+
+        box-sizing: border-box;
+    }
+}
+
+
+/* =========================================================
+   PETIT TELEPHONE
+   MENU TOUJOURS VERTICAL
+========================================================= */
+
+@media (max-width: 450px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .logo-icon {
+        font-size: 35px;
+    }
+
+    .logo h2 {
+        font-size: 19px;
+    }
+
+    .menu a {
+        font-size: 13px;
+
+        padding: 11px 12px;
+    }
+
+    .main {
+        margin-left: 220px;
+    }
+
+    .content {
+        padding: 12px;
+    }
+
+    .topbar {
+        height: auto;
+
+        min-height: 70px;
+
+        padding: 15px;
+    }
+
+    .topbar h1 {
+        font-size: 19px;
+    }
+
+    .stat-card {
+        padding: 17px;
+    }
+
+    .dashboard-section {
+        padding: 15px;
+    }
+
+    table {
+        min-width: 900px;
+    }
+}

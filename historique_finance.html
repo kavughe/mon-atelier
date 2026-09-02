@@ -1,0 +1,662 @@
+
+{% extends "base.html" %}
+
+{% block title %}Historique financier - Mon Atelier{% endblock %}
+
+{% block content %}
+
+<style>
+    .history-page {
+        padding: 25px;
+    }
+
+    .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .history-title h1 {
+        margin: 0;
+        color: #1f2937;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .history-title p {
+        margin: 6px 0 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 16px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-back {
+        background: #374151;
+        color: white;
+    }
+
+    .btn-back:hover {
+        background: #1f2937;
+        color: white;
+    }
+
+    .btn-entry {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-entry:hover {
+        background: #15803d;
+        color: white;
+    }
+
+    .btn-exit {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-exit:hover {
+        background: #b91c1c;
+        color: white;
+    }
+
+    /* STATISTIQUES */
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #eef0f3;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.06);
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .stat-value {
+        margin-top: 10px;
+        font-size: 23px;
+        font-weight: 750;
+        color: #111827;
+    }
+
+    .green {
+        color: #15803d !important;
+    }
+
+    .red {
+        color: #dc2626 !important;
+    }
+
+    .blue {
+        color: #2563eb !important;
+    }
+
+    /* PANEL */
+
+    .history-panel {
+        background: white;
+        border: 1px solid #eef0f3;
+        border-radius: 14px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.06);
+        overflow: hidden;
+    }
+
+    .panel-top {
+        padding: 18px 20px;
+        border-bottom: 1px solid #edf0f2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .panel-top h2 {
+        margin: 0;
+        color: #1f2937;
+        font-size: 18px;
+    }
+
+    /* FILTRES */
+
+    .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 9px 11px;
+        background: white;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .filter:focus {
+        border-color: #2563eb;
+    }
+
+    /* TABLE */
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .history-table {
+        width: 100%;
+        min-width: 950px;
+        border-collapse: collapse;
+    }
+
+    .history-table th {
+        padding: 14px 16px;
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .history-table td {
+        padding: 14px 16px;
+        color: #374151;
+        font-size: 13px;
+        border-bottom: 1px solid #f0f2f4;
+    }
+
+    .history-table tbody tr:hover {
+        background: #fafafa;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-entry {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-exit {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .amount-entry {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .amount-exit {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .currency {
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 6px;
+        padding: 4px 7px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .category {
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .description {
+        color: #64748b;
+        max-width: 250px;
+    }
+
+    /* VIDE */
+
+    .empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6b7280;
+    }
+
+    .empty-icon {
+        font-size: 45px;
+        margin-bottom: 10px;
+    }
+
+    .empty h3 {
+        margin: 0 0 5px;
+        color: #374151;
+    }
+
+    .empty p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1100px) {
+        .stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+        .history-page {
+            padding: 15px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .filters {
+            width: 100%;
+        }
+
+        .filter {
+            flex: 1;
+        }
+    }
+</style>
+
+
+<div class="history-page">
+
+    <!-- EN-TÊTE -->
+
+    <div class="history-header">
+
+        <div class="history-title">
+            <h1>Historique financier</h1>
+            <p>
+                Consultez et contrôlez toutes les opérations financières de l'atelier.
+            </p>
+        </div>
+
+        <div class="header-actions">
+
+            <a href="{{ url_for('finances') }}"
+   class="btn btn-back">
+    ← Gestion financière
+</a>
+
+            <a href="{{ url_for('ajouter_entree') }}"
+               class="btn btn-entry">
+                ＋ Entrée
+            </a>
+
+            <a href="{{ url_for('ajouter_sortie') }}"
+               class="btn btn-exit">
+                − Sortie
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATISTIQUES -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Nombre d'opérations
+            </div>
+
+            <div class="stat-value">
+                {{ operations|default([])|length }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Total entrées
+            </div>
+
+            <div class="stat-value green">
+                {{ "{:,.2f}".format(total_entrees_fc|default(0)) }} FC
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Total sorties
+            </div>
+
+            <div class="stat-value red">
+                {{ "{:,.2f}".format(total_sorties_fc|default(0)) }} FC
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Solde
+            </div>
+
+            <div class="stat-value blue">
+                {{ "{:,.2f}".format(solde_fc|default(0)) }} FC
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- HISTORIQUE -->
+
+    <div class="history-panel">
+
+        <div class="panel-top">
+
+            <h2>Liste des opérations</h2>
+
+            <div class="filters">
+
+                <input
+                    type="text"
+                    id="search"
+                    class="filter"
+                    placeholder="🔎 Rechercher..."
+                    onkeyup="filterOperations()"
+                >
+
+                <select
+                    id="type"
+                    class="filter"
+                    onchange="filterOperations()"
+                >
+                    <option value="">Tous les types</option>
+                    <option value="entrée">Entrées</option>
+                    <option value="entree">Entrées</option>
+                    <option value="sortie">Sorties</option>
+                </select>
+
+                <select
+                    id="currency"
+                    class="filter"
+                    onchange="filterOperations()"
+                >
+                    <option value="">Toutes les devises</option>
+                    <option value="FC">FC</option>
+                    <option value="USD">USD</option>
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table class="history-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Catégorie</th>
+                        <th>Description</th>
+                        <th>Montant</th>
+                        <th>Devise</th>
+                        <th>Utilisateur</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="operationsTable">
+
+                {% for operation in operations|default([]) %}
+
+                    {% set type_operation =
+                        operation.type|default(
+                            operation.type_operation|default('')
+                        )
+                    %}
+
+                    <tr
+                        data-type="{{ type_operation|lower }}"
+                        data-currency="{{ operation.devise|default('FC') }}"
+                    >
+
+                        <td>
+                            {{ operation.date|default(
+                                operation.created_at|default('-')
+                            ) }}
+                        </td>
+
+
+                        <td>
+
+                            {% if type_operation|lower in ['entrée', 'entree'] %}
+
+                                <span class="badge badge-entry">
+                                    ↗ Entrée
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-exit">
+                                    ↘ Sortie
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            <span class="category">
+                                {{ operation.categorie|default('-') }}
+                            </span>
+                        </td>
+
+
+                        <td>
+                            <span class="description">
+                                {{ operation.description|default('-') }}
+                            </span>
+                        </td>
+
+
+                        <td>
+
+                            {% if type_operation|lower in ['entrée', 'entree'] %}
+
+                                <span class="amount-entry">
+                                    + {{ "{:,.2f}".format(
+                                        operation.montant|default(0)|float
+                                    ) }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="amount-exit">
+                                    − {{ "{:,.2f}".format(
+                                        operation.montant|default(0)|float
+                                    ) }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            <span class="currency">
+                                {{ operation.devise|default('FC') }}
+                            </span>
+                        </td>
+
+
+                        <td>
+                            {{ operation.utilisateur|default(
+                                operation.username|default('-')
+                            ) }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="7">
+
+                            <div class="empty">
+
+                                <div class="empty-icon">
+                                    📊
+                                </div>
+
+                                <h3>Aucune opération trouvée</h3>
+
+                                <p>
+                                    Les opérations financières enregistrées
+                                    apparaîtront ici.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function filterOperations() {
+
+    const search =
+        document.getElementById("search")
+            .value
+            .toLowerCase();
+
+    const type =
+        document.getElementById("type")
+            .value
+            .toLowerCase();
+
+    const currency =
+        document.getElementById("currency")
+            .value
+            .toLowerCase();
+
+    const rows =
+        document.querySelectorAll("#operationsTable tr");
+
+    rows.forEach(row => {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        const rowType =
+            row.dataset.type || "";
+
+        const rowCurrency =
+            (row.dataset.currency || "").toLowerCase();
+
+        const matchesSearch =
+            text.includes(search);
+
+        const matchesType =
+            !type || rowType.includes(type);
+
+        const matchesCurrency =
+            !currency || rowCurrency === currency;
+
+        if (
+            matchesSearch &&
+            matchesType &&
+            matchesCurrency
+        ) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

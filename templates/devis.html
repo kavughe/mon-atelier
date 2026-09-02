@@ -1,0 +1,597 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Devis</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+        /* EN-TÊTE */
+
+        .header {
+            background: white;
+            padding: 22px 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 25px;
+            color: #111827;
+        }
+
+        .header p {
+            margin-top: 5px;
+            color: #6b7280;
+        }
+
+        /* BOUTONS */
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+        }
+
+        .btn-new {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-new:hover {
+            background: #15803d;
+        }
+
+        .btn-view {
+            background: #2563eb;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 7px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+        }
+
+        .btn-view:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 7px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+            margin-left: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #d97706;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 5px;
+        }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+        }
+
+        /* CARTE */
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        /* TABLEAU */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #111827;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .numero {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .client {
+            font-weight: bold;
+        }
+
+        .telephone {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        /* STATUT */
+
+        .statut {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .statut-brouillon {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .statut-accepte {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .statut-refuse {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            white-space: nowrap;
+        }
+
+        .actions form {
+            display: inline;
+        }
+
+        /* AUCUN DEVIS */
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 768px) {
+
+            .container {
+                width: 97%;
+                margin: 15px auto;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header h1 {
+                font-size: 21px;
+            }
+
+            .buttons {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            th,
+            td {
+                padding: 11px;
+            }
+
+            .actions {
+                min-width: 270px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =========================
+         EN-TÊTE
+    ========================= -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                📄 Gestion des devis
+            </h1>
+
+            <p>
+                Consultez et gérez les devis de votre atelier.
+            </p>
+
+        </div>
+
+
+        <div class="buttons">
+
+            <a
+                href="{{ url_for('index') }}"
+                class="btn btn-back"
+            >
+                ← Tableau de bord
+            </a>
+
+
+            {% if current_user.role == 'admin' or current_user.role == 'reception' %}
+
+            <a
+                href="{{ url_for('ajouter_devis') }}"
+                class="btn btn-new"
+            >
+                ➕ Nouveau devis
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         LISTE DES DEVIS
+    ========================= -->
+
+    <div class="card">
+
+        <div class="table-container">
+
+            {% if devis %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            N° Devis
+                        </th>
+
+                        <th>
+                            Client
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Total
+                        </th>
+
+                        <th>
+                            Statut
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for d in devis %}
+
+                    <tr>
+
+                        <!-- NUMÉRO -->
+
+                        <td>
+
+                            <span class="numero">
+                                {{ d.numero }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- CLIENT -->
+
+                        <td>
+
+                            <div class="client">
+                                {{ d.client_nom }}
+                            </div>
+
+                            {% if d.client_telephone %}
+
+                            <div class="telephone">
+                                📞 {{ d.client_telephone }}
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {% if d.date_creation %}
+
+                            {{ d.date_creation.strftime('%d/%m/%Y') }}
+
+                            <br>
+
+                            <small style="color:#6b7280;">
+                                {{ d.date_creation.strftime('%H:%M') }}
+                            </small>
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- TOTAL -->
+
+                        <td>
+
+                            <span class="total">
+
+                                {% if d.devise == 'USD' %}
+
+                                $ {{ "{:,.2f}".format(d.total or 0) }}
+
+                                {% else %}
+
+                                {{ "{:,.2f}".format(d.total or 0) }} FC
+
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- STATUT -->
+
+                        <td>
+
+                            {% if d.statut == 'Accepté' %}
+
+                            <span class="statut statut-accepte">
+                                ✓ Accepté
+                            </span>
+
+                            {% elif d.statut == 'Refusé' %}
+
+                            <span class="statut statut-refuse">
+                                ✕ Refusé
+                            </span>
+
+                            {% else %}
+
+                            <span class="statut statut-brouillon">
+                                📝 Brouillon
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td class="actions">
+
+                            <!-- VOIR -->
+
+                            <a
+                                href="{{ url_for('voir_devis', id=d.id) }}"
+                                class="btn-view"
+                                title="Voir le devis"
+                            >
+                                👁️ Voir
+                            </a>
+
+
+                            {% if current_user.role == 'admin' or current_user.role == 'reception' %}
+
+                            <!-- MODIFIER -->
+
+                            <a
+                                href="{{ url_for('modifier_devis', id=d.id) }}"
+                                class="btn-edit"
+                                title="Modifier le devis"
+                            >
+                                ✏️ Modifier
+                            </a>
+
+
+                            <!-- SUPPRIMER -->
+
+                            <form
+                                action="{{ url_for('supprimer_devis', id=d.id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Voulez-vous vraiment supprimer le devis {{ d.numero }} ?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn-delete"
+                                    title="Supprimer le devis"
+                                >
+                                    🗑️ Supprimer
+                                </button>
+
+                            </form>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+            {% else %}
+
+            <!-- =========================
+                 AUCUN DEVIS
+            ========================= -->
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    📄
+                </div>
+
+                <h2>
+                    Aucun devis
+                </h2>
+
+                <p style="margin-top:8px;">
+                    Aucun devis n'a encore été créé.
+                </p>
+
+
+                {% if current_user.role == 'admin' or current_user.role == 'reception' %}
+
+                <div style="margin-top:20px;">
+
+                    <a
+                        href="{{ url_for('ajouter_devis') }}"
+                        class="btn btn-new"
+                    >
+                        ➕ Créer le premier devis
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

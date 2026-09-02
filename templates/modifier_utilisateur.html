@@ -1,0 +1,328 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Modifier utilisateur - Mon Atelier
+{% endblock %}
+
+{% block page_title %}
+Modifier utilisateur
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .form-page {
+        padding: 25px;
+    }
+
+    .form-card {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+    }
+
+    .form-header {
+        padding: 22px 25px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .form-header p {
+        margin: 6px 0 0;
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    .form-body {
+        padding: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #374151;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        background: white;
+        color: #111827;
+        transition: 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    .help-text {
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .user-info-box {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 15px;
+        margin-bottom: 25px;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        border-radius: 10px;
+    }
+
+    .user-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #2563eb;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        font-weight: bold;
+    }
+
+    .user-details strong {
+        display: block;
+        color: #111827;
+        font-size: 14px;
+    }
+
+    .user-details span {
+        display: block;
+        margin-top: 3px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 25px;
+    }
+
+    .btn-form {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 18px;
+        border-radius: 8px;
+        border: none;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-cancel {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .btn-cancel:hover {
+        background: #e5e7eb;
+    }
+
+    .btn-save {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #1d4ed8;
+    }
+
+    @media (max-width: 700px) {
+        .form-page {
+            padding: 15px;
+        }
+
+        .form-body {
+            padding: 18px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-form {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="form-page">
+
+    <div class="form-card">
+
+        <div class="form-header">
+            <h2>Modifier le compte utilisateur</h2>
+            <p>
+                Modifiez les informations et les droits d'accès de cet utilisateur.
+            </p>
+        </div>
+
+        <div class="form-body">
+
+            <div class="user-info-box">
+
+                <div class="user-icon">
+                    {{ utilisateur.username[0]|upper }}
+                </div>
+
+                <div class="user-details">
+                    <strong>
+                        {{ utilisateur.username }}
+                    </strong>
+
+                    <span>
+                        ID utilisateur : {{ utilisateur.id }}
+                    </span>
+                </div>
+
+            </div>
+
+            <form method="POST"
+                  action="{{ url_for('modifier_utilisateur', id=utilisateur.id) }}">
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Nom d'utilisateur
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control"
+                        value="{{ utilisateur.username }}"
+                        required
+                        autocomplete="username"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Nouveau mot de passe
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Laisser vide pour conserver l'ancien"
+                        autocomplete="new-password"
+                    >
+
+                    <div class="help-text">
+                        Laissez ce champ vide si vous ne souhaitez pas changer le mot de passe.
+                        Minimum 6 caractères si vous le modifiez.
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="role">
+                        Rôle utilisateur
+                    </label>
+
+                    <select
+                        id="role"
+                        name="role"
+                        class="form-control"
+                        required
+                    >
+
+                        <option
+                            value="admin"
+                            {% if utilisateur.role == 'admin' %}selected{% endif %}
+                        >
+                            Administrateur
+                        </option>
+
+                        <option
+                            value="reception"
+                            {% if utilisateur.role == 'reception' %}selected{% endif %}
+                        >
+                            Réception
+                        </option>
+
+                        <option
+                            value="consultation"
+                            {% if utilisateur.role == 'consultation' %}selected{% endif %}
+                        >
+                            Consultation
+                        </option>
+
+                    </select>
+
+                    <div class="help-text">
+                        Le rôle détermine les fonctionnalités accessibles à l'utilisateur.
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <a
+                        href="{{ url_for('utilisateurs') }}"
+                        class="btn-form btn-cancel"
+                    >
+                        Annuler
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn-form btn-save"
+                    >
+                        Enregistrer les modifications
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

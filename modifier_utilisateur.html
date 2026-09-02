@@ -1,0 +1,71 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier utilisateur</title>
+</head>
+
+<body>
+
+<h1>MODIFICATION UTILISATEUR</h1>
+
+<p>La page Flask fonctionne.</p>
+
+<p>
+Nom :
+{{ utilisateur.username }}
+</p>
+
+<p>
+Rôle :
+{{ utilisateur.role }}
+</p>
+
+<form method="POST">
+
+    <input
+        type="text"
+        name="username"
+        value="{{ utilisateur.username }}"
+    >
+
+    <br><br>
+
+    <input
+        type="password"
+        name="password"
+        placeholder="Nouveau mot de passe"
+    >
+
+    <br><br>
+
+    <select name="role">
+
+        <option value="admin"
+        {% if utilisateur.role == "admin" %}selected{% endif %}>
+            Administrateur
+        </option>
+
+        <option value="reception"
+        {% if utilisateur.role == "reception" %}selected{% endif %}>
+            Réception
+        </option>
+
+        <option value="consultation"
+        {% if utilisateur.role == "consultation" %}selected{% endif %}>
+            Consultation
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        ENREGISTRER
+    </button>
+
+</form>
+
+</body>
+</html>

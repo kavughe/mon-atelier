@@ -1,0 +1,1303 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des matériels{% endblock %}
+
+{% block page_title %}Gestion des matériels{% endblock %}
+
+{% block content %}
+
+<div class="materials-page">
+
+```
+<!-- =========================
+     EN-TÊTE
+========================== -->
+
+<div class="materials-header">
+
+    <div>
+
+        <div class="breadcrumb">
+            Gestion
+            <span>›</span>
+            Matériels
+        </div>
+
+        <h1>
+            Gestion des matériels
+        </h1>
+
+        <p>
+            Gérez les matériels électriques utilisés
+            pour vos installations et vos devis.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('ajouter_materiel') }}"
+        class="btn-primary"
+    >
+        <span>＋</span>
+        Nouveau matériel
+    </a>
+
+</div>
+
+
+<!-- =========================
+     STATISTIQUES
+========================== -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📦
+        </div>
+
+        <div>
+            <span>Total matériels</span>
+
+            <strong>
+                {{ materiels|length }}
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon category-icon">
+            🏷️
+        </div>
+
+        <div>
+            <span>Catégories</span>
+
+            <strong id="categoryCount">
+                0
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon price-icon">
+            💰
+        </div>
+
+        <div>
+            <span>Prix moyen</span>
+
+            <strong id="averagePrice">
+                0.00
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon list-icon">
+            📋
+        </div>
+
+        <div>
+            <span>Résultats affichés</span>
+
+            <strong id="visibleCount">
+                {{ materiels|length }}
+            </strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     RECHERCHE / FILTRES
+========================== -->
+
+<div class="filter-card">
+
+    <div class="filter-label">
+        🔎 Rechercher un matériel
+    </div>
+
+
+    <div class="filters">
+
+        <div class="search-box">
+
+            <span>
+                🔍
+            </span>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Désignation, catégorie, unité..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <select id="categoryFilter">
+
+            <option value="">
+                Toutes les catégories
+            </option>
+
+            {% set categories = [] %}
+
+            {% for materiel in materiels %}
+
+                {% if materiel.categorie
+                      and materiel.categorie not in categories %}
+
+                    {% set _ = categories.append(materiel.categorie) %}
+
+                {% endif %}
+
+            {% endfor %}
+
+            {% for categorie in categories|sort %}
+
+                <option value="{{ categorie }}">
+                    {{ categorie }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button
+            type="button"
+            class="btn-reset"
+            onclick="resetFilters()"
+        >
+            ↻ Réinitialiser
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     LISTE DES MATÉRIELS
+========================== -->
+
+<div class="materials-card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Liste des matériels
+            </h2>
+
+            <p>
+                <span id="resultCount">
+                    {{ materiels|length }}
+                </span>
+                matériel(s) disponible(s)
+            </p>
+
+        </div>
+
+
+        <div class="card-badge">
+            📦 Catalogue
+        </div>
+
+    </div>
+
+
+    {% if materiels %}
+
+    <div class="table-container">
+
+        <table id="materialsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Matériel</th>
+
+                    <th>Catégorie</th>
+
+                    <th>Unité</th>
+
+                    <th>Prix</th>
+
+                    <th>Devise</th>
+
+                    <th>Description</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for materiel in materiels %}
+
+                <tr
+                    data-category="{{ materiel.categorie or '' }}"
+                >
+
+                    <!-- ID -->
+
+                    <td>
+
+                        <span class="material-id">
+                            #{{ materiel.id }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- DESIGNATION -->
+
+                    <td>
+
+                        <div class="material-info">
+
+                            <div class="material-icon">
+                                🔌
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ materiel.designation }}
+                                </strong>
+
+                                <small>
+                                    Matériel électrique
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- CATEGORIE -->
+
+                    <td>
+
+                        {% if materiel.categorie %}
+
+                            <span class="category-badge">
+                                {{ materiel.categorie }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="empty-value">
+                                Non définie
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- UNITE -->
+
+                    <td>
+
+                        <span class="unit-badge">
+                            {{ materiel.unite or "Pièce" }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- PRIX -->
+
+                    <td>
+
+                        <strong class="price">
+
+                            {{ "%.2f"|format(materiel.prix or 0) }}
+
+                        </strong>
+
+                    </td>
+
+
+                    <!-- DEVISE -->
+
+                    <td>
+
+                        <span class="currency">
+                            {{ materiel.devise or "USD" }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <td>
+
+                        {% if materiel.description %}
+
+                            <div
+                                class="description"
+                                title="{{ materiel.description }}"
+                            >
+                                {{ materiel.description }}
+                            </div>
+
+                        {% else %}
+
+                            <span class="empty-value">
+                                Aucune description
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTIONS -->
+
+                    <td>
+
+                        <div class="actions">
+
+                            <a
+                                href="{{ url_for(
+                                    'modifier_materiel',
+                                    id=materiel.id
+                                ) }}"
+                                class="action-btn edit"
+                                title="Modifier"
+                            >
+                                ✏️
+                            </a>
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'supprimer_materiel',
+                                    id=materiel.id
+                                ) }}"
+                                onsubmit="return confirmDelete(
+                                    '{{ materiel.designation|replace("'", "\\'") }}'
+                                );"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="action-btn delete"
+                                    title="Supprimer"
+                                >
+                                    🗑️
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- AUCUN RESULTAT -->
+
+    <div
+        id="noResults"
+        class="no-results"
+        style="display:none;"
+    >
+
+        <div class="no-results-icon">
+            🔎
+        </div>
+
+        <h3>
+            Aucun matériel trouvé
+        </h3>
+
+        <p>
+            Aucun matériel ne correspond à votre recherche.
+        </p>
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="resetFilters()"
+        >
+            Réinitialiser
+        </button>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- LISTE VIDE -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            📦
+        </div>
+
+        <h3>
+            Aucun matériel enregistré
+        </h3>
+
+        <p>
+            Commencez par ajouter votre premier matériel
+            électrique au catalogue.
+        </p>
+
+        <a
+            href="{{ url_for('ajouter_materiel') }}"
+            class="btn-primary"
+        >
+            ＋ Ajouter un matériel
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+```
+
+</div>
+
+<style>
+
+/* =========================
+   PAGE
+========================== */
+
+.materials-page {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   HEADER
+========================== */
+
+.materials-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.breadcrumb {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.breadcrumb span {
+    margin: 0 5px;
+    color: #94a3b8;
+}
+
+.materials-header h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.materials-header p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================
+   BUTTON
+========================== */
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    padding: 11px 17px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================
+   STATISTIQUES
+========================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stat-icon {
+    width: 47px;
+    height: 47px;
+    border-radius: 11px;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+}
+
+.category-icon {
+    background: #f5f3ff;
+}
+
+.price-icon {
+    background: #ecfdf5;
+}
+
+.list-icon {
+    background: #fff7ed;
+}
+
+.stat-card span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.stat-card strong {
+    color: #0f172a;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+
+/* =========================
+   FILTRES
+========================== */
+
+.filter-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    padding: 17px;
+    margin-bottom: 20px;
+}
+
+.filter-label {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 280px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+}
+
+.search-box:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+}
+
+.search-box input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    color: #334155;
+    font-size: 13px;
+}
+
+.filters select {
+    height: 42px;
+    min-width: 190px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: white;
+    color: #334155;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn-reset {
+    height: 42px;
+    padding: 0 15px;
+    border: none;
+    border-radius: 9px;
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-reset:hover {
+    background: #e2e8f0;
+}
+
+
+/* =========================
+   CARTE
+========================== */
+
+.materials-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 17px;
+}
+
+.card-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.card-badge {
+    padding: 7px 10px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   TABLE
+========================== */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 1150px;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f8fafc;
+}
+
+th {
+    padding: 12px 14px;
+    text-align: left;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+
+td {
+    padding: 14px;
+    border-top: 1px solid #f1f5f9;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 12px;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================
+   ID
+========================== */
+
+.material-id {
+    display: inline-block;
+    padding: 5px 7px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================
+   MATERIAL
+========================== */
+
+.material-info {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 190px;
+}
+
+.material-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border-radius: 9px;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.material-info strong {
+    display: block;
+    color: #0f172a;
+    font-size: 13px;
+}
+
+.material-info small {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+
+/* =========================
+   CATEGORIE
+========================== */
+
+.category-badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 7px;
+    background: #f5f3ff;
+    color: #6d28d9;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================
+   UNITE
+========================== */
+
+.unit-badge {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   PRIX
+========================== */
+
+.price {
+    color: #0f172a;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.currency {
+    color: #059669;
+    font-weight: 800;
+    font-size: 11px;
+}
+
+
+/* =========================
+   DESCRIPTION
+========================== */
+
+.description {
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #64748b;
+}
+
+
+/* =========================
+   ACTIONS
+========================== */
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.actions form {
+    margin: 0;
+}
+
+.action-btn {
+    width: 33px;
+    height: 33px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.action-btn.edit:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.action-btn.delete:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+
+/* =========================
+   VIDE
+========================== */
+
+.empty-state,
+.no-results {
+    text-align: center;
+    padding: 65px 20px;
+}
+
+.empty-icon,
+.no-results-icon {
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+.empty-state h3,
+.no-results h3 {
+    margin: 0 0 8px;
+    color: #0f172a;
+}
+
+.empty-state p,
+.no-results p {
+    margin: 0 0 20px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.empty-state .btn-primary,
+.no-results .btn-primary {
+    margin-top: 3px;
+}
+
+.empty-value {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 1100px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filters {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex-basis: 100%;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .materials-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .materials-header h1 {
+        font-size: 23px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filters select,
+    .btn-reset {
+        flex: 1;
+    }
+
+    .card-header {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+<script>
+
+/* =========================
+   ELEMENTS
+========================== */
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const categoryFilter =
+    document.getElementById("categoryFilter");
+
+const resultCount =
+    document.getElementById("resultCount");
+
+const visibleCount =
+    document.getElementById("visibleCount");
+
+const noResults =
+    document.getElementById("noResults");
+
+
+/* =========================
+   FILTRAGE
+========================== */
+
+function filterMaterials() {
+
+    const search =
+        (searchInput?.value || "")
+        .toLowerCase()
+        .trim();
+
+    const category =
+        categoryFilter?.value || "";
+
+    const rows =
+        document.querySelectorAll(
+            "#materialsTable tbody tr"
+        );
+
+    let visible = 0;
+
+
+    rows.forEach(row => {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        const rowCategory =
+            row.dataset.category || "";
+
+
+        const searchMatch =
+            !search ||
+            text.includes(search);
+
+        const categoryMatch =
+            !category ||
+            rowCategory === category;
+
+
+        if (
+            searchMatch &&
+            categoryMatch
+        ) {
+
+            row.style.display = "";
+            visible++;
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+
+    if (resultCount) {
+        resultCount.textContent = visible;
+    }
+
+    if (visibleCount) {
+        visibleCount.textContent = visible;
+    }
+
+
+    if (noResults) {
+
+        noResults.style.display =
+            visible === 0
+            ? "block"
+            : "none";
+
+    }
+
+}
+
+
+/* =========================
+   RESET
+========================== */
+
+function resetFilters() {
+
+    if (searchInput) {
+        searchInput.value = "";
+    }
+
+    if (categoryFilter) {
+        categoryFilter.value = "";
+    }
+
+    filterMaterials();
+
+}
+
+
+/* =========================
+   CONFIRMATION SUPPRESSION
+========================== */
+
+function confirmDelete(name) {
+
+    return confirm(
+        "Voulez-vous vraiment supprimer le matériel :\n\n"
+        + name
+        + "\n\nCette action est irréversible."
+    );
+
+}
+
+
+/* =========================
+   EVENEMENTS
+========================== */
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "input",
+        filterMaterials
+    );
+
+}
+
+if (categoryFilter) {
+
+    categoryFilter.addEventListener(
+        "change",
+        filterMaterials
+    );
+
+}
+
+
+/* =========================
+   STATISTIQUES
+========================== */
+
+function calculateStats() {
+
+    const rows =
+        document.querySelectorAll(
+            "#materialsTable tbody tr"
+        );
+
+    const categories =
+        new Set();
+
+    let totalPrice = 0;
+    let count = 0;
+
+
+    rows.forEach(row => {
+
+        const category =
+            row.dataset.category;
+
+        if (category) {
+            categories.add(category);
+        }
+
+
+        const priceElement =
+            row.querySelector(".price");
+
+        if (priceElement) {
+
+            const price =
+                parseFloat(
+                    priceElement.textContent
+                    .replace(",", ".")
+                    .replace(/[^\d.-]/g, "")
+                );
+
+            if (!isNaN(price)) {
+
+                totalPrice += price;
+                count++;
+
+            }
+
+        }
+
+    });
+
+
+    const categoryCount =
+        document.getElementById(
+            "categoryCount"
+        );
+
+    const averagePrice =
+        document.getElementById(
+            "averagePrice"
+        );
+
+
+    if (categoryCount) {
+
+        categoryCount.textContent =
+            categories.size;
+
+    }
+
+
+    if (averagePrice) {
+
+        const average =
+            count > 0
+            ? totalPrice / count
+            : 0;
+
+        averagePrice.textContent =
+            average.toFixed(2);
+
+    }
+
+}
+
+
+/* =========================
+   INITIALISATION
+========================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        calculateStats();
+
+        filterMaterials();
+
+    }
+);
+
+</script>
+
+{% endblock %}

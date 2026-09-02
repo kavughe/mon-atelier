@@ -1,0 +1,591 @@
+
+{% extends "base.html" %}
+
+{% block title %}Nouvelle sortie - Mon Atelier{% endblock %}
+
+{% block content %}
+
+<style>
+    .expense-page {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .expense-header {
+        margin-bottom: 25px;
+    }
+
+    .expense-header h1 {
+        margin: 0;
+        color: #1f2937;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .expense-header p {
+        margin: 7px 0 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .expense-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0,0,0,.07);
+        overflow: hidden;
+    }
+
+    .expense-banner {
+        background: #fef2f2;
+        border-bottom: 1px solid #fee2e2;
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .expense-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: #dc2626;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        font-weight: bold;
+    }
+
+    .expense-banner h2 {
+        margin: 0;
+        color: #991b1b;
+        font-size: 17px;
+    }
+
+    .expense-banner p {
+        margin: 3px 0 0;
+        color: #7f3b3b;
+        font-size: 12px;
+    }
+
+    .expense-form {
+        padding: 28px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        margin-bottom: 8px;
+        color: #374151;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .required {
+        color: #dc2626;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 13px;
+        border: 1px solid #d1d5db;
+        border-radius: 9px;
+        background: #fff;
+        color: #1f2937;
+        font-size: 14px;
+        outline: none;
+        transition: .2s;
+    }
+
+    .form-control:focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220,38,38,.10);
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .amount-wrapper {
+        position: relative;
+    }
+
+    .amount-wrapper .form-control {
+        padding-right: 70px;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .amount-label {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 700;
+        pointer-events: none;
+    }
+
+    .currency-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .currency-option {
+        position: relative;
+    }
+
+    .currency-option input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .currency-option label {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        border-radius: 9px;
+        cursor: pointer;
+        color: #4b5563;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .currency-option input:checked + label {
+        background: #fef2f2;
+        border-color: #dc2626;
+        color: #b91c1c;
+    }
+
+    .help-text {
+        margin-top: 6px;
+        color: #9ca3af;
+        font-size: 11px;
+    }
+
+    .warning-box {
+        margin-top: 20px;
+        padding: 14px 16px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+        color: #9a3412;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .warning-box strong {
+        color: #7c2d12;
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid #eef0f2;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 12px 20px;
+        border-radius: 9px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: .2s;
+    }
+
+    .btn-cancel {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .btn-cancel:hover {
+        background: #e5e7eb;
+    }
+
+    .btn-save {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #b91c1c;
+    }
+
+    @media (max-width: 700px) {
+        .expense-page {
+            margin: 15px auto;
+            padding: 0 12px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .expense-form {
+            padding: 20px;
+        }
+
+        .form-footer {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="expense-page">
+
+    <!-- EN-TÊTE -->
+
+    <div class="expense-header">
+        <h1>Nouvelle sortie</h1>
+        <p>
+            Enregistrez une dépense effectuée par l'atelier.
+        </p>
+    </div>
+
+
+    <div class="expense-card">
+
+        <!-- BANDEAU -->
+
+        <div class="expense-banner">
+
+            <div class="expense-icon">
+                ↘
+            </div>
+
+            <div>
+                <h2>Enregistrement d'une sortie</h2>
+                <p>
+                    Cette opération sera déduite du solde financier.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FORMULAIRE -->
+
+        <form method="POST"
+              action="{{ url_for('ajouter_sortie') }}"
+              class="expense-form">
+
+            <div class="form-grid">
+
+                <!-- CATÉGORIE -->
+
+                <div class="form-group">
+
+                    <label class="form-label" for="categorie">
+                        Catégorie <span class="required">*</span>
+                    </label>
+
+                    <select
+                        id="categorie"
+                        name="categorie"
+                        class="form-control"
+                        required
+                    >
+                        <option value="">Sélectionner une catégorie</option>
+
+                        <option value="Achat matériel">
+                            Achat matériel
+                        </option>
+
+                        <option value="Transport">
+                            Transport
+                        </option>
+
+                        <option value="Électricité">
+                            Électricité
+                        </option>
+
+                        <option value="Loyer">
+                            Loyer
+                        </option>
+
+                        <option value="Salaire">
+                            Salaire
+                        </option>
+
+                        <option value="Maintenance">
+                            Maintenance
+                        </option>
+
+                        <option value="Fournitures">
+                            Fournitures
+                        </option>
+
+                        <option value="Autre dépense">
+                            Autre dépense
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label class="form-label" for="date">
+                        Date <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        class="form-control"
+                        value="{{ request.form.get('date', '') }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- MONTANT -->
+
+                <div class="form-group">
+
+                    <label class="form-label" for="montant">
+                        Montant <span class="required">*</span>
+                    </label>
+
+                    <div class="amount-wrapper">
+
+                        <input
+                            type="number"
+                            id="montant"
+                            name="montant"
+                            class="form-control"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            value="{{ request.form.get('montant', '') }}"
+                            required
+                        >
+
+                        <span
+                            class="amount-label"
+                            id="amountCurrency"
+                        >
+                            FC
+                        </span>
+
+                    </div>
+
+                    <span class="help-text">
+                        Entrez uniquement un montant positif.
+                    </span>
+
+                </div>
+
+
+                <!-- DEVISE -->
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Devise <span class="required">*</span>
+                    </label>
+
+                    <div class="currency-box">
+
+                        <div class="currency-option">
+
+                            <input
+                                type="radio"
+                                id="fc"
+                                name="devise"
+                                value="FC"
+                                checked
+                                onchange="updateCurrency()"
+                            >
+
+                            <label for="fc">
+                                FC
+                            </label>
+
+                        </div>
+
+
+                        <div class="currency-option">
+
+                            <input
+                                type="radio"
+                                id="usd"
+                                name="devise"
+                                value="USD"
+                                onchange="updateCurrency()"
+                            >
+
+                            <label for="usd">
+                                USD
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group full">
+
+                    <label
+                        class="form-label"
+                        for="description"
+                    >
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        class="form-control"
+                        placeholder="Exemple : Achat de pièces détachées pour réparation..."
+                    >{{ request.form.get('description', '') }}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- AVERTISSEMENT -->
+
+            <div class="warning-box">
+
+                <strong>Attention :</strong>
+                vérifiez le montant, la catégorie et la devise avant
+                d'enregistrer la dépense. Une sortie enregistrée sera
+                prise en compte dans le calcul du solde financier.
+
+            </div>
+
+
+            <!-- BOUTONS -->
+
+            <div class="form-footer">
+
+                <a
+                    href="{{ url_for('finances') }}"
+                    class="btn btn-cancel"
+                >
+                    Annuler
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-save"
+                >
+                    ✓ Enregistrer la sortie
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function updateCurrency() {
+
+    const selected =
+        document.querySelector(
+            'input[name="devise"]:checked'
+        );
+
+    if (selected) {
+
+        document.getElementById(
+            "amountCurrency"
+        ).textContent = selected.value;
+
+    }
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const dateInput =
+            document.getElementById("date");
+
+        if (!dateInput.value) {
+
+            const today =
+                new Date();
+
+            const year =
+                today.getFullYear();
+
+            const month =
+                String(today.getMonth() + 1)
+                    .padStart(2, "0");
+
+            const day =
+                String(today.getDate())
+                    .padStart(2, "0");
+
+            dateInput.value =
+                `${year}-${month}-${day}`;
+
+        }
+
+        updateCurrency();
+
+    }
+);
+
+</script>
+
+{% endblock %}

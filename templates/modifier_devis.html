@@ -1,0 +1,1202 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Modifier le devis</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 25px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+            margin-bottom: 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-save {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-add {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-remove {
+            background: #dc2626;
+            color: white;
+            padding: 7px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .add-line {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 11px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .line-total {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .summary {
+            max-width: 450px;
+            margin-left: auto;
+            margin-top: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-row.total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #111827;
+            border-bottom: none;
+            margin-top: 8px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+
+            .container {
+                width: 97%;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .add-line {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- =========================
+         EN-TÊTE
+    ========================= -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                ✏️ Modifier le devis
+            </h1>
+
+            <p class="subtitle">
+                {{ devis.numero }}
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('devis') }}"
+            class="btn btn-back"
+        >
+            ← Retour aux devis
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         FORMULAIRE
+    ========================= -->
+
+    <form
+        method="POST"
+        id="devisForm"
+    >
+
+        <!-- =========================
+             INFORMATIONS
+        ========================= -->
+
+        <div class="card">
+
+            <h2>
+                👤 Informations du devis
+            </h2>
+
+            <div class="grid">
+
+                <!-- CLIENT -->
+
+                <div class="form-group">
+
+                    <label for="client_id">
+                        Client
+                    </label>
+
+                    <select
+                        name="client_id"
+                        id="client_id"
+                        required
+                    >
+
+                        <option value="">
+                            -- Sélectionner un client --
+                        </option>
+
+                        {% for client in clients %}
+
+                        <option
+                            value="{{ client.id }}"
+                            {% if client.id == devis.client_id %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ client.nom }}
+                            {% if client.telephone %}
+                                - {{ client.telephone }}
+                            {% endif %}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- DEVISE -->
+
+                <div class="form-group">
+
+                    <label for="devise">
+                        Devise
+                    </label>
+
+                    <select
+                        name="devise"
+                        id="devise"
+                        required
+                    >
+
+                        <option
+                            value="FC"
+                            {% if devis.devise == 'FC' %}
+                                selected
+                            {% endif %}
+                        >
+                            FC
+                        </option>
+
+                        <option
+                            value="USD"
+                            {% if devis.devise == 'USD' %}
+                                selected
+                            {% endif %}
+                        >
+                            USD
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- STATUT -->
+
+                <div class="form-group">
+
+                    <label for="statut">
+                        Statut
+                    </label>
+
+                    <select
+                        name="statut"
+                        id="statut"
+                    >
+
+                        <option
+                            value="Brouillon"
+                            {% if devis.statut == 'Brouillon' %}
+                                selected
+                            {% endif %}
+                        >
+                            📝 Brouillon
+                        </option>
+
+                        <option
+                            value="Accepté"
+                            {% if devis.statut == 'Accepté' %}
+                                selected
+                            {% endif %}
+                        >
+                            ✓ Accepté
+                        </option>
+
+                        <option
+                            value="Refusé"
+                            {% if devis.statut == 'Refusé' %}
+                                selected
+                            {% endif %}
+                        >
+                            ✕ Refusé
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             AJOUTER UN MATÉRIEL
+        ========================= -->
+
+        <div class="card">
+
+            <h2>
+                📦 Matériels
+            </h2>
+
+            <div class="add-line">
+
+                <div class="form-group">
+
+                    <label for="materiel">
+                        Matériel
+                    </label>
+
+                    <select id="materiel">
+
+                        <option value="">
+                            -- Sélectionner un matériel --
+                        </option>
+
+                        {% for materiel in materiels %}
+
+                        <option
+                            value="{{ materiel.id }}"
+                            data-prix="{{ materiel.prix }}"
+                            data-devise="{{ materiel.devise }}"
+                            data-designation="{{ materiel.designation }}"
+                            data-unite="{{ materiel.unite or '' }}"
+                        >
+                            {{ materiel.designation }}
+                            -
+                            {{ "{:,.2f}".format(materiel.prix or 0) }}
+                            {{ materiel.devise }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="quantite">
+                        Quantité
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantite"
+                        min="0.01"
+                        step="0.01"
+                        value="1"
+                    >
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn btn-add"
+                    onclick="ajouterLigne()"
+                >
+                    ➕ Ajouter
+                </button>
+
+            </div>
+
+
+            <!-- TABLEAU -->
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Désignation
+                            </th>
+
+                            <th>
+                                Unité
+                            </th>
+
+                            <th>
+                                Quantité
+                            </th>
+
+                            <th>
+                                Prix unitaire
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="lignesBody">
+
+                    {% if lignes %}
+
+                        {% for ligne in lignes %}
+
+                        <tr
+                            data-id="{{ ligne.materiel_id }}"
+                        >
+
+                            <td>
+                                {{ ligne.designation }}
+                            </td>
+
+                            <td>
+                                {{ ligne.unite or '' }}
+                            </td>
+
+                            <td>
+                                {{ ligne.quantite }}
+                            </td>
+
+                            <td>
+                                {{ "{:,.2f}".format(ligne.prix_unitaire or 0) }}
+                            </td>
+
+                            <td class="line-total">
+
+                                {{ "{:,.2f}".format(ligne.total or 0) }}
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="btn-remove"
+                                    onclick="supprimerLigne(this)"
+                                >
+                                    🗑️
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    </tbody>
+
+                </table>
+
+                <div
+                    id="messageVide"
+                    class="empty"
+                    {% if lignes %}
+                        style="display:none;"
+                    {% endif %}
+                >
+                    Aucun matériel ajouté.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FRAIS
+        ========================= -->
+
+        <div class="card">
+
+            <h2>
+                💰 Frais et total
+            </h2>
+
+            <div class="grid">
+
+                <div class="form-group">
+
+                    <label for="transport">
+                        Transport
+                    </label>
+
+                    <input
+                        type="number"
+                        name="transport"
+                        id="transport"
+                        min="0"
+                        step="0.01"
+                        value="{{ devis.transport or 0 }}"
+                        oninput="calculerTotal()"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="remise">
+                        Remise
+                    </label>
+
+                    <input
+                        type="number"
+                        name="remise"
+                        id="remise"
+                        min="0"
+                        step="0.01"
+                        value="{{ devis.remise or 0 }}"
+                        oninput="calculerTotal()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- RÉSUMÉ -->
+
+            <div class="summary">
+
+                <div class="summary-row">
+
+                    <span>
+                        Sous-total matériel
+                    </span>
+
+                    <strong id="sousTotal">
+                        0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Main-d'œuvre (25%)
+                    </span>
+
+                    <strong id="mainOeuvre">
+                        0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Transport
+                    </span>
+
+                    <strong id="transportAffichage">
+                        0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Remise
+                    </span>
+
+                    <strong id="remiseAffichage">
+                        0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row total">
+
+                    <span>
+                        TOTAL
+                    </span>
+
+                    <strong id="totalAffichage">
+                        0.00
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             DONNÉES ENVOYÉES
+        ========================= -->
+
+        <input
+            type="hidden"
+            name="lignes"
+            id="lignes"
+        >
+
+
+        <!-- =========================
+             BOUTONS
+        ========================= -->
+
+        <div class="actions">
+
+            <a
+                href="{{ url_for('devis') }}"
+                class="btn btn-back"
+            >
+                Annuler
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-save"
+            >
+                💾 Enregistrer les modifications
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    /* =========================================
+       TABLEAU DES LIGNES
+    ========================================= */
+
+    let lignes = [];
+
+
+    /* =========================================
+       RÉCUPÉRER LES LIGNES EXISTANTES
+    ========================================= */
+
+    {% for ligne in lignes %}
+
+    lignes.push({
+        materiel_id: {{ ligne.materiel_id }},
+        designation: {{ ligne.designation|tojson }},
+        unite: {{ (ligne.unite or '')|tojson }},
+        quantite: {{ ligne.quantite }},
+        prix_unitaire: {{ ligne.prix_unitaire }},
+        devise: "{{ devis.devise }}"
+    });
+
+    {% endfor %}
+
+
+    /* =========================================
+       FORMAT PRIX
+    ========================================= */
+
+    function formatPrix(nombre) {
+
+        return Number(nombre || 0).toLocaleString(
+            "fr-FR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       AFFICHER LES LIGNES
+    ========================================= */
+
+    function afficherLignes() {
+
+        const body =
+            document.getElementById("lignesBody");
+
+        const message =
+            document.getElementById("messageVide");
+
+        body.innerHTML = "";
+
+
+        if (lignes.length === 0) {
+
+            message.style.display = "block";
+
+            calculerTotal();
+
+            return;
+
+        }
+
+
+        message.style.display = "none";
+
+
+        lignes.forEach(function(ligne, index) {
+
+            const tr =
+                document.createElement("tr");
+
+            const totalLigne =
+                Number(ligne.quantite) *
+                Number(ligne.prix_unitaire);
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${ligne.designation}
+                </td>
+
+                <td>
+                    ${ligne.unite || ""}
+                </td>
+
+                <td>
+                    ${ligne.quantite}
+                </td>
+
+                <td>
+                    ${formatPrix(ligne.prix_unitaire)}
+                </td>
+
+                <td class="line-total">
+                    ${formatPrix(totalLigne)}
+                </td>
+
+                <td>
+
+                    <button
+                        type="button"
+                        class="btn-remove"
+                        onclick="supprimerLigne(${index})"
+                    >
+                        🗑️
+                    </button>
+
+                </td>
+
+            `;
+
+            body.appendChild(tr);
+
+        });
+
+
+        calculerTotal();
+
+    }
+
+
+    /* =========================================
+       AJOUTER UNE LIGNE
+    ========================================= */
+
+    function ajouterLigne() {
+
+        const select =
+            document.getElementById("materiel");
+
+        const quantiteInput =
+            document.getElementById("quantite");
+
+        if (!select.value) {
+
+            alert(
+                "Veuillez sélectionner un matériel."
+            );
+
+            return;
+
+        }
+
+
+        const option =
+            select.options[select.selectedIndex];
+
+
+        const devise =
+            document.getElementById("devise").value;
+
+        const deviseMateriel =
+            option.dataset.devise;
+
+
+        if (deviseMateriel !== devise) {
+
+            alert(
+                "Ce matériel est en " +
+                deviseMateriel +
+                ". Le devis est en " +
+                devise +
+                "."
+            );
+
+            return;
+
+        }
+
+
+        const quantite =
+            Number(quantiteInput.value);
+
+
+        if (quantite <= 0) {
+
+            alert(
+                "La quantité doit être supérieure à 0."
+            );
+
+            return;
+
+        }
+
+
+        const materielId =
+            Number(select.value);
+
+
+        const prix =
+            Number(option.dataset.prix || 0);
+
+
+        /* Éviter les doublons */
+
+        const existante =
+            lignes.find(
+                ligne =>
+                    Number(ligne.materiel_id) ===
+                    materielId
+            );
+
+
+        if (existante) {
+
+            existante.quantite =
+                Number(existante.quantite) +
+                quantite;
+
+        } else {
+
+            lignes.push({
+
+                materiel_id: materielId,
+
+                designation:
+                    option.dataset.designation,
+
+                unite:
+                    option.dataset.unite || "",
+
+                quantite:
+                    quantite,
+
+                prix_unitaire:
+                    prix,
+
+                devise:
+                    devise
+
+            });
+
+        }
+
+
+        afficherLignes();
+
+
+        select.value = "";
+
+        quantiteInput.value = 1;
+
+    }
+
+
+    /* =========================================
+       SUPPRIMER UNE LIGNE
+    ========================================= */
+
+    function supprimerLigne(index) {
+
+        lignes.splice(index, 1);
+
+        afficherLignes();
+
+    }
+
+
+    /* =========================================
+       CALCUL DU TOTAL
+    ========================================= */
+
+    function calculerTotal() {
+
+        let sousTotal = 0;
+
+
+        lignes.forEach(function(ligne) {
+
+            sousTotal +=
+                Number(ligne.quantite) *
+                Number(ligne.prix_unitaire);
+
+        });
+
+
+        /* Main-d'œuvre = 25% */
+
+        const mainOeuvre =
+            sousTotal * 0.25;
+
+
+        const transport =
+            Number(
+                document.getElementById("transport").value
+            ) || 0;
+
+
+        const remise =
+            Number(
+                document.getElementById("remise").value
+            ) || 0;
+
+
+        let total =
+            sousTotal +
+            mainOeuvre +
+            transport -
+            remise;
+
+
+        if (total < 0) {
+            total = 0;
+        }
+
+
+        const devise =
+            document.getElementById("devise").value;
+
+
+        const suffixe =
+            devise === "USD"
+                ? " USD"
+                : " FC";
+
+
+        document.getElementById("sousTotal")
+            .textContent =
+            formatPrix(sousTotal) + suffixe;
+
+
+        document.getElementById("mainOeuvre")
+            .textContent =
+            formatPrix(mainOeuvre) + suffixe;
+
+
+        document.getElementById("transportAffichage")
+            .textContent =
+            formatPrix(transport) + suffixe;
+
+
+        document.getElementById("remiseAffichage")
+            .textContent =
+            formatPrix(remise) + suffixe;
+
+
+        document.getElementById("totalAffichage")
+            .textContent =
+            formatPrix(total) + suffixe;
+
+    }
+
+
+    /* =========================================
+       CHANGEMENT DE DEVISE
+    ========================================= */
+
+    document
+        .getElementById("devise")
+        .addEventListener(
+            "change",
+            function() {
+
+                const nouvelleDevise =
+                    this.value;
+
+
+                if (lignes.length > 0) {
+
+                    const confirmation =
+                        confirm(
+                            "Changer la devise peut rendre les lignes actuelles incompatibles. Voulez-vous continuer ?"
+                        );
+
+
+                    if (!confirmation) {
+
+                        this.value =
+                            lignes[0].devise;
+
+                        return;
+
+                    }
+
+
+                    lignes = [];
+
+                    afficherLignes();
+
+                }
+
+
+                calculerTotal();
+
+            }
+        );
+
+
+    /* =========================================
+       AVANT ENVOI
+    ========================================= */
+
+    document
+        .getElementById("devisForm")
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                if (lignes.length === 0) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Veuillez ajouter au moins un matériel."
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Conversion du tableau JS
+                 * en JSON pour Flask
+                 */
+
+                document.getElementById("lignes").value =
+                    JSON.stringify(lignes);
+
+            }
+        );
+
+
+    /* =========================================
+       INITIALISATION
+    ========================================= */
+
+    afficherLignes();
+
+</script>
+
+</body>
+</html>

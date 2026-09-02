@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+    {{ devis.numero }} - Mon Atelier
+</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 25px;
+        background: #eef1f5;
+        font-family: Arial, sans-serif;
+        color: #1f2937;
+    }
+
+    .top-bar {
+        max-width: 950px;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        border-radius: 7px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    .btn-back {
+        background: #6b7280;
+        color: white;
+    }
+
+    .btn-pdf {
+        background: #dc2626;
+        color: white;
+        margin-right: 6px;
+    }
+
+    .btn-whatsapp {
+        background: #25D366;
+        color: white;
+        margin-right: 6px;
+    }
+
+    .btn-share {
+        background: #16a34a;
+        color: white;
+        margin-right: 6px;
+    }
+
+    .btn-print {
+        background: #2563eb;
+        color: white;
+    }
+
+    .devis-page {
+        max-width: 950px;
+        margin: auto;
+        background: white;
+        padding: 45px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 3px solid #111827;
+        padding-bottom: 20px;
+        margin-bottom: 25px;
+    }
+
+    .logo h1 {
+        margin: 0;
+        font-size: 30px;
+        color: #111827;
+    }
+
+    .logo p {
+        margin: 5px 0;
+        color: #6b7280;
+    }
+
+    .coordonnees {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #6b7280;
+        line-height: 1.8;
+    }
+
+    .devis-title {
+        text-align: right;
+    }
+
+    .devis-title h2 {
+        margin: 0;
+        font-size: 28px;
+        color: #2563eb;
+    }
+
+    .devis-title p {
+        margin-top: 8px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .info-box {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 18px;
+    }
+
+    .info-box h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 15px;
+        color: #6b7280;
+        text-transform: uppercase;
+    }
+
+    .info-box p {
+        margin: 6px 0;
+    }
+
+    .important {
+        font-weight: bold;
+        font-size: 17px;
+    }
+
+    .statut {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .brouillon {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .accepte {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .refuse {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    thead {
+        background: #111827;
+        color: white;
+    }
+
+    th,
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+    }
+
+    th {
+        font-size: 13px;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    .number {
+        text-align: right;
+    }
+
+    .totals {
+        width: 400px;
+        max-width: 100%;
+        margin-left: auto;
+        margin-top: 25px;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 9px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .grand-total {
+        font-size: 21px;
+        font-weight: bold;
+        padding-top: 15px;
+        border-bottom: none;
+        color: #2563eb;
+    }
+
+    .signatures {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        margin-top: 80px;
+    }
+
+    .signature {
+        border-top: 1px solid #9ca3af;
+        padding-top: 10px;
+        text-align: center;
+        color: #6b7280;
+        min-height: 55px;
+    }
+
+    .signature-name {
+        font-family: "Times New Roman", serif;
+        font-style: italic;
+        font-size: 22px;
+        color: #1f2937;
+        margin-bottom: 5px;
+    }
+
+    .footer {
+        margin-top: 60px;
+        padding-top: 15px;
+        border-top: 1px solid #e5e7eb;
+        text-align: center;
+        color: #6b7280;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    /* ==============================
+       MESSAGE WHATSAPP
+    ============================== */
+
+    .whatsapp-message {
+        display: none;
+        max-width: 950px;
+        margin: 0 auto 20px;
+        padding: 15px 18px;
+        background: #dcfce7;
+        border-left: 5px solid #16a34a;
+        border-radius: 8px;
+        color: #166534;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .whatsapp-message strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* ==============================
+       MOBILE
+    ============================== */
+
+    @media (max-width: 700px) {
+
+        body {
+            padding: 10px;
+        }
+
+        .devis-page {
+            padding: 20px;
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .top-bar > div {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            text-align: center;
+            margin-right: 0;
+        }
+
+        .header {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .devis-title {
+            text-align: left;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        table {
+            min-width: 650px;
+        }
+
+        .signatures {
+            grid-template-columns: 1fr;
+            gap: 60px;
+        }
+
+    }
+
+    /* ==============================
+       IMPRESSION
+    ============================== */
+
+    @media print {
+
+        body {
+            background: white;
+            padding: 0;
+        }
+
+        .top-bar,
+        .whatsapp-message {
+            display: none !important;
+        }
+
+        .devis-page {
+            width: 100%;
+            max-width: none;
+            box-shadow: none;
+            padding: 20px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================================
+     BARRE DES BOUTONS
+========================================= -->
+
+<div class="top-bar">
+
+<a
+    href="{{ url_for('devis') }}"
+    class="btn btn-back"
+>
+    ← Retour aux devis
+</a>
+
+
+<div>
+
+    <!-- PDF -->
+
+    <a
+        href="{{ url_for('devis_pdf', id=devis.id) }}"
+        class="btn btn-pdf"
+    >
+        📄 Télécharger PDF
+    </a>
+
+
+    <!-- WHATSAPP -->
+
+    <button
+        type="button"
+        onclick="envoyerPDFWhatsApp()"
+        class="btn btn-whatsapp"
+    >
+        📱 Envoyer PDF sur WhatsApp
+    </button>
+
+
+    <!-- PARTAGER -->
+
+    <button
+        type="button"
+        onclick="partagerDevis()"
+        class="btn btn-share"
+    >
+        📤 Partager
+    </button>
+
+
+    <!-- IMPRIMER -->
+
+    <button
+        type="button"
+        onclick="window.print()"
+        class="btn btn-print"
+    >
+        🖨️ Imprimer
+    </button>
+
+</div>
+
+</div>
+
+<!-- =========================================
+     MESSAGE WHATSAPP
+========================================= -->
+
+<div
+    id="whatsappMessage"
+    class="whatsapp-message"
+>
+
+<strong>
+    📱 Préparation de l'envoi WhatsApp
+</strong>
+
+Le PDF du devis vient d'être téléchargé.
+
+<br>
+
+WhatsApp va s'ouvrir avec le message préparé.
+
+<br>
+
+Dans WhatsApp, appuyez sur
+<strong style="display:inline;">
+    📎 Joindre → Document
+</strong>
+
+puis sélectionnez le fichier PDF du devis.
+
+
+</div>
+
+<!-- =========================================
+     PAGE DU DEVIS
+========================================= -->
+
+<div class="devis-page">
+
+
+<!-- =====================================
+     EN-TÊTE
+====================================== -->
+
+<div class="header">
+
+    <div class="logo">
+
+        <h1>
+            MON ATELIER
+        </h1>
+
+        <p>
+            Gestion d'atelier
+        </p>
+
+        <div class="coordonnees">
+
+            📞 +243 977 133 845
+
+            <br>
+
+            📍 Butembo / Bulengera /
+            Kalemire / Lyambo
+
+            <br>
+
+            ✉️ irkavughemagnifique@gmail.com
+
+        </div>
+
+    </div>
+
+
+    <div class="devis-title">
+
+        <h2>
+            DEVIS
+        </h2>
+
+        <p>
+
+            <strong>
+                N° {{ devis.numero }}
+            </strong>
+
+        </p>
+
+        <p>
+
+            Date :
+
+            {% if devis.date_creation %}
+
+                {{ devis.date_creation.strftime(
+                    '%d/%m/%Y'
+                ) }}
+
+            {% else %}
+
+                -
+
+            {% endif %}
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     INFORMATIONS
+====================================== -->
+
+<div class="info-grid">
+
+
+    <!-- CLIENT -->
+
+    <div class="info-box">
+
+        <h3>
+            Client
+        </h3>
+
+        <p class="important">
+
+            {{ devis.client_nom }}
+
+        </p>
+
+
+        {% if devis.client_telephone %}
+
+        <p>
+
+            📞
+            {{ devis.client_telephone }}
+
+        </p>
+
+        {% endif %}
+
+
+        {% if devis.client_adresse %}
+
+        <p>
+
+            📍
+            {{ devis.client_adresse }}
+
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- INFORMATIONS DEVIS -->
+
+    <div class="info-box">
+
+        <h3>
+            Informations
+        </h3>
+
+        <p>
+
+            <strong>
+                Devise :
+            </strong>
+
+            {{ devis.devise }}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Statut :
+            </strong>
+
+
+            {% if devis.statut == 'Accepté' %}
+
+                <span class="statut accepte">
+
+                    ✓ Accepté
+
+                </span>
+
+            {% elif devis.statut == 'Refusé' %}
+
+                <span class="statut refuse">
+
+                    ✕ Refusé
+
+                </span>
+
+            {% else %}
+
+                <span class="statut brouillon">
+
+                    📝 Brouillon
+
+                </span>
+
+            {% endif %}
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     DÉTAIL
+====================================== -->
+
+<h3>
+    Détail des prestations
+</h3>
+
+
+<div class="table-container">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    #
+                </th>
+
+                <th>
+                    Désignation
+                </th>
+
+                <th>
+                    Quantité
+                </th>
+
+                <th>
+                    Prix unitaire
+                </th>
+
+                <th>
+                    Total
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+
+            {% for ligne in lignes %}
+
+            <tr>
+
+                <td>
+                    {{ loop.index }}
+                </td>
+
+                <td>
+                    {{ ligne.designation }}
+                </td>
+
+                <td>
+                    {{ ligne.quantite }}
+                </td>
+
+                <td class="number">
+
+                    {{ "{:,.2f}".format(
+                        ligne.prix_unitaire or 0
+                    ) }}
+
+                    {{ devis.devise }}
+
+                </td>
+
+                <td class="number">
+
+                    {{ "{:,.2f}".format(
+                        ligne.total or 0
+                    ) }}
+
+                    {{ devis.devise }}
+
+                </td>
+
+            </tr>
+
+
+            {% else %}
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    style="text-align:center;"
+                >
+
+                    Aucune ligne
+                    dans ce devis.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- =====================================
+     TOTAUX
+====================================== -->
+
+<div class="totals">
+
+
+    <!-- SOUS TOTAL -->
+
+    <div class="total-row">
+
+        <span>
+            Sous-total matériel
+        </span>
+
+        <strong>
+
+            {% set sous_total = 0 %}
+
+
+            {% for ligne in lignes %}
+
+                {% set sous_total =
+                    sous_total
+                    + (ligne.total or 0)
+                %}
+
+            {% endfor %}
+
+
+            {{ "{:,.2f}".format(
+                sous_total
+            ) }}
+
+            {{ devis.devise }}
+
+        </strong>
+
+    </div>
+
+
+    <!-- MAIN D'OEUVRE -->
+
+    <div class="total-row">
+
+        <span>
+            Main-d'œuvre
+        </span>
+
+        <strong>
+
+            {{ "{:,.2f}".format(
+                devis.main_oeuvre or 0
+            ) }}
+
+            {{ devis.devise }}
+
+        </strong>
+
+    </div>
+
+
+    <!-- TRANSPORT -->
+
+    <div class="total-row">
+
+        <span>
+            Transport
+        </span>
+
+        <strong>
+
+            {{ "{:,.2f}".format(
+                devis.transport or 0
+            ) }}
+
+            {{ devis.devise }}
+
+        </strong>
+
+    </div>
+
+
+    <!-- REMISE -->
+
+    <div class="total-row">
+
+        <span>
+            Remise
+        </span>
+
+        <strong>
+
+            -
+            {{ "{:,.2f}".format(
+                devis.remise or 0
+            ) }}
+
+            {{ devis.devise }}
+
+        </strong>
+
+    </div>
+
+
+    <!-- TOTAL -->
+
+    <div class="total-row grand-total">
+
+        <span>
+            TOTAL
+        </span>
+
+        <strong>
+
+            {{ "{:,.2f}".format(
+                devis.total or 0
+            ) }}
+
+            {{ devis.devise }}
+
+        </strong>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     SIGNATURES
+====================================== -->
+
+<div class="signatures">
+
+
+    <div class="signature">
+
+        <div style="height:30px;"></div>
+
+        Signature du client
+
+    </div>
+
+
+    <div class="signature">
+
+        <div class="signature-name">
+
+            Mon Atelier
+
+        </div>
+
+        Signature autorisée
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     PIED DE PAGE
+====================================== -->
+
+<div class="footer">
+
+    <strong>
+        MON ATELIER
+    </strong>
+
+    <br>
+
+    📞 +243 977 133 845
+
+    &nbsp; | &nbsp;
+
+    ✉️ irkavughemagnifique@gmail.com
+
+    <br>
+
+    📍 Butembo / Bulengera /
+    Kalemire / Lyambo
+
+    <br>
+
+    Merci pour votre confiance.
+
+</div>
+
+</div>
+
+<script>
+
+
+/* =========================================
+   ENVOYER LE PDF SUR WHATSAPP
+========================================= */
+
+function envoyerPDFWhatsApp() {
+
+
+    /*
+       Numéro du client
+    */
+
+    const numeroClient =
+        "{{ devis.client_telephone or '' }}";
+
+
+    /*
+       Informations du devis
+    */
+
+    const numeroDevis =
+        "{{ devis.numero }}";
+
+    const total =
+        "{{ devis.total or 0 }}";
+
+    const devise =
+        "{{ devis.devise }}";
+
+    const client =
+        "{{ devis.client_nom }}";
+
+
+    /*
+       Message WhatsApp
+    */
+
+    const message =
+
+        "Bonjour "
+        + client
+        + ",\n\n"
+
+        + "Veuillez trouver ci-joint "
+        + "votre devis "
+        + numeroDevis
+        + " de Mon Atelier.\n\n"
+
+        + "Montant total : "
+        + total
+        + " "
+        + devise
+        + "\n\n"
+
+        + "Merci pour votre confiance.\n\n"
+
+        + "MON ATELIER\n"
+        + "📞 +243 977 133 845";
+
+
+    /*
+       Afficher l'instruction
+    */
+
+    const instruction =
+        document.getElementById(
+            "whatsappMessage"
+        );
+
+    instruction.style.display =
+        "block";
+
+
+    /*
+       Télécharger automatiquement
+       le PDF
+    */
+
+    const pdfUrl =
+        "{{ url_for('devis_pdf', id=devis.id) }}";
+
+
+    const lienPDF =
+        document.createElement("a");
+
+    lienPDF.href =
+        pdfUrl;
+
+    lienPDF.download =
+        "{{ devis.numero }}.pdf";
+
+    document.body.appendChild(
+        lienPDF
+    );
+
+    lienPDF.click();
+
+    document.body.removeChild(
+        lienPDF
+    );
+
+
+    /*
+       Nettoyer le numéro
+    */
+
+    let numero =
+        numeroClient.replace(
+            /[^0-9+]/g,
+            ""
+        );
+
+
+    /*
+       Supprimer le +
+    */
+
+    if (
+        numero.startsWith("+")
+    ) {
+
+        numero =
+            numero.substring(1);
+
+    }
+
+
+    /*
+       Ouvrir WhatsApp
+    */
+
+    let whatsappUrl;
+
+
+    if (numero) {
+
+        whatsappUrl =
+
+            "https://wa.me/"
+            + numero
+            + "?text="
+            + encodeURIComponent(
+                message
+            );
+
+    } else {
+
+        whatsappUrl =
+
+            "https://wa.me/?text="
+            + encodeURIComponent(
+                message
+            );
+
+    }
+
+
+    /*
+       Petit délai pour laisser
+       le téléchargement démarrer
+    */
+
+    setTimeout(
+        function() {
+
+            window.open(
+                whatsappUrl,
+                "_blank"
+            );
+
+        },
+        800
+    );
+
+}
+
+
+/* =========================================
+   PARTAGER LE DEVIS
+========================================= */
+
+function partagerDevis() {
+
+
+    const url =
+        window.location.href;
+
+
+    const texte =
+
+        "Voici le devis "
+        + "{{ devis.numero }}"
+        + " de Mon Atelier.";
+
+
+    if (
+        navigator.share
+    ) {
+
+        navigator.share({
+
+            title:
+                "Devis {{ devis.numero }}",
+
+            text:
+                texte,
+
+            url:
+                url
+
+        }).catch(
+            function(error) {
+
+                console.log(error);
+
+            }
+        );
+
+    } else {
+
+
+        const whatsapp =
+
+            "https://wa.me/?text="
+            + encodeURIComponent(
+                texte
+                + " "
+                + url
+            );
+
+
+        window.open(
+            whatsapp,
+            "_blank"
+        );
+
+    }
+
+}
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1110 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}
+Mon Atelier - Clients
+{% endblock %}
+
+{% block page_title %}
+Gestion des clients
+{% endblock %}
+
+{% block content %}
+
+<div class="content clients-page">
+
+    <!-- ==========================================
+         EN-TÊTE
+    =========================================== -->
+
+    <div class="clients-header">
+
+        <div>
+            <h1>👥 Gestion des clients</h1>
+
+            <p>
+                Gérez les informations et l'historique de vos clients.
+            </p>
+        </div>
+
+        {% if current_user.role in ['admin', 'reception'] %}
+
+        <a href="{{ url_for('ajouter_client') }}"
+           class="btn-new-client">
+            <span>＋</span>
+            Nouveau client
+        </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ==========================================
+         STATISTIQUE
+    =========================================== -->
+
+    <div class="client-summary">
+
+        <div class="summary-icon">
+            👥
+        </div>
+
+        <div>
+
+            <span>
+                Clients enregistrés
+            </span>
+
+            <strong id="clientCount">
+                {{ clients|length }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         BARRE DE RECHERCHE
+    =========================================== -->
+
+    <div class="clients-toolbar">
+
+        <div class="search-wrapper">
+
+            <span class="search-icon">
+                🔎
+            </span>
+
+            <input
+                type="text"
+                id="searchClient"
+                class="client-search"
+                placeholder="Rechercher un client, téléphone ou adresse..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <div class="client-info">
+            <span id="resultCount">
+                {{ clients|length }} client(s)
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         TABLEAU
+    =========================================== -->
+
+    <div class="clients-table-card">
+
+        {% if clients %}
+
+        <div class="table-scroll">
+
+            <table id="clientsTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th class="col-number">
+                            #
+                        </th>
+
+                        <th>
+                            Client
+                        </th>
+
+                        <th>
+                            Téléphone
+                        </th>
+
+                        <th>
+                            Adresse
+                        </th>
+
+                        <th>
+                            Date d'inscription
+                        </th>
+
+                        {% if current_user.role in ['admin', 'reception'] %}
+
+                        <th class="col-actions">
+                            Actions
+                        </th>
+
+                        {% endif %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for client in clients %}
+
+                    <tr class="client-row">
+
+
+                        <!-- NUMÉRO -->
+
+                        <td class="client-number">
+
+                            {{ loop.index }}
+
+                        </td>
+
+
+                        <!-- CLIENT -->
+
+                        <td>
+
+                            <div class="client-name-box">
+
+                                <div class="client-avatar">
+
+                                    {{ client.nom[0]|upper }}
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ client.nom }}
+                                    </strong>
+
+                                    <small>
+                                        Client #{{ client.id }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- TÉLÉPHONE -->
+
+                        <td>
+
+                            {% if client.telephone %}
+
+                            <a
+                                href="tel:{{ client.telephone }}"
+                                class="phone-link"
+                            >
+                                📞 {{ client.telephone }}
+                            </a>
+
+                            {% else %}
+
+                            <span class="empty-value">
+                                Non renseigné
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ADRESSE -->
+
+                        <td>
+
+                            {% if client.adresse %}
+
+                            <span class="address-value">
+                                📍 {{ client.adresse }}
+                            </span>
+
+                            {% else %}
+
+                            <span class="empty-value">
+                                Non renseignée
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {% if client.date_creation %}
+
+                            <span class="date-value">
+
+                                📅
+
+                                {{ client.date_creation.strftime('%d/%m/%Y') }}
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="empty-value">
+                                —
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        {% if current_user.role in ['admin', 'reception'] %}
+
+                        <td>
+
+                            <div class="client-actions">
+
+
+                                <!-- MODIFIER -->
+
+                                <a
+                                    href="{{ url_for('modifier_client', id=client.id) }}"
+                                    class="action-edit"
+                                    title="Modifier le client"
+                                >
+                                    ✏️
+                                </a>
+
+
+                                <!-- SUPPRIMER -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('supprimer_client', id=client.id) }}"
+                                    onsubmit="return confirm(
+                                        'Voulez-vous vraiment supprimer le client {{ client.nom|e }} ?'
+                                    );"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="action-delete"
+                                        title="Supprimer le client"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                        {% endif %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <!-- ======================================
+             AUCUN CLIENT
+        ======================================= -->
+
+        <div class="empty-clients">
+
+            <div class="empty-icon">
+                👥
+            </div>
+
+            <h3>
+                Aucun client enregistré
+            </h3>
+
+            <p>
+                Commencez par ajouter votre premier client.
+            </p>
+
+            {% if current_user.role in ['admin', 'reception'] %}
+
+            <a
+                href="{{ url_for('ajouter_client') }}"
+                class="btn-empty-client"
+            >
+                ＋ Ajouter un client
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     STYLE
+=========================================== -->
+
+<style>
+
+/* ==========================================
+   PAGE
+========================================== */
+
+.clients-page {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+
+/* ==========================================
+   EN-TÊTE
+========================================== */
+
+.clients-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+
+.clients-header h1 {
+
+    font-size: 27px;
+
+    color: #111827;
+
+    margin-bottom: 7px;
+}
+
+
+.clients-header p {
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* ==========================================
+   BOUTON NOUVEAU
+========================================== */
+
+.btn-new-client {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 11px 17px;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    transition: .2s;
+}
+
+
+.btn-new-client:hover {
+
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+
+.btn-new-client span {
+
+    font-size: 19px;
+
+    line-height: 1;
+}
+
+
+/* ==========================================
+   RÉSUMÉ
+========================================== */
+
+.client-summary {
+
+    width: 260px;
+
+    background: white;
+
+    border-radius: 11px;
+
+    padding: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.05);
+}
+
+
+.summary-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    border-radius: 10px;
+
+    background: #dbeafe;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+
+.client-summary div:last-child {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.client-summary span {
+
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+
+.client-summary strong {
+
+    color: #111827;
+
+    font-size: 23px;
+}
+
+
+/* ==========================================
+   BARRE OUTILS
+========================================== */
+
+.clients-toolbar {
+
+    background: white;
+
+    padding: 15px 18px;
+
+    border-radius: 10px 10px 0 0;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.search-wrapper {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 500px;
+}
+
+
+.search-icon {
+
+    position: absolute;
+
+    left: 13px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 15px;
+}
+
+
+.client-search {
+
+    width: 100%;
+
+    height: 40px;
+
+    padding: 0 14px 0 40px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    font-size: 13px;
+}
+
+
+.client-search:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37,99,235,.10);
+}
+
+
+.client-info {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   TABLEAU
+========================================== */
+
+.clients-table-card {
+
+    background: white;
+
+    border-radius: 0 0 11px 11px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.05);
+
+    overflow: hidden;
+}
+
+
+.table-scroll {
+
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+#clientsTable {
+
+    min-width: 850px;
+}
+
+
+#clientsTable th {
+
+    padding: 13px 14px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    color: #4b5563;
+
+    background: #f9fafb;
+
+    white-space: nowrap;
+}
+
+
+#clientsTable td {
+
+    padding: 13px 14px;
+
+    vertical-align: middle;
+}
+
+
+#clientsTable tbody tr {
+
+    transition: background .15s;
+}
+
+
+#clientsTable tbody tr:hover {
+
+    background: #f8fafc;
+}
+
+
+.col-number {
+
+    width: 50px;
+
+    text-align: center !important;
+}
+
+
+.client-number {
+
+    color: #9ca3af;
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* ==========================================
+   CLIENT
+========================================== */
+
+.client-name-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 180px;
+}
+
+
+.client-avatar {
+
+    width: 38px;
+
+    height: 38px;
+
+    min-width: 38px;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
+
+
+.client-name-box div:last-child {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.client-name-box strong {
+
+    font-size: 13px;
+
+    color: #111827;
+}
+
+
+.client-name-box small {
+
+    color: #9ca3af;
+
+    font-size: 10px;
+}
+
+
+/* ==========================================
+   TÉLÉPHONE
+========================================== */
+
+.phone-link {
+
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+
+.phone-link:hover {
+
+    text-decoration: underline;
+}
+
+
+/* ==========================================
+   ADRESSE
+========================================== */
+
+.address-value {
+
+    color: #4b5563;
+
+    font-size: 13px;
+
+    display: inline-block;
+
+    max-width: 220px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.empty-value {
+
+    color: #9ca3af;
+
+    font-size: 12px;
+
+    font-style: italic;
+}
+
+
+/* ==========================================
+   DATE
+========================================== */
+
+.date-value {
+
+    color: #4b5563;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   ACTIONS
+========================================== */
+
+.col-actions {
+
+    text-align: center !important;
+}
+
+
+.client-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+}
+
+
+.client-actions form {
+
+    margin: 0;
+
+    padding: 0;
+}
+
+
+.action-edit,
+.action-delete {
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 7px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-decoration: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: .2s;
+}
+
+
+.action-edit {
+
+    background: #dbeafe;
+}
+
+
+.action-edit:hover {
+
+    background: #bfdbfe;
+
+    transform: translateY(-1px);
+}
+
+
+.action-delete {
+
+    background: #fee2e2;
+}
+
+
+.action-delete:hover {
+
+    background: #fecaca;
+
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================
+   AUCUN CLIENT
+========================================== */
+
+.empty-clients {
+
+    text-align: center;
+
+    padding: 70px 20px;
+}
+
+
+.empty-icon {
+
+    width: 70px;
+
+    height: 70px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #eff6ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 30px;
+}
+
+
+.empty-clients h3 {
+
+    color: #374151;
+
+    font-size: 18px;
+
+    margin-bottom: 7px;
+}
+
+
+.empty-clients p {
+
+    color: #9ca3af;
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+}
+
+
+.btn-empty-client {
+
+    display: inline-block;
+
+    padding: 10px 16px;
+
+    border-radius: 7px;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 700px) {
+
+    .clients-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .btn-new-client {
+
+        width: 100%;
+
+        justify-content: center;
+    }
+
+
+    .client-summary {
+
+        width: 100%;
+    }
+
+
+    .clients-toolbar {
+
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .search-wrapper {
+
+        max-width: none;
+    }
+
+
+    .client-info {
+
+        text-align: right;
+    }
+
+}
+
+</style>
+
+
+<!-- ==========================================
+     RECHERCHE CLIENT
+=========================================== -->
+
+<script>
+
+const searchInput =
+    document.getElementById("searchClient");
+
+const rows =
+    document.querySelectorAll(".client-row");
+
+const resultCount =
+    document.getElementById("resultCount");
+
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "input",
+        function () {
+
+            const search =
+                this.value
+                    .toLowerCase()
+                    .trim();
+
+            let visible = 0;
+
+
+            rows.forEach(function (row) {
+
+                const text =
+                    row.innerText.toLowerCase();
+
+
+                if (text.includes(search)) {
+
+                    row.style.display = "";
+
+                    visible++;
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+
+            resultCount.textContent =
+                visible + " client(s)";
+
+        }
+    );
+
+}
+
+</script>
+
+{% endblock %}

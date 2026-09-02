@@ -1,0 +1,572 @@
+
+{% extends "base.html" %}
+
+{% block title %}Rapport - Mon Atelier{% endblock %}
+
+{% block content %}
+
+<style>
+    .rapport-page {
+        padding: 10px 0 40px;
+    }
+
+    .rapport-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .rapport-title {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .rapport-subtitle {
+        margin: 6px 0 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 10px;
+        padding: 11px 17px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .btn-finance {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-print {
+        background: #111827;
+        color: white;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.05);
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        color: #111827;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .stat-info {
+        margin-top: 7px;
+        color: #9ca3af;
+        font-size: 12px;
+    }
+
+    .section {
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        margin: 0 0 15px;
+        font-size: 19px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .financial-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .financial-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .financial-title {
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .financial-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .fc {
+        color: #2563eb;
+    }
+
+    .usd {
+        color: #059669;
+    }
+
+    .negative {
+        color: #dc2626;
+    }
+
+    .positive {
+        color: #16a34a;
+    }
+
+    .table-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.05);
+        overflow: hidden;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 750px;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #475569;
+        padding: 13px 12px;
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+        padding: 13px 12px;
+        color: #374151;
+        font-size: 13px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .badge {
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-entree {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-sortie {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 35px;
+        color: #6b7280;
+    }
+
+    .footer {
+        text-align: right;
+        margin-top: 18px;
+        font-size: 11px;
+        color: #9ca3af;
+    }
+
+    @media (max-width: 1000px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .financial-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .rapport-title {
+            font-size: 23px;
+        }
+    }
+
+    @media print {
+        .actions {
+            display: none !important;
+        }
+
+        .card,
+        .table-card,
+        .financial-card {
+            box-shadow: none !important;
+        }
+    }
+</style>
+
+
+<div class="rapport-page">
+
+    <!-- EN-TÊTE -->
+    <div class="rapport-header">
+
+        <div>
+            <h1 class="rapport-title">
+                📊 Rapport général
+            </h1>
+
+            <p class="rapport-subtitle">
+                Synthèse de l'activité de Mon Atelier
+            </p>
+        </div>
+
+        <div class="actions">
+
+            <a href="{{ url_for('finances') }}"
+               class="btn btn-finance">
+                💰 Finances
+            </a>
+
+            <button onclick="window.print()"
+                    class="btn btn-print">
+                🖨️ Imprimer
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATISTIQUES -->
+    <div class="stats-grid">
+
+        <div class="card">
+            <div class="stat-label">
+                Total clients
+            </div>
+
+            <div class="stat-value">
+                {{ total_clients }}
+            </div>
+
+            <div class="stat-info">
+                Clients enregistrés
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="stat-label">
+                Total réparations
+            </div>
+
+            <div class="stat-value">
+                {{ total_reparations }}
+            </div>
+
+            <div class="stat-info">
+                Réparations enregistrées
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="stat-label">
+                Solde FC
+            </div>
+
+            <div class="stat-value fc">
+                {{ "{:,.0f}".format(solde_fc).replace(",", " ") }} FC
+            </div>
+
+            <div class="stat-info">
+                Entrées - sorties
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="stat-label">
+                Solde USD
+            </div>
+
+            <div class="stat-value usd">
+                $ {{ "{:,.2f}".format(solde_usd).replace(",", " ") }}
+            </div>
+
+            <div class="stat-info">
+                Entrées - sorties
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- RAPPORT FINANCIER -->
+    <div class="section">
+
+        <h2 class="section-title">
+            💰 Résumé financier
+        </h2>
+
+        <div class="financial-grid">
+
+            <!-- FC -->
+            <div class="financial-card">
+
+                <div class="financial-title">
+                    Franc congolais (FC)
+                </div>
+
+                <div class="financial-value fc">
+                    {{ "{:,.0f}".format(entrees_fc).replace(",", " ") }} FC
+                </div>
+
+                <div class="stat-info">
+                    Total des entrées
+                </div>
+
+                <hr style="border:0;border-top:1px solid #eee;margin:15px 0;">
+
+                <div class="financial-value negative">
+                    {{ "{:,.0f}".format(sorties_fc).replace(",", " ") }} FC
+                </div>
+
+                <div class="stat-info">
+                    Total des sorties
+                </div>
+
+            </div>
+
+
+            <!-- USD -->
+            <div class="financial-card">
+
+                <div class="financial-title">
+                    Dollar américain (USD)
+                </div>
+
+                <div class="financial-value usd">
+                    $ {{ "{:,.2f}".format(entrees_usd).replace(",", " ") }}
+                </div>
+
+                <div class="stat-info">
+                    Total des entrées
+                </div>
+
+                <hr style="border:0;border-top:1px solid #eee;margin:15px 0;">
+
+                <div class="financial-value negative">
+                    $ {{ "{:,.2f}".format(sorties_usd).replace(",", " ") }}
+                </div>
+
+                <div class="stat-info">
+                    Total des sorties
+                </div>
+
+            </div>
+
+
+            <!-- SOLDES -->
+            <div class="financial-card">
+
+                <div class="financial-title">
+                    Soldes disponibles
+                </div>
+
+                <div class="financial-value positive">
+                    {{ "{:,.0f}".format(solde_fc).replace(",", " ") }} FC
+                </div>
+
+                <div class="stat-info">
+                    Solde FC
+                </div>
+
+                <hr style="border:0;border-top:1px solid #eee;margin:15px 0;">
+
+                <div class="financial-value usd">
+                    $ {{ "{:,.2f}".format(solde_usd).replace(",", " ") }}
+                </div>
+
+                <div class="stat-info">
+                    Solde USD
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DERNIÈRES TRANSACTIONS -->
+    <div class="section">
+
+        <div class="table-card">
+
+            <h2 class="section-title">
+                🧾 Dernières transactions
+            </h2>
+
+            <div class="table-wrapper">
+
+                {% if dernieres_transactions %}
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Catégorie</th>
+                            <th>Description</th>
+                            <th>Montant</th>
+                            <th>Devise</th>
+                            <th>Utilisateur</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for operation in dernieres_transactions %}
+
+                        <tr>
+
+                            <td>
+                                {% if operation.date_transaction %}
+                                    {{ operation.date_transaction.strftime('%d/%m/%Y %H:%M') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td>
+
+                                {% if operation.type == 'entree' %}
+
+                                    <span class="badge badge-entree">
+                                        ↑ Entrée
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge badge-sortie">
+                                        ↓ Sortie
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ operation.categorie or '-' }}
+                            </td>
+
+                            <td>
+                                {{ operation.description or '-' }}
+                            </td>
+
+                            <td>
+
+                                {% if operation.type == 'entree' %}
+
+                                    <strong class="positive">
+                                        + {{ "{:,.2f}".format(operation.montant or 0).replace(",", " ") }}
+                                    </strong>
+
+                                {% else %}
+
+                                    <strong class="negative">
+                                        - {{ "{:,.2f}".format(operation.montant or 0).replace(",", " ") }}
+                                    </strong>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                <strong>
+                                    {{ operation.devise or '-' }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ operation.utilisateur or '-' }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                    <div class="empty">
+                        Aucune transaction enregistrée.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PIED -->
+    <div class="footer">
+        Rapport généré automatiquement par Mon Atelier
+    </div>
+
+</div>
+
+{% endblock %}

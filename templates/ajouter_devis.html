@@ -1,0 +1,1190 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Nouveau devis</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .header,
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .subtitle {
+            color: #666;
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .btn-back {
+            background: #e5e7eb;
+            color: #222;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            padding: 7px 11px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input[readonly] {
+            background: #f1f5f9;
+            font-weight: bold;
+        }
+
+        .add-zone {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 30px;
+        }
+
+        .totals {
+            max-width: 450px;
+            margin-left: auto;
+            margin-top: 20px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .grand-total {
+            font-size: 22px;
+            font-weight: bold;
+            border-top: 2px solid #222;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+
+        .bottom {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 800px) {
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .grid,
+            .add-zone {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin: 10px auto;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- EN-TÊTE -->
+    <div class="header">
+
+        <div>
+            <h1>📄 Nouveau devis</h1>
+
+            <p class="subtitle">
+                Préparation d'un devis pour un client
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for('devis') }}"
+            class="btn btn-back"
+        >
+            ← Retour aux devis
+        </a>
+
+    </div>
+
+
+    <!-- INFORMATIONS DU DEVIS -->
+    <div class="card">
+
+        <h2>Informations du devis</h2>
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label for="client_id">
+                    Client
+                </label>
+
+                <select id="client_id">
+
+                    <option value="">
+                        -- Sélectionner un client --
+                    </option>
+
+                    {% for client in clients %}
+
+                    <option value="{{ client.id }}">
+
+                        {{ client.nom }}
+
+                        {% if client.telephone %}
+                            - {{ client.telephone }}
+                        {% endif %}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="devise">
+                    Devise
+                </label>
+
+                <select id="devise">
+
+                    <option value="FC">
+                        🇨🇩 FC
+                    </option>
+
+                    <option value="USD">
+                        🇺🇸 USD
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AJOUT MATÉRIEL -->
+    <div class="card">
+
+        <h2>📦 Ajouter un matériel</h2>
+
+        <div class="info">
+            La main-d'œuvre est calculée automatiquement à
+            <strong>25 % du sous-total des matériels</strong>.
+        </div>
+
+        <div class="add-zone">
+
+            <div class="field">
+
+                <label for="materiel">
+                    Matériel
+                </label>
+
+                <select id="materiel">
+
+                    <option value="">
+                        -- Sélectionner un matériel --
+                    </option>
+
+                    {% for materiel in materiels %}
+
+                    <option
+                        value="{{ materiel.id }}"
+                        data-prix="{{ materiel.prix }}"
+                        data-devise="{{ materiel.devise }}"
+                        data-designation="{{ materiel.designation }}"
+                        data-unite="{{ materiel.unite }}"
+                    >
+
+                        {{ materiel.designation }}
+
+                        -
+
+                        {% if materiel.devise == 'USD' %}
+
+                            ${{ "{:,.2f}".format(materiel.prix or 0) }}
+
+                        {% else %}
+
+                            {{ "{:,.0f}".format(materiel.prix or 0) }} FC
+
+                        {% endif %}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="quantite">
+                    Quantité
+                </label>
+
+                <input
+                    type="number"
+                    id="quantite"
+                    value="1"
+                    min="0.01"
+                    step="0.01"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="ajouterMateriel()"
+            >
+                ➕ Ajouter
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- LISTE DES MATÉRIELS -->
+    <div class="card">
+
+        <h2>📋 Matériels du devis</h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Matériel</th>
+
+                        <th>Unité</th>
+
+                        <th>Quantité</th>
+
+                        <th>Prix unitaire</th>
+
+                        <th>Total</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="lignesDevis">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty"
+                        >
+                            Aucun matériel ajouté au devis.
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- FRAIS -->
+    <div class="card">
+
+        <h2>💰 Frais supplémentaires</h2>
+
+        <div class="grid">
+
+            <!-- MAIN D'OEUVRE -->
+            <div class="field">
+
+                <label for="main_oeuvre">
+                    Main-d'œuvre (25 %)
+                </label>
+
+                <input
+                    type="text"
+                    id="main_oeuvre"
+                    value="0 FC"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- TRANSPORT -->
+            <div class="field">
+
+                <label for="transport">
+                    Transport
+                </label>
+
+                <input
+                    type="number"
+                    id="transport"
+                    value="0"
+                    min="0"
+                    step="0.01"
+                    oninput="calculerTotal()"
+                >
+
+            </div>
+
+
+            <!-- REMISE -->
+            <div class="field">
+
+                <label for="remise">
+                    Remise
+                </label>
+
+                <input
+                    type="number"
+                    id="remise"
+                    value="0"
+                    min="0"
+                    step="0.01"
+                    oninput="calculerTotal()"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAUX -->
+        <div class="totals">
+
+            <div class="total-row">
+
+                <span>
+                    Sous-total matériel
+                </span>
+
+                <strong id="sousTotal">
+                    0 FC
+                </strong>
+
+            </div>
+
+
+            <div class="total-row">
+
+                <span>
+                    Main-d'œuvre (25 %)
+                </span>
+
+                <strong id="affichageMainOeuvre">
+                    0 FC
+                </strong>
+
+            </div>
+
+
+            <div class="total-row">
+
+                <span>
+                    Transport
+                </span>
+
+                <strong id="affichageTransport">
+                    0 FC
+                </strong>
+
+            </div>
+
+
+            <div class="total-row">
+
+                <span>
+                    Remise
+                </span>
+
+                <strong id="affichageRemise">
+                    0 FC
+                </strong>
+
+            </div>
+
+
+            <div class="total-row grand-total">
+
+                <span>
+                    TOTAL
+                </span>
+
+                <strong id="totalGeneral">
+                    0 FC
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOUTONS -->
+    <div class="bottom">
+
+        <a
+            href="{{ url_for('devis') }}"
+            class="btn btn-back"
+        >
+            Annuler
+        </a>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            onclick="enregistrerDevis()"
+        >
+            💾 Enregistrer le devis
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let lignes = [];
+
+
+    /* =========================
+       AJOUTER UN MATÉRIEL
+    ========================= */
+
+    function ajouterMateriel() {
+
+        const select =
+            document.getElementById("materiel");
+
+        const quantiteInput =
+            document.getElementById("quantite");
+
+        const deviseDevis =
+            document.getElementById("devise").value;
+
+
+        if (!select.value) {
+
+            alert(
+                "Veuillez sélectionner un matériel."
+            );
+
+            return;
+        }
+
+
+        const option =
+            select.options[select.selectedIndex];
+
+
+        const deviseMateriel =
+            option.dataset.devise;
+
+
+        /*
+         * Un devis ne peut pas mélanger
+         * FC et USD.
+         */
+
+        if (deviseMateriel !== deviseDevis) {
+
+            alert(
+                "Ce matériel est en " +
+                deviseMateriel +
+                ". Veuillez choisir un matériel dans la devise " +
+                deviseDevis +
+                "."
+            );
+
+            return;
+        }
+
+
+        const quantite =
+            parseFloat(
+                quantiteInput.value
+            );
+
+
+        if (!quantite || quantite <= 0) {
+
+            alert(
+                "Veuillez entrer une quantité valide."
+            );
+
+            return;
+        }
+
+
+        const id =
+            parseInt(option.value);
+
+
+        const designation =
+            option.dataset.designation;
+
+
+        const unite =
+            option.dataset.unite || "";
+
+
+        const prix =
+            parseFloat(
+                option.dataset.prix
+            ) || 0;
+
+
+        /*
+         * Vérifier si le matériel
+         * existe déjà dans le devis.
+         */
+
+        const existant =
+            lignes.find(
+                ligne =>
+                    ligne.materiel_id === id
+            );
+
+
+        if (existant) {
+
+            existant.quantite += quantite;
+
+        } else {
+
+            lignes.push({
+
+                materiel_id: id,
+
+                designation: designation,
+
+                unite: unite,
+
+                quantite: quantite,
+
+                prix_unitaire: prix,
+
+                devise: deviseMateriel
+
+            });
+
+        }
+
+
+        afficherLignes();
+
+
+        select.value = "";
+
+        quantiteInput.value = 1;
+
+    }
+
+
+    /* =========================
+       SUPPRIMER UNE LIGNE
+    ========================= */
+
+    function supprimerLigne(index) {
+
+        lignes.splice(index, 1);
+
+        afficherLignes();
+
+    }
+
+
+    /* =========================
+       AFFICHER LES LIGNES
+    ========================= */
+
+    function afficherLignes() {
+
+        const tbody =
+            document.getElementById(
+                "lignesDevis"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        if (lignes.length === 0) {
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="empty"
+                    >
+                        Aucun matériel ajouté au devis.
+                    </td>
+
+                </tr>
+
+            `;
+
+            calculerTotal();
+
+            return;
+        }
+
+
+        lignes.forEach(
+            (ligne, index) => {
+
+                const total =
+                    ligne.quantite *
+                    ligne.prix_unitaire;
+
+
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                tr.innerHTML = `
+
+                    <td>
+                        ${ligne.designation}
+                    </td>
+
+                    <td>
+                        ${ligne.unite}
+                    </td>
+
+                    <td>
+                        ${ligne.quantite}
+                    </td>
+
+                    <td>
+                        ${formatPrix(
+                            ligne.prix_unitaire
+                        )}
+                    </td>
+
+                    <td>
+
+                        <strong>
+                            ${formatPrix(total)}
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            onclick="supprimerLigne(${index})"
+                        >
+                            🗑️
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(tr);
+
+            }
+        );
+
+
+        calculerTotal();
+
+    }
+
+
+    /* =========================
+       CALCUL DES TOTAUX
+    ========================= */
+
+    function calculerTotal() {
+
+        let sousTotal = 0;
+
+
+        lignes.forEach(
+            ligne => {
+
+                sousTotal +=
+                    ligne.quantite *
+                    ligne.prix_unitaire;
+
+            }
+        );
+
+
+        /*
+         * MAIN-D'OEUVRE AUTOMATIQUE
+         * = 25 % du sous-total
+         */
+
+        const mainOeuvre =
+            sousTotal * 0.25;
+
+
+        /*
+         * TRANSPORT
+         */
+
+        const transport =
+            parseFloat(
+                document.getElementById(
+                    "transport"
+                ).value
+            ) || 0;
+
+
+        /*
+         * REMISE
+         */
+
+        const remise =
+            parseFloat(
+                document.getElementById(
+                    "remise"
+                ).value
+            ) || 0;
+
+
+        /*
+         * TOTAL GÉNÉRAL
+         */
+
+        const total =
+            sousTotal +
+            mainOeuvre +
+            transport -
+            remise;
+
+
+        /*
+         * AFFICHAGE
+         */
+
+        document.getElementById(
+            "sousTotal"
+        ).textContent =
+            formatPrix(sousTotal);
+
+
+        document.getElementById(
+            "main_oeuvre"
+        ).value =
+            formatPrix(mainOeuvre);
+
+
+        document.getElementById(
+            "affichageMainOeuvre"
+        ).textContent =
+            formatPrix(mainOeuvre);
+
+
+        document.getElementById(
+            "affichageTransport"
+        ).textContent =
+            formatPrix(transport);
+
+
+        document.getElementById(
+            "affichageRemise"
+        ).textContent =
+            formatPrix(remise);
+
+
+        document.getElementById(
+            "totalGeneral"
+        ).textContent =
+            formatPrix(total);
+
+    }
+
+
+    /* =========================
+       FORMAT PRIX
+    ========================= */
+
+    function formatPrix(montant) {
+
+        const devise =
+            document.getElementById(
+                "devise"
+            ).value;
+
+
+        if (devise === "USD") {
+
+            return "$" +
+                montant.toLocaleString(
+                    "en-US",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+        }
+
+
+        return montant.toLocaleString(
+            "fr-FR",
+            {
+                maximumFractionDigits: 0
+            }
+        ) + " FC";
+
+    }
+
+
+    /* =========================
+       CHANGEMENT DE DEVISE
+    ========================= */
+
+    document
+        .getElementById("devise")
+        .addEventListener(
+            "change",
+            function() {
+
+                /*
+                 * On vide les lignes lorsqu'on
+                 * change de devise afin de ne
+                 * jamais mélanger FC et USD.
+                 */
+
+                lignes = [];
+
+                afficherLignes();
+
+            }
+        );
+
+
+    /* =========================
+       ENREGISTRER
+    ========================= */
+
+
+function enregistrerDevis() {
+
+    const client =
+        document.getElementById("client_id").value;
+
+    const devise =
+        document.getElementById("devise").value;
+
+    const transport =
+        parseFloat(
+            document.getElementById("transport").value
+        ) || 0;
+
+    const remise =
+        parseFloat(
+            document.getElementById("remise").value
+        ) || 0;
+
+
+    if (!client) {
+
+        alert(
+            "Veuillez sélectionner un client."
+        );
+
+        return;
+    }
+
+
+    if (lignes.length === 0) {
+
+        alert(
+            "Veuillez ajouter au moins un matériel."
+        );
+
+        return;
+    }
+
+
+    if (transport < 0) {
+
+        alert(
+            "Le transport ne peut pas être négatif."
+        );
+
+        return;
+    }
+
+
+    if (remise < 0) {
+
+        alert(
+            "La remise ne peut pas être négative."
+        );
+
+        return;
+    }
+
+
+    /*
+     * Création d'un formulaire
+     * envoyé directement à Flask.
+     */
+
+    const form =
+        document.createElement("form");
+
+    form.method = "POST";
+
+    form.action =
+        "{{ url_for('ajouter_devis') }}";
+
+
+    /*
+     * Client
+     */
+
+    ajouterChamp(
+        form,
+        "client_id",
+        client
+    );
+
+
+    /*
+     * Devise
+     */
+
+    ajouterChamp(
+        form,
+        "devise",
+        devise
+    );
+
+
+    /*
+     * Lignes du devis
+     */
+
+    ajouterChamp(
+        form,
+        "lignes",
+        JSON.stringify(lignes)
+    );
+
+
+    /*
+     * Transport
+     */
+
+    ajouterChamp(
+        form,
+        "transport",
+        transport
+    );
+
+
+    /*
+     * Remise
+     */
+
+    ajouterChamp(
+        form,
+        "remise",
+        remise
+    );
+
+
+    document.body.appendChild(form);
+
+    form.submit();
+
+}
+
+
+/*
+ * Ajouter un champ caché
+ */
+
+function ajouterChamp(
+    form,
+    nom,
+    valeur
+) {
+
+    const input =
+        document.createElement("input");
+
+    input.type = "hidden";
+
+    input.name = nom;
+
+    input.value = valeur;
+
+    form.appendChild(input);
+
+}
+
+
+
+
+    /*
+     * Calcul initial
+     */
+
+    afficherLignes();
+
+</script>
+
+</body>
+</html>

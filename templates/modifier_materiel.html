@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mon Atelier - Modifier matériel</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header h1 {
+            color: #1f2937;
+            font-size: 25px;
+        }
+
+        .header p {
+            color: #6b7280;
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            background: #6b7280;
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .price-row {
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 15px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-cancel:hover {
+            background: #d1d5db;
+        }
+
+        .btn-save {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #1d4ed8;
+        }
+
+        .info {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+
+            .container {
+                margin: 10px auto;
+                padding: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .price-row {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <!-- En-tête -->
+
+        <div class="header">
+
+            <div>
+
+                <h1>
+                    ✏️ Modifier le matériel
+                </h1>
+
+                <p>
+                    Modifier les informations du matériel
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('materiels') }}"
+                class="back-btn"
+            >
+                ← Retour
+            </a>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="info">
+
+            📦 Vous modifiez actuellement :
+
+            <strong>
+                {{ materiel.designation }}
+            </strong>
+
+        </div>
+
+
+        <!-- Formulaire -->
+
+        <form method="POST">
+
+
+            <!-- Désignation -->
+
+            <div class="form-group">
+
+                <label for="designation">
+
+                    Désignation
+                    <span class="required">*</span>
+
+                </label>
+
+                <input
+                    type="text"
+                    id="designation"
+                    name="designation"
+                    value="{{ materiel.designation }}"
+                    placeholder="Exemple : Câble 2.5 mm²"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Catégorie et unité -->
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="categorie">
+                        Catégorie
+                    </label>
+
+                    <select
+                        id="categorie"
+                        name="categorie"
+                    >
+
+                        <option value="">
+                            -- Choisir une catégorie --
+                        </option>
+
+                        <option
+                            value="Électricité"
+                            {% if materiel.categorie == "Électricité" %}
+                                selected
+                            {% endif %}
+                        >
+                            ⚡ Électricité
+                        </option>
+
+                        <option
+                            value="Électronique"
+                            {% if materiel.categorie == "Électronique" %}
+                                selected
+                            {% endif %}
+                        >
+                            🔌 Électronique
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="unite">
+                        Unité
+                    </label>
+
+                    <select
+                        id="unite"
+                        name="unite"
+                    >
+
+                        <option value="">
+                            -- Choisir une unité --
+                        </option>
+
+                        <option
+                            value="Pièce"
+                            {% if materiel.unite == "Pièce" %}
+                                selected
+                            {% endif %}
+                        >
+                            Pièce
+                        </option>
+
+                        <option
+                            value="Mètre"
+                            {% if materiel.unite == "Mètre" %}
+                                selected
+                            {% endif %}
+                        >
+                            Mètre
+                        </option>
+
+                        <option
+                            value="Rouleau"
+                            {% if materiel.unite == "Rouleau" %}
+                                selected
+                            {% endif %}
+                        >
+                            Rouleau
+                        </option>
+
+                        <option
+                            value="Boîte"
+                            {% if materiel.unite == "Boîte" %}
+                                selected
+                            {% endif %}
+                        >
+                            Boîte
+                        </option>
+
+                        <option
+                            value="Paquet"
+                            {% if materiel.unite == "Paquet" %}
+                                selected
+                            {% endif %}
+                        >
+                            Paquet
+                        </option>
+
+                        <option
+                            value="Lot"
+                            {% if materiel.unite == "Lot" %}
+                                selected
+                            {% endif %}
+                        >
+                            Lot
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Prix et devise -->
+
+            <div class="form-group">
+
+                <label>
+                    Prix unitaire
+                </label>
+
+                <div class="price-row">
+
+                    <input
+                        type="number"
+                        id="prix"
+                        name="prix"
+                        min="0"
+                        step="0.01"
+                        value="{{ materiel.prix or 0 }}"
+                    >
+
+
+                    <select
+                        id="devise"
+                        name="devise"
+                    >
+
+                        <option
+                            value="FC"
+                            {% if materiel.devise == "FC" or not materiel.devise %}
+                                selected
+                            {% endif %}
+                        >
+                            🇨🇩 Franc congolais (FC)
+                        </option>
+
+                        <option
+                            value="USD"
+                            {% if materiel.devise == "USD" %}
+                                selected
+                            {% endif %}
+                        >
+                            🇺🇸 Dollar américain (USD)
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Description du matériel..."
+                >{{ materiel.description or '' }}</textarea>
+
+            </div>
+
+
+            <!-- Boutons -->
+
+            <div class="actions">
+
+                <a
+                    href="{{ url_for('materiels') }}"
+                    class="btn btn-cancel"
+                >
+                    Annuler
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-save"
+                >
+                    💾 Enregistrer les modifications
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,384 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestion des utilisateurs - Mon Atelier{% endblock %}
+
+{% block content %}
+
+<style>
+    .users-page {
+        padding: 25px;
+    }
+
+    .users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .users-title h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .users-title p {
+        margin: 7px 0 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .users-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-header h2 {
+        margin: 0;
+        font-size: 18px;
+        color: #1e293b;
+    }
+
+    .user-count {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+    }
+
+    .users-table th {
+        background: #f8fafc;
+        padding: 15px 20px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 700;
+        color: #475569;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .users-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .users-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .users-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .user-id {
+        font-weight: 700;
+        color: #64748b;
+    }
+
+    .username {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .role-admin {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .role-reception {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .role-consultation {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .role-default {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+    .status-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #15803d;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+    }
+
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .empty-icon {
+        font-size: 45px;
+        margin-bottom: 12px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: #334155;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .btn-disabled {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 9px;
+        border: none;
+        background: #2563eb;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        .users-page {
+            padding: 15px;
+        }
+
+        .users-title h1 {
+            font-size: 23px;
+        }
+
+        .card-header {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+
+<div class="users-page">
+
+    <!-- EN-TÊTE -->
+    <div class="users-header">
+
+        <div class="users-title">
+            <h1>👥 Gestion des utilisateurs</h1>
+            <p>
+                Gérez les comptes et les rôles des utilisateurs de Mon Atelier.
+            </p>
+        </div>
+
+        <!-- Désactivé pour le moment -->
+        <button class="btn-disabled" disabled>
+            ➕ Nouvel utilisateur
+        </button>
+
+    </div>
+
+
+    <!-- CARTE PRINCIPALE -->
+    <div class="users-card">
+
+        <div class="card-header">
+
+            <h2>Liste des utilisateurs</h2>
+
+            <span class="user-count">
+                {{ utilisateurs|length }} utilisateur{% if utilisateurs|length != 1 %}s{% endif %}
+            </span>
+
+        </div>
+
+
+        {% if utilisateurs %}
+
+        <div class="table-container">
+
+            <table class="users-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Utilisateur</th>
+                        <th>Rôle</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for utilisateur in utilisateurs %}
+
+                    <tr>
+
+                        <!-- ID -->
+                        <td>
+                            <span class="user-id">
+                                #{{ utilisateur.id }}
+                            </span>
+                        </td>
+
+
+                        <!-- NOM UTILISATEUR -->
+                        <td>
+
+                            <div class="username">
+
+                                <div class="avatar">
+                                    {{ utilisateur.username[0]|upper }}
+                                </div>
+
+                                <span>
+                                    {{ utilisateur.username }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- RÔLE -->
+                        <td>
+
+                            {% if utilisateur.role == "admin" %}
+
+                                <span class="role-badge role-admin">
+                                    🔑 Administrateur
+                                </span>
+
+                            {% elif utilisateur.role == "reception" %}
+
+                                <span class="role-badge role-reception">
+                                    🧾 Réception
+                                </span>
+
+                            {% elif utilisateur.role == "consultation" %}
+
+                                <span class="role-badge role-consultation">
+                                    👁 Consultation
+                                </span>
+
+                            {% else %}
+
+                                <span class="role-badge role-default">
+                                    {{ utilisateur.role or "Non défini" }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- STATUT -->
+                        <td>
+
+                            <span class="status-active">
+                                <span class="status-dot"></span>
+                                Actif
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <!-- AUCUN UTILISATEUR -->
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                👥
+            </div>
+
+            <h3>Aucun utilisateur</h3>
+
+            <p>
+                Aucun compte utilisateur n'est actuellement enregistré.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,862 @@
+
+{% extends "base.html" %}
+
+{% block title %}Gestion financière - Mon Atelier{% endblock %}
+
+{% block content %}
+
+<style>
+    .finance-page {
+        padding: 25px;
+    }
+
+    .finance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+    }
+
+    .finance-title h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .finance-title p {
+        margin: 6px 0 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .finance-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .finance-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 16px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: .2s;
+        border: none;
+    }
+
+    .btn-entry {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-entry:hover {
+        background: #15803d;
+        color: white;
+    }
+
+    .btn-exit {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-exit:hover {
+        background: #b91c1c;
+        color: white;
+    }
+
+    .btn-history {
+        background: #374151;
+        color: white;
+    }
+
+    .btn-history:hover {
+        background: #1f2937;
+        color: white;
+    }
+
+    .finance-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .finance-card {
+        background: white;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.07);
+        border: 1px solid #eef0f3;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .finance-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+    }
+
+    .card-balance::before {
+        background: #2563eb;
+    }
+
+    .card-entry::before {
+        background: #16a34a;
+    }
+
+    .card-exit::before {
+        background: #dc2626;
+    }
+
+    .card-result::before {
+        background: #7c3aed;
+    }
+
+    .finance-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .finance-card-title {
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .finance-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .icon-blue {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .icon-green {
+        background: #f0fdf4;
+        color: #16a34a;
+    }
+
+    .icon-red {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .icon-purple {
+        background: #faf5ff;
+        color: #7c3aed;
+    }
+
+    .finance-value {
+        margin-top: 13px;
+        font-size: 23px;
+        font-weight: 750;
+        color: #111827;
+    }
+
+    .finance-subvalue {
+        margin-top: 5px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .finance-panel {
+        background: white;
+        border: 1px solid #eef0f3;
+        border-radius: 14px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.06);
+        margin-bottom: 25px;
+        overflow: hidden;
+    }
+
+    .panel-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #edf0f2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .panel-header h2 {
+        margin: 0;
+        font-size: 18px;
+        color: #1f2937;
+    }
+
+    .filters {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+    }
+
+    .filter-input,
+    .filter-select {
+        border: 1px solid #d1d5db;
+        background: #fff;
+        border-radius: 8px;
+        padding: 9px 11px;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+        border-color: #2563eb;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .finance-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 850px;
+    }
+
+    .finance-table th {
+        background: #f8fafc;
+        color: #64748b;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .finance-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f2f4;
+        font-size: 13px;
+        color: #374151;
+    }
+
+    .finance-table tbody tr:hover {
+        background: #fafafa;
+    }
+
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-entry {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-exit {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .amount-entry {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .amount-exit {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .currency-badge {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 4px 7px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .category {
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .description {
+        color: #6b7280;
+        max-width: 240px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 55px 20px;
+        color: #6b7280;
+    }
+
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 5px;
+        color: #374151;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .currency-panel {
+        background: white;
+        border: 1px solid #eef0f3;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.06);
+    }
+
+    .currency-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .currency-title h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #1f2937;
+    }
+
+    .currency-label {
+        background: #eff6ff;
+        color: #2563eb;
+        border-radius: 7px;
+        padding: 5px 9px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .currency-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+    }
+
+    .currency-row:last-child {
+        border-bottom: none;
+    }
+
+    .currency-row span:first-child {
+        color: #64748b;
+    }
+
+    .currency-row strong {
+        color: #1f2937;
+    }
+
+    .positive {
+        color: #15803d !important;
+    }
+
+    .negative {
+        color: #dc2626 !important;
+    }
+
+    @media (max-width: 1100px) {
+        .finance-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 700px) {
+        .finance-page {
+            padding: 15px;
+        }
+
+        .finance-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .finance-header {
+            align-items: flex-start;
+        }
+
+        .finance-actions {
+            width: 100%;
+        }
+
+        .finance-btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+</style>
+
+
+<div class="finance-page">
+
+    <!-- EN-TÊTE -->
+    <div class="finance-header">
+
+        <div class="finance-title">
+            <h1>Gestion financière</h1>
+            <p>Suivez les entrées, sorties et résultats financiers de votre atelier.</p>
+        </div>
+
+        <div class="finance-actions">
+
+            <a href="{{ url_for('ajouter_entree') }}"
+               class="finance-btn btn-entry">
+                ＋ Entrée
+            </a>
+
+            <a href="{{ url_for('ajouter_sortie') }}"
+               class="finance-btn btn-exit">
+                − Sortie
+            </a>
+
+            <a href="{{ url_for('finances') }}"
+   class="finance-btn btn-history">
+    📋 Opérations
+</a>
+        </div>
+    </div>
+
+
+    <!-- CARTES STATISTIQUES -->
+    <div class="finance-cards">
+
+        <!-- SOLDE -->
+        <div class="finance-card card-balance">
+
+            <div class="finance-card-top">
+                <div class="finance-card-title">
+                    SOLDE DISPONIBLE
+                </div>
+
+                <div class="finance-icon icon-blue">
+                    💰
+                </div>
+            </div>
+
+            <div class="finance-value">
+                {{ "{:,.2f}".format(solde_fc|default(0)) }} FC
+            </div>
+
+            <div class="finance-subvalue">
+                {{ "{:,.2f}".format(solde_usd|default(0)) }} USD
+            </div>
+
+        </div>
+
+
+        <!-- ENTRÉES -->
+        <div class="finance-card card-entry">
+
+            <div class="finance-card-top">
+                <div class="finance-card-title">
+                    TOTAL DES ENTRÉES
+                </div>
+
+                <div class="finance-icon icon-green">
+                    ↗
+                </div>
+            </div>
+
+            <div class="finance-value positive">
+                {{ "{:,.2f}".format(total_entrees_fc|default(0)) }} FC
+            </div>
+
+            <div class="finance-subvalue">
+                {{ "{:,.2f}".format(total_entrees_usd|default(0)) }} USD
+            </div>
+
+        </div>
+
+
+        <!-- SORTIES -->
+        <div class="finance-card card-exit">
+
+            <div class="finance-card-top">
+                <div class="finance-card-title">
+                    TOTAL DES SORTIES
+                </div>
+
+                <div class="finance-icon icon-red">
+                    ↘
+                </div>
+            </div>
+
+            <div class="finance-value negative">
+                {{ "{:,.2f}".format(total_sorties_fc|default(0)) }} FC
+            </div>
+
+            <div class="finance-subvalue">
+                {{ "{:,.2f}".format(total_sorties_usd|default(0)) }} USD
+            </div>
+
+        </div>
+
+
+        <!-- RESULTAT -->
+        <div class="finance-card card-result">
+
+            <div class="finance-card-top">
+                <div class="finance-card-title">
+                    RÉSULTAT
+                </div>
+
+                <div class="finance-icon icon-purple">
+                    📊
+                </div>
+            </div>
+
+            <div class="finance-value">
+                {{ "{:,.2f}".format(
+                    (total_entrees_fc|default(0)) -
+                    (total_sorties_fc|default(0))
+                ) }} FC
+            </div>
+
+            <div class="finance-subvalue">
+                Entrées − sorties
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RÉSUMÉ PAR DEVISE -->
+    <div class="summary-grid">
+
+        <div class="currency-panel">
+
+            <div class="currency-title">
+                <h3>Résumé en Franc Congolais</h3>
+                <span class="currency-label">FC</span>
+            </div>
+
+            <div class="currency-row">
+                <span>Total des entrées</span>
+                <strong class="positive">
+                    {{ "{:,.2f}".format(total_entrees_fc|default(0)) }} FC
+                </strong>
+            </div>
+
+            <div class="currency-row">
+                <span>Total des sorties</span>
+                <strong class="negative">
+                    {{ "{:,.2f}".format(total_sorties_fc|default(0)) }} FC
+                </strong>
+            </div>
+
+            <div class="currency-row">
+                <span>Solde</span>
+                <strong>
+                    {{ "{:,.2f}".format(solde_fc|default(0)) }} FC
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="currency-panel">
+
+            <div class="currency-title">
+                <h3>Résumé en Dollar Américain</h3>
+                <span class="currency-label">USD</span>
+            </div>
+
+            <div class="currency-row">
+                <span>Total des entrées</span>
+                <strong class="positive">
+                    {{ "{:,.2f}".format(total_entrees_usd|default(0)) }} USD
+                </strong>
+            </div>
+
+            <div class="currency-row">
+                <span>Total des sorties</span>
+                <strong class="negative">
+                    {{ "{:,.2f}".format(total_sorties_usd|default(0)) }} USD
+                </strong>
+            </div>
+
+            <div class="currency-row">
+                <span>Solde</span>
+                <strong>
+                    {{ "{:,.2f}".format(solde_usd|default(0)) }} USD
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OPÉRATIONS RÉCENTES -->
+    <div class="finance-panel" style="margin-top:25px;">
+
+        <div class="panel-header">
+
+            <h2>Opérations financières</h2>
+
+            <div class="filters">
+
+                <input
+                    type="text"
+                    id="searchFinance"
+                    class="filter-input"
+                    placeholder="Rechercher..."
+                    onkeyup="filterFinance()"
+                >
+
+                <select
+                    id="typeFilter"
+                    class="filter-select"
+                    onchange="filterFinance()"
+                >
+                    <option value="">Tous les types</option>
+                    <option value="entrée">Entrées</option>
+                    <option value="sortie">Sorties</option>
+                </select>
+
+                <select
+                    id="currencyFilter"
+                    class="filter-select"
+                    onchange="filterFinance()"
+                >
+                    <option value="">Toutes les devises</option>
+                    <option value="FC">FC</option>
+                    <option value="USD">USD</option>
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="finance-table">
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Catégorie</th>
+                        <th>Description</th>
+                        <th>Montant</th>
+                        <th>Devise</th>
+                        <th>Enregistré par</th>
+                    </tr>
+                </thead>
+
+                <tbody id="financeTable">
+
+                {% for operation in operations|default([]) %}
+
+                    {% set type_operation =
+                        operation.type|default(operation.type_operation|default(''))
+                    %}
+
+                    <tr
+                        data-type="{{ type_operation|lower }}"
+                        data-currency="{{ operation.devise|default('') }}"
+                    >
+
+                        <td>
+                            {{ operation.date|default(operation.created_at|default('-')) }}
+                        </td>
+
+                        <td>
+
+                            {% if type_operation|lower == 'entrée' or
+                                  type_operation|lower == 'entree' %}
+
+                                <span class="type-badge badge-entry">
+                                    ↗ Entrée
+                                </span>
+
+                            {% else %}
+
+                                <span class="type-badge badge-exit">
+                                    ↘ Sortie
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            <span class="category">
+                                {{ operation.categorie|default('-') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="description">
+                                {{ operation.description|default('-') }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            {% if type_operation|lower == 'entrée' or
+                                  type_operation|lower == 'entree' %}
+
+                                <span class="amount-entry">
+                                    + {{ "{:,.2f}".format(
+                                        operation.montant|default(0)|float
+                                    ) }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="amount-exit">
+                                    − {{ "{:,.2f}".format(
+                                        operation.montant|default(0)|float
+                                    ) }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            <span class="currency-badge">
+                                {{ operation.devise|default('FC') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ operation.utilisateur|default(
+                               operation.username|default('-')
+                            ) }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="7">
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+                                    💼
+                                </div>
+
+                                <h3>Aucune opération financière</h3>
+
+                                <p>
+                                    Commencez par enregistrer une entrée ou une sortie.
+                                </p>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function filterFinance() {
+
+    const search =
+        document.getElementById("searchFinance")
+            .value
+            .toLowerCase();
+
+    const type =
+        document.getElementById("typeFilter")
+            .value
+            .toLowerCase();
+
+    const currency =
+        document.getElementById("currencyFilter")
+            .value
+            .toLowerCase();
+
+    const rows =
+        document.querySelectorAll("#financeTable tr");
+
+    rows.forEach(row => {
+
+        const text = row.innerText.toLowerCase();
+
+        const rowType =
+            row.dataset.type || "";
+
+        const rowCurrency =
+            row.dataset.currency.toLowerCase() || "";
+
+        const searchOK =
+            text.includes(search);
+
+        const typeOK =
+            !type || rowType.includes(type);
+
+        const currencyOK =
+            !currency || rowCurrency === currency;
+
+        if (searchOK && typeOK && currencyOK) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}
