@@ -1,0 +1,414 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Ajouter un utilisateur
+{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header">
+        <div>
+            <h1>👤 Ajouter un utilisateur</h1>
+            <p>Créer un nouveau compte utilisateur pour Mon Atelier.</p>
+        </div>
+
+        <a href="{{ url_for('utilisateurs') }}" class="btn-secondary">
+            ← Retour
+        </a>
+    </div>
+
+
+    <div class="form-card">
+
+        <div class="form-card-header">
+            <div class="icon-box">
+                👤
+            </div>
+
+            <div>
+                <h2>Informations du compte</h2>
+                <p>Remplissez les informations ci-dessous.</p>
+            </div>
+        </div>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+
+        <form method="POST"
+              action="{{ url_for('ajouter_utilisateur') }}"
+              class="user-form">
+
+            <div class="form-group">
+                <label for="username">
+                    Nom d'utilisateur
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Ex. jean"
+                    required
+                    autocomplete="username"
+                >
+            </div>
+
+
+            <div class="form-group">
+                <label for="password">
+                    Mot de passe
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Entrez le mot de passe"
+                    minlength="6"
+                    required
+                    autocomplete="new-password"
+                >
+
+                <small>
+                    Minimum 6 caractères.
+                </small>
+            </div>
+
+
+            <div class="form-group">
+                <label for="role">
+                    Rôle utilisateur
+                </label>
+
+                <select id="role" name="role" required>
+
+                    <option value="">
+                        -- Sélectionner un rôle --
+                    </option>
+
+                    <option value="admin">
+                        Administrateur
+                    </option>
+
+                    <option value="reception">
+                        Réception
+                    </option>
+
+                    <option value="consultation">
+                        Consultation
+                    </option>
+
+                </select>
+
+                <small>
+                    Le rôle détermine les fonctionnalités accessibles
+                    à l'utilisateur.
+                </small>
+            </div>
+
+
+            <div class="role-info">
+
+                <div>
+                    <strong>Administrateur</strong>
+                    <span>Accès complet au système.</span>
+                </div>
+
+                <div>
+                    <strong>Réception</strong>
+                    <span>Gestion des clients et opérations autorisées.</span>
+                </div>
+
+                <div>
+                    <strong>Consultation</strong>
+                    <span>Accès principalement en lecture.</span>
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('utilisateurs') }}"
+                    class="btn-cancel"
+                >
+                    Annuler
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    💾 Enregistrer l'utilisateur
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.page-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #1f2937;
+}
+
+.page-header p {
+    margin-top: 7px;
+    color: #6b7280;
+}
+
+.btn-secondary {
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    color: #374151;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+
+.form-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 22px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.icon-box {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2ff;
+    border-radius: 12px;
+    font-size: 24px;
+}
+
+.form-card-header h2 {
+    margin: 0;
+    color: #111827;
+}
+
+.form-card-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+}
+
+
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 15px;
+    outline: none;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+
+.form-group small {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+
+.role-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: -5px;
+}
+
+.role-info div {
+    padding: 15px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+}
+
+.role-info strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #374151;
+}
+
+.role-info span {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+
+.messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 13px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-warning {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn-primary,
+.btn-cancel {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-cancel {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-cancel:hover {
+    background: #e5e7eb;
+}
+
+
+@media (max-width: 700px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .role-info {
+        grid-template-columns: 1fr;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn-primary,
+    .btn-cancel {
+        text-align: center;
+    }
+}
+
+</style>
+
+{% endblock %}
