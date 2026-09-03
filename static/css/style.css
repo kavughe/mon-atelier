@@ -1264,8 +1264,8 @@ table tr:hover {
 @media (max-width: 450px) {
 
     .sidebar {
-        width: 220px;
-    }
+    width: 190px;
+}
 
     .logo-icon {
         font-size: 35px;
@@ -1281,10 +1281,9 @@ table tr:hover {
         padding: 11px 12px;
     }
 
-    .main {
-        margin-left: 220px;
-    }
-
+     .main {
+    margin-left: 190px;
+}
     .content {
         padding: 12px;
     }

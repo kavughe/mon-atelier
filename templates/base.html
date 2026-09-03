@@ -2,200 +2,196 @@
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
     <title>
-        {% block title %}
-            Mon Atelier
-        {% endblock %}
+        {% block title %}Mon Atelier{% endblock %}
     </title>
-
 
     <style>
 
-        /* ==================================================
-           RESET
-        ================================================== */
-
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
-
         html,
         body {
-            min-height: 100%;
-        }
-
-
-        body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, Helvetica, sans-serif;
             background: #f3f4f6;
             color: #111827;
-            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
         }
 
 
-        /* ==================================================
-           SIDEBAR
-        ================================================== */
+        /* ==========================================
+           SIDEBAR - 170px
+           ========================================== */
 
         .sidebar {
-
             position: fixed;
-
             top: 0;
             left: 0;
 
-            width: 230px;
+            width: 170px;
             height: 100vh;
 
             background: #111827;
             color: white;
 
-            padding: 22px 12px;
-
-            overflow-y: auto;
-
             z-index: 1000;
 
-            transition: transform 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            transition: transform .25s ease;
         }
 
 
-        /* ==================================================
+        /* ==========================================
            LOGO
-        ================================================== */
+           ========================================== */
 
         .logo {
+            height: 65px;
 
-            width: 100%;
+            padding: 0 10px;
 
-            text-align: center;
+            display: flex;
+            align-items: center;
 
-            margin-bottom: 25px;
+            gap: 8px;
+
+            border-bottom: 1px solid #374151;
+
+            white-space: nowrap;
         }
-
 
         .logo-icon {
+            width: 32px;
+            height: 32px;
 
-            font-size: 32px;
+            min-width: 32px;
 
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #dc2626;
+
+            border-radius: 9px;
+
+            font-size: 17px;
+
+            box-shadow:
+                0 4px 10px rgba(220, 38, 38, .25);
+        }
+
+        .logo-text {
+            font-size: 14px;
+            font-weight: 700;
         }
 
 
-        .logo h2 {
+        /* ==========================================
+           MENU
+           ========================================== */
 
-            color: white;
-
-            font-size: 20px;
-
-            font-weight: bold;
+        .menu {
+            padding: 10px 7px 20px;
         }
 
-
-        .logo p {
+        .menu-title {
+            padding: 10px 8px 5px;
 
             color: #9ca3af;
 
-            font-size: 11px;
+            font-size: 9px;
 
-            margin-top: 4px;
-        }
-
-
-        /* ==================================================
-           MENU
-        ================================================== */
-
-        .menu {
-
-            width: 100%;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: stretch;
-
-            gap: 2px;
-        }
-
-
-        /* ==================================================
-           TITRES DU MENU
-        ================================================== */
-
-        .menu-title {
-
-            display: block;
-
-            width: 100%;
-
-            color: #6b7280;
-
-            font-size: 10px;
-
-            font-weight: bold;
+            font-weight: 700;
 
             text-transform: uppercase;
 
-            letter-spacing: 0.5px;
-
-            margin: 18px 8px 7px;
+            letter-spacing: .6px;
         }
 
 
-        /* ==================================================
-           LIENS
-        ================================================== */
+        /* Liens du menu */
 
-        .menu > a {
-
+        .menu a {
             display: flex;
-
-            flex-direction: row;
 
             align-items: center;
 
-            justify-content: flex-start;
+            gap: 8px;
 
             width: 100%;
 
-            min-height: 42px;
+            min-height: 37px;
 
-            padding: 10px 11px;
+            padding: 8px 8px;
 
-            margin-bottom: 3px;
-
-            border-radius: 7px;
+            margin: 2px 0;
 
             color: #d1d5db;
 
-            background: transparent;
-
             text-decoration: none;
 
-            font-size: 13px;
+            border-radius: 8px;
 
-            white-space: nowrap;
+            font-size: 11.5px;
+
+            font-weight: 500;
 
             transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                transform 0.15s ease;
+                background .2s ease,
+                color .2s ease,
+                transform .2s ease;
         }
 
 
-        .menu > a:hover {
+        /* Icônes */
 
+        .menu-icon {
+            width: 21px;
+
+            min-width: 21px;
+
+            height: 21px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 15px;
+
+            text-align: center;
+        }
+
+
+        /* Texte */
+
+        .menu-text {
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        /* Survol */
+
+        .menu a:hover {
             background: #1f2937;
 
             color: white;
@@ -204,116 +200,65 @@
         }
 
 
-        /* MENU ACTIF */
+        /* Menu actif */
 
-        .menu > a.active {
-
-            background: #2563eb;
+        .menu a.active {
+            background: #dc2626;
 
             color: white;
 
+            font-weight: 600;
+
             box-shadow:
-                0 3px 8px rgba(37, 99, 235, 0.25);
+                0 3px 8px rgba(220, 38, 38, .25);
         }
 
 
-        .menu > a.active:hover {
+        /* Déconnexion */
 
-            background: #1d4ed8;
+        .menu a.logout {
+            color: #fca5a5;
+        }
 
-            transform: none;
+        .menu a.logout:hover {
+            background: #7f1d1d;
+
+            color: white;
         }
 
 
-        /* ==================================================
-           ICONES
-        ================================================== */
+        /* Séparateur */
 
-        .menu-icon {
+        .menu-divider {
+            height: 1px;
 
-            display: inline-flex;
+            background: #374151;
 
-            align-items: center;
-
-            justify-content: center;
-
-            width: 25px;
-
-            min-width: 25px;
-
-            margin-right: 8px;
-
-            font-size: 16px;
+            margin: 10px 5px;
         }
 
 
-        .menu-text {
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-        }
-
-
-        /* ==================================================
-           DÉCONNEXION
-        ================================================== */
-
-        .logout {
-
-            width: 100%;
-
-            margin-top: 20px;
-
-            padding-top: 12px;
-
-            border-top: 1px solid #374151;
-        }
-
-
-        .logout a {
-
-            color: #f87171 !important;
-        }
-
-
-        .logout a:hover {
-
-            background: #3f1d1d !important;
-
-            color: #fca5a5 !important;
-        }
-
-
-        /* ==================================================
+        /* ==========================================
            CONTENU PRINCIPAL
-        ================================================== */
+           ========================================== */
 
         .main {
-
-            display: block;
-
-            width: calc(100% - 230px);
+            margin-left: 170px;
 
             min-height: 100vh;
 
-            margin-left: 230px;
-
-            transition:
-                margin-left 0.3s ease,
-                width 0.3s ease;
+            width: calc(100% - 170px);
         }
 
 
-        /* ==================================================
-           BARRE DU HAUT
-        ================================================== */
+        /* ==========================================
+           TOPBAR
+           ========================================== */
 
         .topbar {
+            height: 65px;
 
-            width: 100%;
-
-            height: 70px;
+            padding: 0 22px;
 
             background: white;
 
@@ -325,8 +270,6 @@
 
             justify-content: space-between;
 
-            padding: 0 25px;
-
             position: sticky;
 
             top: 0;
@@ -335,12 +278,82 @@
         }
 
 
-        /* ==================================================
+        .page-title {
+            margin: 0;
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            color: #111827;
+        }
+
+
+        .page-subtitle {
+            margin-top: 3px;
+
+            font-size: 12px;
+
+            color: #6b7280;
+        }
+
+
+        /* ==========================================
+           UTILISATEUR
+           ========================================== */
+
+        .user-info {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+        }
+
+        .user-avatar {
+            width: 35px;
+
+            height: 35px;
+
+            border-radius: 50%;
+
+            background: #dc2626;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: 700;
+
+            font-size: 14px;
+        }
+
+        .user-name {
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #111827;
+        }
+
+        .user-role {
+            font-size: 10px;
+
+            color: #6b7280;
+
+            text-transform: capitalize;
+        }
+
+
+        /* ==========================================
            BOUTON MENU MOBILE
-        ================================================== */
+           ========================================== */
 
-        .menu-toggle {
-
+        .mobile-menu-btn {
             display: none;
 
             width: 40px;
@@ -349,7 +362,7 @@
 
             border: none;
 
-            border-radius: 7px;
+            border-radius: 8px;
 
             background: #111827;
 
@@ -365,136 +378,53 @@
         }
 
 
-        .menu-toggle:hover {
+        /* ==========================================
+           OVERLAY MOBILE
+           ========================================== */
 
-            background: #1f2937;
+        .sidebar-overlay {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, .45);
+
+            z-index: 999;
         }
 
 
-        /* ==================================================
-           TITRE PAGE
-        ================================================== */
-
-        .page-title {
-
-            font-size: 21px;
-
-            font-weight: bold;
-
-            color: #111827;
-        }
-
-
-        /* ==================================================
-           UTILISATEUR
-        ================================================== */
-
-        .user-info {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 9px;
-        }
-
-
-        .user-avatar {
-
-            width: 38px;
-
-            height: 38px;
-
-            min-width: 38px;
-
-            border-radius: 50%;
-
-            background: #2563eb;
-
-            color: white;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-weight: bold;
-
-            font-size: 14px;
-        }
-
-
-        .user-text {
-
-            display: flex;
-
-            flex-direction: column;
-
-            line-height: 1.3;
-        }
-
-
-        .user-name {
-
-            font-size: 13px;
-
-            font-weight: bold;
-
-            color: #111827;
-        }
-
-
-        .user-role {
-
-            color: #6b7280;
-
-            font-size: 11px;
-
-            text-transform: capitalize;
-        }
-
-
-        /* ==================================================
+        /* ==========================================
            CONTENU
-        ================================================== */
+           ========================================== */
 
         .content {
-
-            width: 100%;
-
             padding: 25px;
         }
 
 
-        /* ==================================================
-           MESSAGES FLASH
-        ================================================== */
+        /* ==========================================
+           FLASH MESSAGES
+           ========================================== */
 
         .flash-container {
-
-            width: 100%;
-
-            padding: 0 25px;
+            padding: 15px 25px 0;
         }
 
-
         .flash {
+            padding: 12px 15px;
 
-            padding: 11px 14px;
+            margin-bottom: 10px;
 
-            margin-top: 18px;
-
-            border-radius: 7px;
+            border-radius: 8px;
 
             font-size: 13px;
 
             border: 1px solid transparent;
         }
 
-
-        .flash-success {
-
+        .flash.success {
             background: #dcfce7;
 
             color: #166534;
@@ -502,9 +432,8 @@
             border-color: #bbf7d0;
         }
 
-
-        .flash-danger {
-
+        .flash.error,
+        .flash.danger {
             background: #fee2e2;
 
             color: #991b1b;
@@ -512,9 +441,7 @@
             border-color: #fecaca;
         }
 
-
-        .flash-warning {
-
+        .flash.warning {
             background: #fef3c7;
 
             color: #92400e;
@@ -522,9 +449,7 @@
             border-color: #fde68a;
         }
 
-
-        .flash-info {
-
+        .flash.info {
             background: #dbeafe;
 
             color: #1e40af;
@@ -533,766 +458,612 @@
         }
 
 
-        /* ==================================================
+        /* ==========================================
+           CARTES
+           ========================================== */
+
+        .card {
+            background: white;
+
+            border-radius: 12px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, .05);
+
+            padding: 20px;
+        }
+
+
+        /* ==========================================
            BOUTONS
-        ================================================== */
+           ========================================== */
 
         .btn {
-
             display: inline-flex;
 
             align-items: center;
 
             justify-content: center;
 
-            gap: 5px;
+            gap: 6px;
 
             padding: 9px 14px;
 
+            border: none;
+
             border-radius: 7px;
 
-            border: none;
+            font-size: 12px;
+
+            font-weight: 600;
 
             text-decoration: none;
 
             cursor: pointer;
 
-            font-size: 13px;
-
-            transition:
-                background 0.2s ease,
-                transform 0.15s ease;
+            transition: .2s ease;
         }
-
-
-        .btn:hover {
-
-            transform: translateY(-1px);
-        }
-
 
         .btn-primary {
-
-            background: #2563eb;
-
-            color: white;
-        }
-
-
-        .btn-primary:hover {
-
-            background: #1d4ed8;
-
-            color: white;
-        }
-
-
-        .btn-success {
-
-            background: #16a34a;
-
-            color: white;
-        }
-
-
-        .btn-success:hover {
-
-            background: #15803d;
-        }
-
-
-        .btn-danger {
-
             background: #dc2626;
 
             color: white;
         }
 
-
-        .btn-danger:hover {
-
+        .btn-primary:hover {
             background: #b91c1c;
         }
 
+        .btn-success {
+            background: #16a34a;
+
+            color: white;
+        }
 
         .btn-warning {
+            background: #d97706;
 
-            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
 
             color: white;
         }
 
 
-        .btn-warning:hover {
-
-            background: #d97706;
-        }
-
-
-        /* ==================================================
+        /* ==========================================
            TABLEAUX
-        ================================================== */
+           ========================================== */
 
         .table-container {
-
             width: 100%;
 
-            background: white;
-
-            border-radius: 10px;
-
             overflow-x: auto;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-
         table {
-
             width: 100%;
 
             border-collapse: collapse;
 
-            min-width: 600px;
+            background: white;
         }
 
-
         th {
-
             background: #f9fafb;
 
             color: #374151;
 
-            font-size: 12px;
-
-            padding: 12px;
+            font-size: 11px;
 
             text-align: left;
 
-            border-bottom: 1px solid #e5e7eb;
-
-            white-space: nowrap;
-        }
-
-
-        td {
-
             padding: 12px;
 
             border-bottom: 1px solid #e5e7eb;
-
-            font-size: 13px;
         }
 
+        td {
+            padding: 12px;
 
-        tr:hover {
+            font-size: 12px;
 
+            border-bottom: 1px solid #e5e7eb;
+
+            color: #4b5563;
+        }
+
+        tr:hover td {
             background: #f9fafb;
         }
 
 
-        /* ==================================================
-           STATUTS
-        ================================================== */
+        /* ==========================================
+           FORMULAIRES
+           ========================================== */
 
-        .status {
+        label {
+            display: block;
 
+            margin-bottom: 6px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            color: #374151;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 7px;
+
+            background: white;
+
+            color: #111827;
+
+            font-size: 13px;
+
+            outline: none;
+
+            transition: .2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #dc2626;
+
+            box-shadow:
+                0 0 0 3px rgba(220, 38, 38, .10);
+        }
+
+        textarea {
+            min-height: 100px;
+
+            resize: vertical;
+        }
+
+
+        /* ==========================================
+           BADGES / STATUTS
+           ========================================== */
+
+        .badge {
             display: inline-block;
 
             padding: 5px 9px;
 
             border-radius: 20px;
 
-            font-size: 11px;
+            font-size: 10px;
 
-            font-weight: bold;
-
-            white-space: nowrap;
+            font-weight: 600;
         }
 
+        .badge-success {
+            background: #dcfce7;
 
-        .status-en-attente {
+            color: #166534;
+        }
 
+        .badge-warning {
             background: #fef3c7;
 
             color: #92400e;
         }
 
+        .badge-danger {
+            background: #fee2e2;
 
-        .status-en-cours {
+            color: #991b1b;
+        }
 
+        .badge-info {
             background: #dbeafe;
 
             color: #1e40af;
         }
 
 
-        .status-terminee {
-
-            background: #dcfce7;
-
-            color: #166534;
-        }
-
-
-        .status-livree {
-
-            background: #e0e7ff;
-
-            color: #3730a3;
-        }
-
-
-        /* ==================================================
+        /* ==========================================
            RECHERCHE
-        ================================================== */
+           ========================================== */
 
         .search-box {
+            position: relative;
 
-            width: 100%;
+            max-width: 350px;
+        }
 
-            max-width: 400px;
+        .search-box input {
+            padding-left: 35px;
+        }
 
-            padding: 10px 13px;
+        .search-icon {
+            position: absolute;
 
-            border: 1px solid #d1d5db;
+            left: 12px;
 
-            border-radius: 7px;
+            top: 50%;
 
-            outline: none;
+            transform: translateY(-50%);
 
-            background: white;
-
-            font-size: 13px;
+            color: #9ca3af;
         }
 
 
-        .search-box:focus {
-
-            border-color: #2563eb;
-
-            box-shadow:
-                0 0 0 2px rgba(37, 99, 235, 0.1);
-        }
-
-
-        /* ==================================================
+        /* ==========================================
            ACTIONS
-        ================================================== */
+           ========================================== */
 
         .actions {
-
             display: flex;
 
-            gap: 6px;
-
             align-items: center;
+
+            gap: 6px;
 
             flex-wrap: wrap;
         }
 
 
-        /* ==================================================
-           OVERLAY MOBILE
-        ================================================== */
+        /* ==========================================
+           SCROLLBAR MENU
+           ========================================== */
 
-        .sidebar-overlay {
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
 
-            display: none;
+        .sidebar::-webkit-scrollbar-track {
+            background: #111827;
+        }
 
-            position: fixed;
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
 
-            inset: 0;
-
-            background: rgba(0, 0, 0, 0.45);
-
-            z-index: 999;
+            border-radius: 10px;
         }
 
 
-        /* ==================================================
+        /* ==========================================
            RESPONSIVE TABLETTE
-        ================================================== */
+           ========================================== */
 
         @media (max-width: 900px) {
 
             .sidebar {
-
-                width: 210px;
+                width: 170px;
             }
-
 
             .main {
+                margin-left: 170px;
 
-                width: calc(100% - 210px);
-
-                margin-left: 210px;
+                width: calc(100% - 170px);
             }
-
-
-            .topbar {
-
-                padding: 0 18px;
-            }
-
 
             .content {
-
-                padding: 20px;
+                padding: 18px;
             }
 
-
-            .flash-container {
-
-                padding: 0 20px;
+            .topbar {
+                padding: 0 16px;
             }
-
         }
 
 
-        /* ==================================================
-           RESPONSIVE TÉLÉPHONE
-        ================================================== */
+        /* ==========================================
+           RESPONSIVE TELEPHONE
+           ========================================== */
 
         @media (max-width: 700px) {
 
-            body {
-
-                overflow-x: hidden;
-            }
-
-
-            /* SIDEBAR CACHÉE */
-
             .sidebar {
-
-                width: 230px;
+                width: 170px;
 
                 transform: translateX(-100%);
-
-                box-shadow:
-                    5px 0 20px rgba(0, 0, 0, 0.2);
             }
 
-
-            /* SIDEBAR OUVERTE */
-
-            .sidebar.mobile-open {
-
+            .sidebar.open {
                 transform: translateX(0);
             }
 
-
-            /* CONTENU */
-
             .main {
+                margin-left: 0;
 
                 width: 100%;
-
-                margin-left: 0;
             }
 
+            .mobile-menu-btn {
+                display: flex;
+            }
 
-            /* TOPBAR */
+            .sidebar-overlay.active {
+                display: block;
+            }
 
             .topbar {
-
-                height: 62px;
+                height: 60px;
 
                 padding: 0 12px;
 
                 gap: 10px;
             }
 
-
-            /* BOUTON MENU */
-
-            .menu-toggle {
-
-                display: flex;
-            }
-
-
-            /* TITRE */
-
             .page-title {
-
-                font-size: 17px;
-
-                flex: 1;
-
-                white-space: nowrap;
-
-                overflow: hidden;
-
-                text-overflow: ellipsis;
+                font-size: 16px;
             }
 
-
-            /* UTILISATEUR */
-
-            .user-info {
-
-                gap: 0;
-            }
-
-
-            .user-text {
-
+            .page-subtitle {
                 display: none;
             }
 
-
-            .user-avatar {
-
-                width: 34px;
-
-                height: 34px;
-
-                min-width: 34px;
-
-                font-size: 13px;
+            .user-name {
+                display: none;
             }
-
-
-            /* CONTENU */
 
             .content {
-
-                padding: 15px 12px;
+                padding: 14px;
             }
-
 
             .flash-container {
-
-                padding: 0 12px;
+                padding: 12px 14px 0;
             }
 
-
-            /* TABLEAU */
-
-            .table-container {
-
-                border-radius: 8px;
+            table {
+                min-width: 600px;
             }
 
-
-            /* BOUTONS */
-
-            .btn {
-
-                padding: 9px 11px;
-
-                font-size: 12px;
+            .card {
+                padding: 15px;
             }
-
-
-            /* OVERLAY */
-
-            .sidebar-overlay.active {
-
-                display: block;
-            }
-
         }
 
 
-        /* ==================================================
-           PETITS TÉLÉPHONES
-        ================================================== */
+        /* ==========================================
+           PETIT TELEPHONE
+           ========================================== */
 
         @media (max-width: 400px) {
 
-            .page-title {
-
-                font-size: 15px;
+            .sidebar {
+                width: 170px;
             }
-
 
             .content {
-
-                padding: 12px 8px;
+                padding: 10px;
             }
 
-
-            .flash-container {
-
-                padding: 0 8px;
+            .topbar {
+                padding: 0 10px;
             }
-
-
-            .user-avatar {
-
-                width: 32px;
-
-                height: 32px;
-
-                min-width: 32px;
-            }
-
         }
 
     </style>
-
 </head>
 
 
 <body>
 
 
-<!-- ==================================================
-     SIDEBAR
-================================================== -->
+    <!-- ==========================================
+         SIDEBAR
+         ========================================== -->
 
-<aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
 
+        <div class="logo">
 
-    <!-- LOGO -->
-
-    <div class="logo">
-
-        <div class="logo-icon">
-            🔧
-        </div>
-
-        <h2>
-            Mon Atelier
-        </h2>
-
-        <p>
-            Gestion d'atelier
-        </p>
-
-    </div>
-
-
-    <!-- MENU -->
-
-    <nav class="menu">
-
-
-        <!-- ================= PRINCIPAL ================= -->
-
-        <div class="menu-title">
-            Principal
-        </div>
-
-
-        <a href="{{ url_for('index') }}"
-           class="{% if request.endpoint == 'index' %}active{% endif %}">
-
-            <span class="menu-icon">
-                🏠
-            </span>
-
-            <span class="menu-text">
-                Tableau de bord
-            </span>
-
-        </a>
-
-
-        <!-- ================= GESTION ================= -->
-
-        <div class="menu-title">
-            Gestion
-        </div>
-
-
-        <!-- CLIENTS -->
-
-        <a href="{{ url_for('clients') }}"
-           class="{% if request.endpoint in ['clients', 'ajouter_client'] %}active{% endif %}">
-
-            <span class="menu-icon">
-                👥
-            </span>
-
-            <span class="menu-text">
-                Clients
-            </span>
-
-        </a>
-
-
-        <!-- REPARATIONS -->
-
-        <a href="{{ url_for('reparations') }}"
-           class="{% if request.endpoint in ['reparations', 'ajouter_reparation'] %}active{% endif %}">
-
-            <span class="menu-icon">
+            <div class="logo-icon">
                 🔧
-            </span>
+            </div>
 
-            <span class="menu-text">
-                Réparations
-            </span>
+            <div class="logo-text">
+                Mon Atelier
+            </div>
 
-        </a>
-
-
-        <!-- NOUVELLE REPARATION -->
-
-        {% if current_user.is_authenticated
-              and current_user.role in ['admin', 'reception'] %}
-
-        <a href="{{ url_for('ajouter_reparation') }}"
-           class="{% if request.endpoint == 'ajouter_reparation' %}active{% endif %}">
-
-            <span class="menu-icon">
-                ➕
-            </span>
-
-            <span class="menu-text">
-                Nouvelle réparation
-            </span>
-
-        </a>
-
-        {% endif %}
-
-
-        <!-- HISTORIQUE -->
-
-        <a href="{{ url_for('historique_reparations') }}"
-           class="{% if request.endpoint == 'historique_reparations' %}active{% endif %}">
-
-            <span class="menu-icon">
-                📜
-            </span>
-
-            <span class="menu-text">
-                Historique
-            </span>
-
-        </a>
-
-
-        <!-- MATERIELS -->
-
-        <a href="{{ url_for('materiels') }}"
-           class="{% if request.endpoint == 'materiels' %}active{% endif %}">
-
-            <span class="menu-icon">
-                📦
-            </span>
-
-            <span class="menu-text">
-                Matériels
-            </span>
-
-        </a>
-
-
-        <!-- DEVIS -->
-
-        <a href="{{ url_for('devis') }}"
-           class="{% if request.endpoint == 'devis' %}active{% endif %}">
-
-            <span class="menu-icon">
-                🧾
-            </span>
-
-            <span class="menu-text">
-                Devis
-            </span>
-
-        </a>
-
-
-        <!-- FINANCES -->
-
-        <a href="{{ url_for('finances') }}"
-           class="{% if request.endpoint == 'finances' %}active{% endif %}">
-
-            <span class="menu-icon">
-                💰
-            </span>
-
-            <span class="menu-text">
-                Finances
-            </span>
-
-        </a>
-
-
-        <!-- RAPPORTS -->
-
-        <a href="{{ url_for('rapport') }}"
-           class="{% if request.endpoint == 'rapport' %}active{% endif %}">
-
-            <span class="menu-icon">
-                📊
-            </span>
-
-            <span class="menu-text">
-                Rapports
-            </span>
-
-        </a>
-
-
-        <!-- ================= AUTRES ================= -->
-
-        <div class="menu-title">
-            Autres
         </div>
 
 
-        <!-- A PROPOS -->
-
-        <a href="{{ url_for('apropos') }}"
-           class="{% if request.endpoint == 'apropos' %}active{% endif %}">
-
-            <span class="menu-icon">
-                ℹ️
-            </span>
-
-            <span class="menu-text">
-                À propos
-            </span>
-
-        </a>
+        <nav class="menu">
 
 
-        <!-- ================= ADMINISTRATION ================= -->
+            <!-- PRINCIPAL -->
 
-        {% if current_user.is_authenticated
-              and current_user.role == 'admin' %}
-
-        <div class="menu-title">
-            Administration
-        </div>
+            <div class="menu-title">
+                Principal
+            </div>
 
 
-        <!-- UTILISATEURS -->
+            <a href="{{ url_for('index') }}"
+               class="{% if request.endpoint == 'index' %}active{% endif %}">
 
-        <a href="{{ url_for('utilisateurs') }}"
-           class="{% if request.endpoint == 'utilisateurs' %}active{% endif %}">
+                <span class="menu-icon">🏠</span>
 
-            <span class="menu-icon">
-                👥
-            </span>
-
-            <span class="menu-text">
-                Utilisateurs
-            </span>
-
-        </a>
-
-        {% endif %}
-
-
-        <!-- ================= DECONNEXION ================= -->
-
-        <div class="logout">
-
-            <a href="{{ url_for('logout') }}">
-
-                <span class="menu-icon">
-                    🚪
+                <span class="menu-text">
+                    Tableau de bord
                 </span>
+
+            </a>
+
+
+            <!-- GESTION -->
+
+            <div class="menu-title">
+                Gestion
+            </div>
+
+
+            <a href="{{ url_for('clients') }}"
+               class="{% if request.endpoint in ['clients', 'ajouter_client'] %}active{% endif %}">
+
+                <span class="menu-icon">👥</span>
+
+                <span class="menu-text">
+                    Clients
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('reparations') }}"
+               class="{% if request.endpoint in ['reparations', 'ajouter_reparation'] %}active{% endif %}">
+
+                <span class="menu-icon">🔧</span>
+
+                <span class="menu-text">
+                    Réparations
+                </span>
+
+            </a>
+
+
+            {% if current_user.is_authenticated
+                  and current_user.role in ['admin', 'reception'] %}
+
+            <a href="{{ url_for('ajouter_reparation') }}">
+
+                <span class="menu-icon">➕</span>
+
+                <span class="menu-text">
+                    Nouvelle réparation
+                </span>
+
+            </a>
+
+            {% endif %}
+
+
+            <a href="{{ url_for('historique_reparations') }}"
+               class="{% if request.endpoint == 'historique_reparations' %}active{% endif %}">
+
+                <span class="menu-icon">📋</span>
+
+                <span class="menu-text">
+                    Historique
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('materiels') }}"
+               class="{% if request.endpoint == 'materiels' %}active{% endif %}">
+
+                <span class="menu-icon">📦</span>
+
+                <span class="menu-text">
+                    Matériels
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('devis') }}"
+               class="{% if request.endpoint == 'devis' %}active{% endif %}">
+
+                <span class="menu-icon">🧾</span>
+
+                <span class="menu-text">
+                    Devis
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('finances') }}"
+               class="{% if request.endpoint == 'finances' %}active{% endif %}">
+
+                <span class="menu-icon">💰</span>
+
+                <span class="menu-text">
+                    Finances
+                </span>
+
+            </a>
+
+
+            <!-- AUTRES -->
+
+            <div class="menu-title">
+                Autres
+            </div>
+
+
+            <a href="{{ url_for('rapport') }}"
+               class="{% if request.endpoint == 'rapport' %}active{% endif %}">
+
+                <span class="menu-icon">📊</span>
+
+                <span class="menu-text">
+                    Rapports
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('apropos') }}"
+               class="{% if request.endpoint == 'apropos' %}active{% endif %}">
+
+                <span class="menu-icon">ℹ️</span>
+
+                <span class="menu-text">
+                    À propos
+                </span>
+
+            </a>
+
+
+            <!-- ADMINISTRATION -->
+
+            {% if current_user.is_authenticated
+                  and current_user.role == 'admin' %}
+
+            <div class="menu-title">
+                Administration
+            </div>
+
+
+            <a href="{{ url_for('utilisateurs') }}"
+               class="{% if request.endpoint == 'utilisateurs' %}active{% endif %}">
+
+                <span class="menu-icon">👤</span>
+
+                <span class="menu-text">
+                    Utilisateurs
+                </span>
+
+            </a>
+
+            {% endif %}
+
+
+            <div class="menu-divider"></div>
+
+
+            <!-- DECONNEXION -->
+
+            <a href="{{ url_for('logout') }}"
+               class="logout">
+
+                <span class="menu-icon">🚪</span>
 
                 <span class="menu-text">
                     Déconnexion
@@ -1300,200 +1071,185 @@
 
             </a>
 
-        </div>
+
+        </nav>
+
+    </aside>
 
 
-    </nav>
+    <!-- OVERLAY MOBILE -->
 
-</aside>
-
-
-<!-- ==================================================
-     OVERLAY MOBILE
-================================================== -->
-
-<div class="sidebar-overlay"
-     id="sidebarOverlay"
-     onclick="closeSidebar()">
-</div>
+    <div class="sidebar-overlay"
+         id="sidebarOverlay"
+         onclick="closeSidebar()">
+    </div>
 
 
-<!-- ==================================================
-     CONTENU PRINCIPAL
-================================================== -->
+    <!-- ==========================================
+         CONTENU PRINCIPAL
+         ========================================== -->
 
-<main class="main">
-
-
-    <!-- ================= TOPBAR ================= -->
-
-    <header class="topbar">
+    <main class="main">
 
 
-        <!-- BOUTON MOBILE -->
+        <!-- TOPBAR -->
 
-        <button class="menu-toggle"
-                id="menuToggle"
-                onclick="toggleSidebar()">
-
-            ☰
-
-        </button>
+        <header class="topbar">
 
 
-        <!-- TITRE -->
+            <div style="display:flex;align-items:center;gap:10px;">
 
-        <div class="page-title">
+                <button
+                    class="mobile-menu-btn"
+                    onclick="toggleSidebar()"
+                    aria-label="Ouvrir le menu">
 
-            {% block page_title %}
+                    ☰
 
-                Mon Atelier
-
-            {% endblock %}
-
-        </div>
-
-
-        <!-- UTILISATEUR -->
-
-        {% if current_user.is_authenticated %}
-
-        <div class="user-info">
+                </button>
 
 
-            <!-- AVATAR -->
+                <div>
 
-            <div class="user-avatar">
+                    <h1 class="page-title">
+                        {% block page_title %}
+                        Mon Atelier
+                        {% endblock %}
+                    </h1>
 
-                {% if current_user.username %}
+                    <div class="page-subtitle">
+                        Gestion d'atelier
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% if current_user.is_authenticated %}
+
+            <div class="user-info">
+
+                <div class="user-avatar">
 
                     {{ current_user.username[0]|upper }}
 
-                {% else %}
-
-                    U
-
-                {% endif %}
-
-            </div>
-
-
-            <!-- INFORMATIONS -->
-
-            <div class="user-text">
-
-                <div class="user-name">
-
-                    {{ current_user.username }}
-
                 </div>
 
+                <div>
 
-                <div class="user-role">
+                    <div class="user-name">
+                        {{ current_user.username }}
+                    </div>
 
-                    {{ current_user.role }}
+                    <div class="user-role">
+                        {{ current_user.role }}
+                    </div>
 
                 </div>
 
             </div>
 
+            {% endif %}
 
-        </div>
-
-        {% endif %}
-
-
-    </header>
+        </header>
 
 
-    <!-- ==================================================
-         MESSAGES FLASH
-    ================================================== -->
-
-    <div class="flash-container">
+        <!-- MESSAGES -->
 
         {% with messages = get_flashed_messages(with_categories=true) %}
 
             {% if messages %}
 
+            <div class="flash-container">
+
                 {% for category, message in messages %}
 
-                    <div class="flash flash-{{ category }}">
-
+                    <div class="flash {{ category }}">
                         {{ message }}
-
                     </div>
 
                 {% endfor %}
+
+            </div>
 
             {% endif %}
 
         {% endwith %}
 
-    </div>
+
+        <!-- CONTENU -->
+
+        <section class="content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </section>
 
 
-    <!-- ==================================================
-         CONTENU DES PAGES
-    ================================================== -->
-
-    <div class="content">
-
-        {% block content %}
-
-        {% endblock %}
-
-    </div>
+    </main>
 
 
-</main>
+    <!-- ==========================================
+         JAVASCRIPT MENU MOBILE
+         ========================================== -->
+
+    <script>
+
+        function toggleSidebar() {
+
+            const sidebar =
+                document.getElementById("sidebar");
+
+            const overlay =
+                document.getElementById("sidebarOverlay");
+
+            sidebar.classList.toggle("open");
+
+            overlay.classList.toggle("active");
+        }
 
 
-<!-- ==================================================
-     JAVASCRIPT MENU MOBILE
-================================================== -->
+        function closeSidebar() {
 
-<script>
+            const sidebar =
+                document.getElementById("sidebar");
 
-    function toggleSidebar() {
+            const overlay =
+                document.getElementById("sidebarOverlay");
 
-        const sidebar =
-            document.getElementById("sidebar");
+            sidebar.classList.remove("open");
 
-        const overlay =
-            document.getElementById("sidebarOverlay");
-
-        sidebar.classList.toggle("mobile-open");
-
-        overlay.classList.toggle("active");
-    }
+            overlay.classList.remove("active");
+        }
 
 
-    function closeSidebar() {
+        /* Fermer le menu après avoir
+           cliqué sur un lien sur téléphone */
 
-        const sidebar =
-            document.getElementById("sidebar");
+        document.querySelectorAll(".menu a")
+            .forEach(function(link) {
 
-        const overlay =
-            document.getElementById("sidebarOverlay");
+                link.addEventListener("click", function() {
 
-        sidebar.classList.remove("mobile-open");
+                    if (window.innerWidth <= 700) {
 
-        overlay.classList.remove("active");
-    }
+                        closeSidebar();
+
+                    }
+
+                });
+
+            });
 
 
-    /*
-       Fermer automatiquement le menu
-       après avoir cliqué sur un lien
-       sur téléphone.
-    */
+        /* Fermer avec la touche Echap */
 
-    document.querySelectorAll(".menu a").forEach(function(link) {
+        document.addEventListener("keydown", function(event) {
 
-        link.addEventListener("click", function() {
-
-            if (window.innerWidth <= 700) {
+            if (event.key === "Escape") {
 
                 closeSidebar();
 
@@ -1501,25 +1257,7 @@
 
         });
 
-    });
-
-
-    /*
-       Si on agrandit la fenêtre,
-       on remet le menu dans son état normal.
-    */
-
-    window.addEventListener("resize", function() {
-
-        if (window.innerWidth > 700) {
-
-            closeSidebar();
-
-        }
-
-    });
-
-</script>
+    </script>
 
 
 </body>
