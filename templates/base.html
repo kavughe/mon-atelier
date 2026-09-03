@@ -1,732 +1,1039 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>
-    {% block title %}
-    Mon Atelier
-    {% endblock %}
-</title>
+    <title>
+        {% block title %}
+            Mon Atelier
+        {% endblock %}
+    </title>
 
 
-<style>
+    <style>
 
-/* ==================================================
-   RESET
-================================================== */
+        /* ==================================================
+           RESET
+        ================================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-html,
-body {
-    min-height: 100%;
-}
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f3f4f6;
-    color: #111827;
-}
+        html,
+        body {
+            min-height: 100%;
+        }
 
 
-/* ==================================================
-   MENU GAUCHE
-================================================== */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f4f6;
+            color: #111827;
+            overflow-x: hidden;
+        }
 
-.sidebar {
 
-    position: fixed !important;
+        /* ==================================================
+           SIDEBAR
+        ================================================== */
 
-    top: 0 !important;
-    left: 0 !important;
+        .sidebar {
 
-    width: 210px !important;
-    height: 100vh !important;
+            position: fixed;
 
-    background: #111827 !important;
+            top: 0;
+            left: 0;
 
-    color: white;
+            width: 230px;
+            height: 100vh;
 
-    padding: 22px 12px;
+            background: #111827;
+            color: white;
 
-    overflow-y: auto;
+            padding: 22px 12px;
 
-    display: block !important;
+            overflow-y: auto;
 
-    z-index: 9999;
-}
+            z-index: 1000;
 
+            transition: transform 0.3s ease;
+        }
 
-/* ==================================================
-   LOGO
-================================================== */
 
-.logo {
+        /* ==================================================
+           LOGO
+        ================================================== */
 
-    width: 100%;
+        .logo {
 
-    text-align: center;
+            width: 100%;
 
-    margin-bottom: 25px;
-}
+            text-align: center;
 
-.logo-icon {
+            margin-bottom: 25px;
+        }
 
-    font-size: 30px;
 
-    margin-bottom: 4px;
-}
+        .logo-icon {
 
-.logo h2 {
+            font-size: 32px;
 
-    color: white;
+            margin-bottom: 5px;
+        }
 
-    font-size: 20px;
-}
 
-.logo p {
+        .logo h2 {
 
-    color: #9ca3af;
+            color: white;
 
-    font-size: 11px;
+            font-size: 20px;
 
-    margin-top: 3px;
-}
+            font-weight: bold;
+        }
 
 
-/* ==================================================
-   MENU
-================================================== */
+        .logo p {
 
-.menu {
+            color: #9ca3af;
 
-    width: 100% !important;
+            font-size: 11px;
 
-    display: flex !important;
+            margin-top: 4px;
+        }
 
-    flex-direction: column !important;
 
-    align-items: stretch !important;
+        /* ==================================================
+           MENU
+        ================================================== */
 
-    justify-content: flex-start !important;
+        .menu {
 
-    gap: 0 !important;
-}
+            width: 100%;
 
+            display: flex;
 
-/* TITRES */
+            flex-direction: column;
 
-.menu-title {
+            align-items: stretch;
 
-    display: block !important;
+            gap: 2px;
+        }
 
-    width: 100% !important;
 
-    color: #6b7280;
+        /* ==================================================
+           TITRES DU MENU
+        ================================================== */
 
-    font-size: 10px;
+        .menu-title {
 
-    font-weight: bold;
+            display: block;
 
-    text-transform: uppercase;
+            width: 100%;
 
-    margin: 18px 8px 7px !important;
-}
+            color: #6b7280;
 
+            font-size: 10px;
 
-/* LIENS */
+            font-weight: bold;
 
-.menu > a {
+            text-transform: uppercase;
 
-    display: flex !important;
+            letter-spacing: 0.5px;
 
-    flex-direction: row !important;
+            margin: 18px 8px 7px;
+        }
 
-    align-items: center !important;
 
-    justify-content: flex-start !important;
+        /* ==================================================
+           LIENS
+        ================================================== */
 
-    width: 100% !important;
+        .menu > a {
 
-    min-height: 40px;
+            display: flex;
 
-    padding: 10px 10px !important;
+            flex-direction: row;
 
-    margin-bottom: 4px;
+            align-items: center;
 
-    border-radius: 7px;
+            justify-content: flex-start;
 
-    color: #d1d5db;
+            width: 100%;
 
-    background: transparent;
+            min-height: 42px;
 
-    text-decoration: none;
+            padding: 10px 11px;
 
-    font-size: 13px;
+            margin-bottom: 3px;
 
-    white-space: nowrap;
+            border-radius: 7px;
 
-    transition:
-        background .2s,
-        color .2s;
-}
+            color: #d1d5db;
 
+            background: transparent;
 
-.menu > a:hover {
+            text-decoration: none;
 
-    background: #1f2937;
+            font-size: 13px;
 
-    color: white;
-}
+            white-space: nowrap;
 
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.15s ease;
+        }
 
-.menu > a.active {
 
-    background: #2563eb;
+        .menu > a:hover {
 
-    color: white;
-}
+            background: #1f2937;
 
+            color: white;
 
-/* ICONES */
+            transform: translateX(2px);
+        }
 
-.menu-icon {
 
-    display: inline-flex !important;
+        /* MENU ACTIF */
 
-    align-items: center;
+        .menu > a.active {
 
-    justify-content: center;
+            background: #2563eb;
 
-    width: 23px !important;
+            color: white;
 
-    min-width: 23px !important;
+            box-shadow:
+                0 3px 8px rgba(37, 99, 235, 0.25);
+        }
 
-    margin-right: 8px;
 
-    font-size: 16px;
-}
+        .menu > a.active:hover {
 
+            background: #1d4ed8;
 
-/* ==================================================
-   DÉCONNEXION
-================================================== */
+            transform: none;
+        }
 
-.logout {
 
-    width: 100%;
+        /* ==================================================
+           ICONES
+        ================================================== */
 
-    margin-top: 20px;
+        .menu-icon {
 
-    padding-top: 12px;
+            display: inline-flex;
 
-    border-top:
-        1px solid #374151;
-}
+            align-items: center;
 
+            justify-content: center;
 
-.logout a {
+            width: 25px;
 
-    color: #f87171 !important;
-}
+            min-width: 25px;
 
+            margin-right: 8px;
 
-.logout a:hover {
+            font-size: 16px;
+        }
 
-    background: #3f1d1d !important;
 
-    color: #fca5a5 !important;
-}
+        .menu-text {
 
+            overflow: hidden;
 
-/* ==================================================
-   CONTENU À DROITE
-================================================== */
+            text-overflow: ellipsis;
+        }
 
-.main {
 
-    display: block !important;
+        /* ==================================================
+           DÉCONNEXION
+        ================================================== */
 
-    width: calc(100% - 210px) !important;
+        .logout {
 
-    min-height: 100vh;
+            width: 100%;
 
-    margin-left: 210px !important;
-}
+            margin-top: 20px;
 
+            padding-top: 12px;
 
-/* ==================================================
-   BARRE DU HAUT
-================================================== */
+            border-top: 1px solid #374151;
+        }
 
-.topbar {
 
-    width: 100%;
+        .logout a {
 
-    height: 70px;
+            color: #f87171 !important;
+        }
 
-    background: white;
 
-    border-bottom:
-        1px solid #e5e7eb;
+        .logout a:hover {
 
-    display: flex;
+            background: #3f1d1d !important;
 
-    align-items: center;
+            color: #fca5a5 !important;
+        }
 
-    justify-content: space-between;
 
-    padding: 0 25px;
+        /* ==================================================
+           CONTENU PRINCIPAL
+        ================================================== */
 
-    position: sticky;
+        .main {
 
-    top: 0;
+            display: block;
 
-    z-index: 900;
-}
+            width: calc(100% - 230px);
 
+            min-height: 100vh;
 
-/* TITRE */
+            margin-left: 230px;
 
-.page-title {
+            transition:
+                margin-left 0.3s ease,
+                width 0.3s ease;
+        }
 
-    font-size: 21px;
 
-    font-weight: bold;
+        /* ==================================================
+           BARRE DU HAUT
+        ================================================== */
 
-    color: #111827;
-}
+        .topbar {
 
+            width: 100%;
 
-/* ==================================================
-   UTILISATEUR
-================================================== */
+            height: 70px;
 
-.user-info {
+            background: white;
 
-    display: flex;
+            border-bottom: 1px solid #e5e7eb;
 
-    align-items: center;
+            display: flex;
 
-    gap: 9px;
-}
+            align-items: center;
 
+            justify-content: space-between;
 
-.user-avatar {
+            padding: 0 25px;
 
-    width: 38px;
+            position: sticky;
 
-    height: 38px;
+            top: 0;
 
-    border-radius: 50%;
+            z-index: 900;
+        }
 
-    background: #2563eb;
 
-    color: white;
+        /* ==================================================
+           BOUTON MENU MOBILE
+        ================================================== */
 
-    display: flex;
+        .menu-toggle {
 
-    align-items: center;
+            display: none;
 
-    justify-content: center;
+            width: 40px;
 
-    font-weight: bold;
-}
+            height: 40px;
 
+            border: none;
 
-.user-text {
+            border-radius: 7px;
 
-    display: flex;
+            background: #111827;
 
-    flex-direction: column;
-}
+            color: white;
 
+            font-size: 20px;
 
-.user-name {
+            cursor: pointer;
 
-    font-size: 13px;
+            align-items: center;
 
-    font-weight: bold;
-}
+            justify-content: center;
+        }
 
 
-.user-role {
+        .menu-toggle:hover {
 
-    color: #6b7280;
+            background: #1f2937;
+        }
 
-    font-size: 11px;
 
-    text-transform: capitalize;
-}
+        /* ==================================================
+           TITRE PAGE
+        ================================================== */
 
+        .page-title {
 
-/* ==================================================
-   CONTENU
-================================================== */
+            font-size: 21px;
 
-.content {
+            font-weight: bold;
 
-    width: 100%;
+            color: #111827;
+        }
 
-    padding: 25px;
-}
 
+        /* ==================================================
+           UTILISATEUR
+        ================================================== */
 
-/* ==================================================
-   BOUTONS
-================================================== */
+        .user-info {
 
-.btn {
+            display: flex;
 
-    display: inline-block;
+            align-items: center;
 
-    padding: 9px 14px;
+            gap: 9px;
+        }
 
-    border-radius: 7px;
 
-    border: none;
+        .user-avatar {
 
-    text-decoration: none;
+            width: 38px;
 
-    cursor: pointer;
+            height: 38px;
 
-    font-size: 13px;
-}
+            min-width: 38px;
 
+            border-radius: 50%;
 
-.btn-primary {
+            background: #2563eb;
 
-    background: #2563eb;
+            color: white;
 
-    color: white;
-}
+            display: flex;
 
+            align-items: center;
 
-.btn-primary:hover {
+            justify-content: center;
 
-    background: #1d4ed8;
-}
+            font-weight: bold;
 
+            font-size: 14px;
+        }
 
-.btn-success {
 
-    background: #16a34a;
+        .user-text {
 
-    color: white;
-}
+            display: flex;
 
+            flex-direction: column;
 
-.btn-danger {
+            line-height: 1.3;
+        }
 
-    background: #dc2626;
 
-    color: white;
-}
+        .user-name {
 
+            font-size: 13px;
 
-.btn-warning {
+            font-weight: bold;
 
-    background: #f59e0b;
+            color: #111827;
+        }
 
-    color: white;
-}
 
+        .user-role {
 
-/* ==================================================
-   TABLEAUX
-================================================== */
+            color: #6b7280;
 
-.table-container {
+            font-size: 11px;
 
-    width: 100%;
+            text-transform: capitalize;
+        }
 
-    background: white;
 
-    border-radius: 10px;
+        /* ==================================================
+           CONTENU
+        ================================================== */
 
-    overflow-x: auto;
+        .content {
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.05);
-}
+            width: 100%;
 
+            padding: 25px;
+        }
 
-table {
 
-    width: 100%;
+        /* ==================================================
+           MESSAGES FLASH
+        ================================================== */
 
-    border-collapse: collapse;
-}
+        .flash-container {
 
+            width: 100%;
 
-th {
+            padding: 0 25px;
+        }
 
-    background: #f9fafb;
 
-    color: #374151;
+        .flash {
 
-    font-size: 12px;
+            padding: 11px 14px;
 
-    padding: 12px;
+            margin-top: 18px;
 
-    text-align: left;
+            border-radius: 7px;
 
-    border-bottom:
-        1px solid #e5e7eb;
-}
+            font-size: 13px;
 
+            border: 1px solid transparent;
+        }
 
-td {
 
-    padding: 12px;
+        .flash-success {
 
-    border-bottom:
-        1px solid #e5e7eb;
+            background: #dcfce7;
 
-    font-size: 13px;
-}
+            color: #166534;
 
+            border-color: #bbf7d0;
+        }
 
-tr:hover {
 
-    background: #f9fafb;
-}
+        .flash-danger {
 
+            background: #fee2e2;
 
-/* ==================================================
-   STATUTS
-================================================== */
+            color: #991b1b;
 
-.status {
+            border-color: #fecaca;
+        }
 
-    display: inline-block;
 
-    padding: 5px 9px;
+        .flash-warning {
 
-    border-radius: 20px;
+            background: #fef3c7;
 
-    font-size: 11px;
+            color: #92400e;
 
-    font-weight: bold;
-}
+            border-color: #fde68a;
+        }
 
 
-.status-en-attente {
+        .flash-info {
 
-    background: #fef3c7;
+            background: #dbeafe;
 
-    color: #92400e;
-}
+            color: #1e40af;
 
+            border-color: #bfdbfe;
+        }
 
-.status-en-cours {
 
-    background: #dbeafe;
+        /* ==================================================
+           BOUTONS
+        ================================================== */
 
-    color: #1e40af;
-}
+        .btn {
 
+            display: inline-flex;
 
-.status-terminee {
+            align-items: center;
 
-    background: #dcfce7;
+            justify-content: center;
 
-    color: #166534;
-}
+            gap: 5px;
 
+            padding: 9px 14px;
 
-.status-livree {
+            border-radius: 7px;
 
-    background: #e0e7ff;
+            border: none;
 
-    color: #3730a3;
-}
+            text-decoration: none;
 
+            cursor: pointer;
 
-/* ==================================================
-   MESSAGES
-================================================== */
+            font-size: 13px;
 
-.flash-container {
+            transition:
+                background 0.2s ease,
+                transform 0.15s ease;
+        }
 
-    width: 100%;
 
-    padding: 0 25px;
-}
+        .btn:hover {
 
+            transform: translateY(-1px);
+        }
 
-.flash {
 
-    padding: 11px 14px;
+        .btn-primary {
 
-    margin-top: 18px;
+            background: #2563eb;
 
-    border-radius: 7px;
+            color: white;
+        }
 
-    font-size: 13px;
-}
 
+        .btn-primary:hover {
 
-.flash-success {
+            background: #1d4ed8;
 
-    background: #dcfce7;
+            color: white;
+        }
 
-    color: #166534;
-}
 
+        .btn-success {
 
-.flash-danger {
+            background: #16a34a;
 
-    background: #fee2e2;
+            color: white;
+        }
 
-    color: #991b1b;
-}
 
+        .btn-success:hover {
 
-.flash-warning {
+            background: #15803d;
+        }
 
-    background: #fef3c7;
 
-    color: #92400e;
-}
+        .btn-danger {
 
+            background: #dc2626;
 
-.flash-info {
+            color: white;
+        }
 
-    background: #dbeafe;
 
-    color: #1e40af;
-}
+        .btn-danger:hover {
 
+            background: #b91c1c;
+        }
 
-/* ==================================================
-   RECHERCHE
-================================================== */
 
-.search-box {
+        .btn-warning {
 
-    width: 100%;
+            background: #f59e0b;
 
-    max-width: 400px;
+            color: white;
+        }
 
-    padding: 10px 13px;
 
-    border:
-        1px solid #d1d5db;
+        .btn-warning:hover {
 
-    border-radius: 7px;
+            background: #d97706;
+        }
 
-    outline: none;
-}
 
+        /* ==================================================
+           TABLEAUX
+        ================================================== */
 
-.search-box:focus {
+        .table-container {
 
-    border-color: #2563eb;
-}
+            width: 100%;
 
+            background: white;
 
-/* ==================================================
-   ACTIONS
-================================================== */
+            border-radius: 10px;
 
-.actions {
+            overflow-x: auto;
 
-    display: flex;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.05);
+        }
 
-    gap: 6px;
 
-    align-items: center;
-}
+        table {
 
+            width: 100%;
 
-/* ==================================================
-   RESPONSIVE
-================================================== */
+            border-collapse: collapse;
 
-@media (max-width: 700px) {
+            min-width: 600px;
+        }
 
-    .sidebar {
 
-        position: fixed !important;
+        th {
 
-        top: 0 !important;
+            background: #f9fafb;
 
-        left: 0 !important;
+            color: #374151;
 
-        width: 210px !important;
+            font-size: 12px;
 
-        height: 100vh !important;
+            padding: 12px;
 
-        display: block !important;
-    }
+            text-align: left;
 
+            border-bottom: 1px solid #e5e7eb;
 
-    .menu {
+            white-space: nowrap;
+        }
 
-        display: flex !important;
 
-        flex-direction: column !important;
+        td {
 
-        align-items: stretch !important;
-    }
+            padding: 12px;
 
+            border-bottom: 1px solid #e5e7eb;
 
-    .menu > a {
+            font-size: 13px;
+        }
 
-        display: flex !important;
 
-        flex-direction: row !important;
+        tr:hover {
 
-        width: 100% !important;
-    }
+            background: #f9fafb;
+        }
 
 
-    .main {
+        /* ==================================================
+           STATUTS
+        ================================================== */
 
-        margin-left: 210px !important;
+        .status {
 
-        width: calc(100% - 210px) !important;
-    }
+            display: inline-block;
 
+            padding: 5px 9px;
 
-    .topbar {
+            border-radius: 20px;
 
-        padding: 0 15px;
-    }
+            font-size: 11px;
 
+            font-weight: bold;
 
-    .content {
+            white-space: nowrap;
+        }
 
-        padding: 20px 15px;
-    }
 
+        .status-en-attente {
 
-    .page-title {
+            background: #fef3c7;
 
-        font-size: 18px;
-    }
+            color: #92400e;
+        }
 
 
-    .user-text {
+        .status-en-cours {
 
-        display: none;
-    }
+            background: #dbeafe;
 
-}
+            color: #1e40af;
+        }
 
-</style>
+
+        .status-terminee {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .status-livree {
+
+            background: #e0e7ff;
+
+            color: #3730a3;
+        }
+
+
+        /* ==================================================
+           RECHERCHE
+        ================================================== */
+
+        .search-box {
+
+            width: 100%;
+
+            max-width: 400px;
+
+            padding: 10px 13px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 7px;
+
+            outline: none;
+
+            background: white;
+
+            font-size: 13px;
+        }
+
+
+        .search-box:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+
+        /* ==================================================
+           ACTIONS
+        ================================================== */
+
+        .actions {
+
+            display: flex;
+
+            gap: 6px;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+        }
+
+
+        /* ==================================================
+           OVERLAY MOBILE
+        ================================================== */
+
+        .sidebar-overlay {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.45);
+
+            z-index: 999;
+        }
+
+
+        /* ==================================================
+           RESPONSIVE TABLETTE
+        ================================================== */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+
+                width: 210px;
+            }
+
+
+            .main {
+
+                width: calc(100% - 210px);
+
+                margin-left: 210px;
+            }
+
+
+            .topbar {
+
+                padding: 0 18px;
+            }
+
+
+            .content {
+
+                padding: 20px;
+            }
+
+
+            .flash-container {
+
+                padding: 0 20px;
+            }
+
+        }
+
+
+        /* ==================================================
+           RESPONSIVE TÉLÉPHONE
+        ================================================== */
+
+        @media (max-width: 700px) {
+
+            body {
+
+                overflow-x: hidden;
+            }
+
+
+            /* SIDEBAR CACHÉE */
+
+            .sidebar {
+
+                width: 230px;
+
+                transform: translateX(-100%);
+
+                box-shadow:
+                    5px 0 20px rgba(0, 0, 0, 0.2);
+            }
+
+
+            /* SIDEBAR OUVERTE */
+
+            .sidebar.mobile-open {
+
+                transform: translateX(0);
+            }
+
+
+            /* CONTENU */
+
+            .main {
+
+                width: 100%;
+
+                margin-left: 0;
+            }
+
+
+            /* TOPBAR */
+
+            .topbar {
+
+                height: 62px;
+
+                padding: 0 12px;
+
+                gap: 10px;
+            }
+
+
+            /* BOUTON MENU */
+
+            .menu-toggle {
+
+                display: flex;
+            }
+
+
+            /* TITRE */
+
+            .page-title {
+
+                font-size: 17px;
+
+                flex: 1;
+
+                white-space: nowrap;
+
+                overflow: hidden;
+
+                text-overflow: ellipsis;
+            }
+
+
+            /* UTILISATEUR */
+
+            .user-info {
+
+                gap: 0;
+            }
+
+
+            .user-text {
+
+                display: none;
+            }
+
+
+            .user-avatar {
+
+                width: 34px;
+
+                height: 34px;
+
+                min-width: 34px;
+
+                font-size: 13px;
+            }
+
+
+            /* CONTENU */
+
+            .content {
+
+                padding: 15px 12px;
+            }
+
+
+            .flash-container {
+
+                padding: 0 12px;
+            }
+
+
+            /* TABLEAU */
+
+            .table-container {
+
+                border-radius: 8px;
+            }
+
+
+            /* BOUTONS */
+
+            .btn {
+
+                padding: 9px 11px;
+
+                font-size: 12px;
+            }
+
+
+            /* OVERLAY */
+
+            .sidebar-overlay.active {
+
+                display: block;
+            }
+
+        }
+
+
+        /* ==================================================
+           PETITS TÉLÉPHONES
+        ================================================== */
+
+        @media (max-width: 400px) {
+
+            .page-title {
+
+                font-size: 15px;
+            }
+
+
+            .content {
+
+                padding: 12px 8px;
+            }
+
+
+            .flash-container {
+
+                padding: 0 8px;
+            }
+
+
+            .user-avatar {
+
+                width: 32px;
+
+                height: 32px;
+
+                min-width: 32px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -735,11 +1042,13 @@ tr:hover {
 
 
 <!-- ==================================================
-     MENU GAUCHE
+     SIDEBAR
 ================================================== -->
 
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
 
+
+    <!-- LOGO -->
 
     <div class="logo">
 
@@ -758,71 +1067,84 @@ tr:hover {
     </div>
 
 
+    <!-- MENU -->
+
     <nav class="menu">
 
 
-        <!-- PRINCIPAL -->
+        <!-- ================= PRINCIPAL ================= -->
 
         <div class="menu-title">
             Principal
         </div>
 
 
-        <a href="{{ url_for('index') }}">
+        <a href="{{ url_for('index') }}"
+           class="{% if request.endpoint == 'index' %}active{% endif %}">
 
             <span class="menu-icon">
                 🏠
             </span>
 
-            <span>
+            <span class="menu-text">
                 Tableau de bord
             </span>
 
         </a>
 
 
-        <!-- GESTION -->
+        <!-- ================= GESTION ================= -->
 
         <div class="menu-title">
             Gestion
         </div>
 
 
-        <a href="{{ url_for('clients') }}">
+        <!-- CLIENTS -->
+
+        <a href="{{ url_for('clients') }}"
+           class="{% if request.endpoint in ['clients', 'ajouter_client'] %}active{% endif %}">
 
             <span class="menu-icon">
                 👥
             </span>
 
-            <span>
+            <span class="menu-text">
                 Clients
             </span>
 
         </a>
 
 
-        <a href="{{ url_for('reparations') }}">
+        <!-- REPARATIONS -->
+
+        <a href="{{ url_for('reparations') }}"
+           class="{% if request.endpoint in ['reparations', 'ajouter_reparation'] %}active{% endif %}">
 
             <span class="menu-icon">
                 🔧
             </span>
 
-            <span>
+            <span class="menu-text">
                 Réparations
             </span>
 
         </a>
 
 
-        {% if current_user.role in ['admin', 'reception'] %}
+        <!-- NOUVELLE REPARATION -->
 
-        <a href="{{ url_for('ajouter_reparation') }}">
+        {% if current_user.is_authenticated
+              and current_user.role in ['admin', 'reception'] %}
+
+        <a href="{{ url_for('ajouter_reparation') }}"
+           class="{% if request.endpoint == 'ajouter_reparation' %}active{% endif %}">
 
             <span class="menu-icon">
                 ➕
             </span>
 
-            <span>
+            <span class="menu-text">
                 Nouvelle réparation
             </span>
 
@@ -831,108 +1153,138 @@ tr:hover {
         {% endif %}
 
 
-        <a href="{{ url_for('historique_reparations') }}">
+        <!-- HISTORIQUE -->
+
+        <a href="{{ url_for('historique_reparations') }}"
+           class="{% if request.endpoint == 'historique_reparations' %}active{% endif %}">
 
             <span class="menu-icon">
                 📜
             </span>
 
-            <span>
+            <span class="menu-text">
                 Historique
             </span>
 
         </a>
 
 
-        <a href="{{ url_for('materiels') }}">
+        <!-- MATERIELS -->
+
+        <a href="{{ url_for('materiels') }}"
+           class="{% if request.endpoint == 'materiels' %}active{% endif %}">
 
             <span class="menu-icon">
                 📦
             </span>
 
-            <span>
+            <span class="menu-text">
                 Matériels
             </span>
 
         </a>
 
 
-        <a href="{{ url_for('devis') }}">
+        <!-- DEVIS -->
+
+        <a href="{{ url_for('devis') }}"
+           class="{% if request.endpoint == 'devis' %}active{% endif %}">
 
             <span class="menu-icon">
                 🧾
             </span>
 
-            <span>
+            <span class="menu-text">
                 Devis
             </span>
 
         </a>
-    <a href="{{ url_for('finances') }}" class="menu-link">
-    <span class="menu-icon">💰</span>
-    <span>Finances</span>
-</a>
 
 
-        <a href="{{ url_for('rapport') }}">
+        <!-- FINANCES -->
+
+        <a href="{{ url_for('finances') }}"
+           class="{% if request.endpoint == 'finances' %}active{% endif %}">
+
+            <span class="menu-icon">
+                💰
+            </span>
+
+            <span class="menu-text">
+                Finances
+            </span>
+
+        </a>
+
+
+        <!-- RAPPORTS -->
+
+        <a href="{{ url_for('rapport') }}"
+           class="{% if request.endpoint == 'rapport' %}active{% endif %}">
 
             <span class="menu-icon">
                 📊
             </span>
 
-            <span>
+            <span class="menu-text">
                 Rapports
             </span>
 
         </a>
 
 
-        <!-- AUTRES -->
+        <!-- ================= AUTRES ================= -->
 
         <div class="menu-title">
             Autres
         </div>
 
 
-        <a href="{{ url_for('apropos') }}">
+        <!-- A PROPOS -->
+
+        <a href="{{ url_for('apropos') }}"
+           class="{% if request.endpoint == 'apropos' %}active{% endif %}">
 
             <span class="menu-icon">
                 ℹ️
             </span>
 
-            <span>
+            <span class="menu-text">
                 À propos
             </span>
 
         </a>
 
 
-        <!-- ADMINISTRATION -->
+        <!-- ================= ADMINISTRATION ================= -->
 
-        {% if current_user.role == 'admin' %}
+        {% if current_user.is_authenticated
+              and current_user.role == 'admin' %}
 
         <div class="menu-title">
             Administration
         </div>
 
 
-        
-<a href="{{ url_for('utilisateurs') }}"
-   class="menu-item {% if request.endpoint == 'utilisateurs' %}active{% endif %}">
+        <!-- UTILISATEURS -->
 
-    <span class="menu-icon">👥</span>
+        <a href="{{ url_for('utilisateurs') }}"
+           class="{% if request.endpoint == 'utilisateurs' %}active{% endif %}">
 
-    <span class="menu-text">
-        Utilisateurs
-    </span>
+            <span class="menu-icon">
+                👥
+            </span>
 
-</a>
+            <span class="menu-text">
+                Utilisateurs
+            </span>
 
+        </a>
 
         {% endif %}
 
 
-        <!-- DÉCONNEXION -->
+        <!-- ================= DECONNEXION ================= -->
 
         <div class="logout">
 
@@ -942,7 +1294,7 @@ tr:hover {
                     🚪
                 </span>
 
-                <span>
+                <span class="menu-text">
                     Déconnexion
                 </span>
 
@@ -957,33 +1309,76 @@ tr:hover {
 
 
 <!-- ==================================================
-     CONTENU À DROITE
+     OVERLAY MOBILE
+================================================== -->
+
+<div class="sidebar-overlay"
+     id="sidebarOverlay"
+     onclick="closeSidebar()">
+</div>
+
+
+<!-- ==================================================
+     CONTENU PRINCIPAL
 ================================================== -->
 
 <main class="main">
 
 
+    <!-- ================= TOPBAR ================= -->
+
     <header class="topbar">
 
+
+        <!-- BOUTON MOBILE -->
+
+        <button class="menu-toggle"
+                id="menuToggle"
+                onclick="toggleSidebar()">
+
+            ☰
+
+        </button>
+
+
+        <!-- TITRE -->
 
         <div class="page-title">
 
             {% block page_title %}
+
                 Mon Atelier
+
             {% endblock %}
 
         </div>
 
 
+        <!-- UTILISATEUR -->
+
+        {% if current_user.is_authenticated %}
+
         <div class="user-info">
 
 
+            <!-- AVATAR -->
+
             <div class="user-avatar">
 
-                {{ current_user.username[0]|upper }}
+                {% if current_user.username %}
+
+                    {{ current_user.username[0]|upper }}
+
+                {% else %}
+
+                    U
+
+                {% endif %}
 
             </div>
 
+
+            <!-- INFORMATIONS -->
 
             <div class="user-text">
 
@@ -1005,19 +1400,19 @@ tr:hover {
 
         </div>
 
+        {% endif %}
+
 
     </header>
 
 
-    <!-- MESSAGES -->
+    <!-- ==================================================
+         MESSAGES FLASH
+    ================================================== -->
 
     <div class="flash-container">
 
-        {% with messages =
-            get_flashed_messages(
-                with_categories=true
-            )
-        %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
 
             {% if messages %}
 
@@ -1038,14 +1433,93 @@ tr:hover {
     </div>
 
 
-    <!-- CONTENU DES PAGES -->
+    <!-- ==================================================
+         CONTENU DES PAGES
+    ================================================== -->
 
-    {% block content %}
+    <div class="content">
 
-    {% endblock %}
+        {% block content %}
+
+        {% endblock %}
+
+    </div>
 
 
 </main>
+
+
+<!-- ==================================================
+     JAVASCRIPT MENU MOBILE
+================================================== -->
+
+<script>
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        sidebar.classList.toggle("mobile-open");
+
+        overlay.classList.toggle("active");
+    }
+
+
+    function closeSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        sidebar.classList.remove("mobile-open");
+
+        overlay.classList.remove("active");
+    }
+
+
+    /*
+       Fermer automatiquement le menu
+       après avoir cliqué sur un lien
+       sur téléphone.
+    */
+
+    document.querySelectorAll(".menu a").forEach(function(link) {
+
+        link.addEventListener("click", function() {
+
+            if (window.innerWidth <= 700) {
+
+                closeSidebar();
+
+            }
+
+        });
+
+    });
+
+
+    /*
+       Si on agrandit la fenêtre,
+       on remet le menu dans son état normal.
+    */
+
+    window.addEventListener("resize", function() {
+
+        if (window.innerWidth > 700) {
+
+            closeSidebar();
+
+        }
+
+    });
+
+</script>
 
 
 </body>

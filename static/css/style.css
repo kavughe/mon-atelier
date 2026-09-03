@@ -1313,3 +1313,255 @@ table tr:hover {
         min-width: 900px;
     }
 }
+/* VERSION TELEPHONE */
+
+@media (max-width: 600px) {
+
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    header {
+        padding: 25px 15px;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+
+    header p {
+        font-size: 14px;
+    }
+
+    /* MENU */
+
+    nav {
+        padding: 10px;
+    }
+
+    nav a {
+        display: block;
+        margin: 8px 0;
+        font-size: 16px;
+    }
+
+    /* ACCUEIL */
+
+    .accueil {
+        padding: 60px 15px;
+        min-height: 350px;
+    }
+
+    .accueil h2 {
+        font-size: 28px;
+    }
+
+    .accueil p {
+        font-size: 17px;
+    }
+
+    /* A PROPOS */
+
+    .apropos {
+        width: 90%;
+        padding: 25px;
+        margin: 25px auto;
+    }
+
+    .apropos h2 {
+        font-size: 25px;
+    }
+
+    /* SERVICES */
+
+    .services-page {
+        padding: 30px 15px;
+    }
+
+    .services-page > h2 {
+        font-size: 28px;
+    }
+
+    .services {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .carte {
+        width: 90%;
+        max-width: 350px;
+    }
+
+    /* FORMULAIRE */
+
+    .contact {
+        padding: 30px 15px;
+    }
+
+    .formulaire {
+        width: 100%;
+        padding: 20px;
+    }
+
+    /* IMAGES */
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* PIED DE PAGE */
+
+    footer {
+        font-size: 14px;
+    }
+}
+/* ==================================================
+   TABLEAU DE BORD - VERSION TÉLÉPHONE
+================================================== */
+
+@media (max-width: 700px) {
+
+    /* Conteneur général */
+    .content {
+        width: 100%;
+        padding: 12px;
+        overflow-x: hidden;
+    }
+
+    /* Toutes les rangées */
+    .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Cartes statistiques */
+    .stats-grid,
+    .dashboard-grid,
+    .cards-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    /* Carte */
+    .card,
+    .stat-card,
+    .dashboard-card {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        border-radius: 10px;
+    }
+
+    /* Texte des cartes */
+    .card h2,
+    .stat-card h2 {
+        font-size: 20px !important;
+    }
+
+    .card h3,
+    .stat-card h3 {
+        font-size: 14px !important;
+    }
+
+    .card p,
+    .stat-card p {
+        font-size: 11px !important;
+    }
+
+    /* Icônes statistiques */
+    .stat-icon {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 18px !important;
+    }
+
+    /* Boutons du tableau de bord */
+    .dashboard-actions,
+    .quick-actions {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .dashboard-actions .btn,
+    .quick-actions .btn {
+        width: 100% !important;
+        min-height: 42px;
+        font-size: 12px;
+        padding: 9px 6px;
+    }
+
+    /* Titres */
+    .dashboard-title {
+        font-size: 18px !important;
+    }
+
+    .section-title {
+        font-size: 15px !important;
+        margin-bottom: 10px;
+    }
+
+    /* Tables */
+    .table-container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-container table {
+        min-width: 650px;
+    }
+
+    /* Actions dans les tableaux */
+    .actions {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+
+}
+
+
+/* ==================================================
+   TRÈS PETIT TÉLÉPHONE
+================================================== */
+
+@media (max-width: 400px) {
+
+    .content {
+        padding: 9px;
+    }
+
+    .stats-grid,
+    .dashboard-grid,
+    .cards-grid {
+        gap: 7px !important;
+    }
+
+    .card,
+    .stat-card,
+    .dashboard-card {
+        padding: 10px !important;
+    }
+
+    .card h2,
+    .stat-card h2 {
+        font-size: 18px !important;
+    }
+
+    .card p,
+    .stat-card p {
+        font-size: 10px !important;
+    }
+
+    .dashboard-actions,
+    .quick-actions {
+        grid-template-columns: 1fr !important;
+    }
+
+}
