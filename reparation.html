@@ -1,0 +1,595 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Réparation - MON ATELIER</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- =================================
+     EN-TÊTE
+================================= -->
+
+<header>
+
+    <h1>MON ATELIER</h1>
+
+
+    <button id="menuBouton">
+        ☰ Menu
+    </button>
+
+
+    <nav id="menu">
+
+        <a href="index.html">
+            Accueil
+        </a>
+
+        <a href="apropos.html">
+            À propos
+        </a>
+
+        <a href="services.html">
+            Services
+        </a>
+
+        <a href="galerie.html">
+            Galerie
+        </a>
+
+        <a href="contact.html">
+            Contact
+        </a>
+
+        <a href="reparation.html">
+            Réparation
+        </a>
+         <a href="finance.html">Finance</a>
+
+    </nav>
+
+
+    <!-- Utilisateur connecté -->
+
+    <p id="utilisateurConnecte"></p>
+
+
+    <!-- Déconnexion -->
+
+    <button id="btnDeconnexion">
+        🚪 Déconnexion
+    </button>
+
+</header>
+
+
+
+<!-- =================================
+     CONTENU
+================================= -->
+
+<main class="page-reparation">
+
+
+    <h2>
+        Gestion des réparations
+    </h2>
+
+
+
+    <!-- =================================
+         FORMULAIRE
+    ================================= -->
+
+    <form id="formulaireReparation">
+
+
+        <label for="client">
+            Nom du client
+        </label>
+
+        <input
+            type="text"
+            id="client"
+            placeholder="Nom du client"
+            required
+        >
+
+
+
+        <label for="telephone">
+            Téléphone
+        </label>
+
+        <input
+            type="tel"
+            id="telephone"
+            placeholder="Numéro de téléphone"
+            required
+        >
+
+
+
+        <label for="appareil">
+            Appareil
+        </label>
+
+        <select
+            id="appareil"
+            required
+        >
+
+            <option value="">
+                -- Choisir l'appareil --
+            </option>
+
+            <option value="Téléphone">
+                Téléphone
+            </option>
+
+            <option value="Ordinateur">
+                Ordinateur
+            </option>
+
+            <option value="Télévision">
+                Télévision
+            </option>
+
+            <option value="Radio">
+                Radio
+            </option>
+
+            <option value="Imprimante">
+                Imprimante
+            </option>
+
+            <option value="Autre">
+                Autre
+            </option>
+
+        </select>
+
+
+
+        <label for="marque">
+            Marque
+        </label>
+
+        <input
+            type="text"
+            id="marque"
+            placeholder="Ex : Samsung"
+            required
+        >
+
+
+
+        <label for="panne">
+            Description de la panne
+        </label>
+
+        <textarea
+            id="panne"
+            rows="5"
+            placeholder="Décrire la panne..."
+            required
+        ></textarea>
+
+
+
+        <label for="prix">
+            Prix estimé (FC)
+        </label>
+
+        <input
+            type="number"
+            id="prix"
+            placeholder="Ex : 50"
+            min="0"
+        >
+
+
+
+        <label for="statut">
+            Statut
+        </label>
+
+        <select id="statut">
+
+            <option value="En attente">
+                En attente
+            </option>
+
+            <option value="En réparation">
+                En réparation
+            </option>
+
+            <option value="Réparé">
+                Réparé
+            </option>
+
+            <option value="Livré">
+                Livré
+            </option>
+
+        </select>
+
+
+
+        <!-- =================================
+             BOUTONS
+        ================================= -->
+
+        <div class="boutons-reparation">
+
+
+            <!-- Enregistrer -->
+
+            <button
+                type="submit"
+                id="btnEnregistrer"
+            >
+                ➕ Enregistrer
+            </button>
+
+
+
+            <!-- Modifier -->
+
+            <button
+                type="button"
+                id="btnModifier"
+            >
+                ✏️ Modifier
+            </button>
+
+
+
+            <!-- Effacer -->
+
+            <button
+                type="button"
+                id="btnEffacer"
+            >
+                🗑️ Effacer
+            </button>
+
+
+
+            <!-- Nouveau -->
+
+            <button
+                type="button"
+                id="btnNouveau"
+            >
+                🔄 Nouveau
+            </button>
+
+        </div>
+
+    </form>
+
+
+
+    <!-- Message -->
+
+    <p id="messageReparation"></p>
+
+
+
+    <!-- =================================
+         LISTE
+    ================================= -->
+
+    <section class="liste-reparations">
+
+
+        <h2>
+            Liste des appareils
+        </h2>
+
+
+
+        <!-- Recherche -->
+
+        <input
+            type="search"
+            id="recherche"
+            placeholder="🔎 Rechercher un client, appareil, marque..."
+        >
+
+
+
+        <!-- Tableau -->
+
+        <div class="table-container">
+
+
+            <table id="tableReparations">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            N°
+                        </th>
+                        <th>Date</th>
+
+                        <th>
+                            Client
+                        </th>
+
+                        <th>
+                            Téléphone
+                        </th>
+
+                        <th>
+                            Appareil
+                        </th>
+
+                        <th>
+                            Marque
+                        </th>
+
+                        <th>
+                            Panne
+                        </th>
+
+                        <th>
+                            Prix
+                        </th>
+                        <label for="acompte">
+    Acompte (FC)
+</label>
+
+<input
+    type="number"
+    id="acompte"
+    placeholder="Ex : 20"
+    min="0"
+    value="0"
+>
+
+
+<label for="reste">
+    Reste à payer (FC)
+</label>
+
+<input
+    type="number"
+    id="reste"
+    readonly
+    value="0"
+>
+
+                        <th>
+                            Statut
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody id="listeReparations">
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =================================
+     PROTECTION DE LA PAGE
+================================= -->
+
+<script>
+
+    const acces =
+        sessionStorage.getItem(
+            "accesReparation"
+        );
+
+
+    if (acces !== "autorise") {
+
+        window.location.href =
+            "connexion.html";
+
+    }
+
+</script>
+
+
+
+<!-- =================================
+     JAVASCRIPT PRINCIPAL
+================================= -->
+
+<script src="script.js"></script>
+
+
+
+<!-- =================================
+     AFFICHAGE DU RÔLE
+================================= -->
+
+<script>
+
+    const role =
+        sessionStorage.getItem("role");
+
+
+    const utilisateurConnecte =
+        document.getElementById(
+            "utilisateurConnecte"
+        );
+
+
+    if (role === "admin") {
+
+        utilisateurConnecte.textContent =
+            "👨‍💼 Administrateur";
+
+    }
+
+
+    else if (role === "reception") {
+
+        utilisateurConnecte.textContent =
+            "👤 Réceptionniste";
+
+    }
+
+
+    else if (role === "consultation") {
+
+        utilisateurConnecte.textContent =
+            "👁️ Consultation";
+
+    }
+
+
+</script>
+
+
+
+<!-- =================================
+     GESTION DES DROITS
+================================= -->
+
+<script>
+
+    const boutonEnregistrer =
+        document.getElementById(
+            "btnEnregistrer"
+        );
+
+
+    const boutonModifier =
+        document.getElementById(
+            "btnModifier"
+        );
+
+
+    const boutonEffacer =
+        document.getElementById(
+            "btnEffacer"
+        );
+
+
+    const boutonNouveau =
+        document.getElementById(
+            "btnNouveau"
+        );
+
+
+
+    /*
+       CONSULTATION
+       -------------------------
+       Peut seulement voir
+       et rechercher.
+    */
+
+    if (role === "consultation") {
+
+        if (boutonEnregistrer) {
+            boutonEnregistrer.remove();
+        }
+
+        if (boutonModifier) {
+            boutonModifier.remove();
+        }
+
+        if (boutonEffacer) {
+            boutonEffacer.remove();
+        }
+
+        if (boutonNouveau) {
+            boutonNouveau.remove();
+        }
+
+    }
+
+
+
+    /*
+       RECEPTION
+       -------------------------
+       Peut ajouter.
+       Ne peut pas modifier
+       ni effacer.
+    */
+
+    if (role === "reception") {
+
+        if (boutonModifier) {
+            boutonModifier.remove();
+        }
+
+        if (boutonEffacer) {
+            boutonEffacer.remove();
+        }
+
+    }
+
+</script>
+
+
+
+<!-- =================================
+     DÉCONNEXION
+================================= -->
+
+<script src="deconnexion.js"></script>
+
+<script src="script.js"></script>
+
+<script>
+    const btnDeconnexion =
+        document.getElementById("btnDeconnexion");
+
+    if (btnDeconnexion) {
+
+        btnDeconnexion.addEventListener("click", function () {
+
+            sessionStorage.removeItem("accesReparation");
+            sessionStorage.removeItem("role");
+
+            window.location.href = "connexion.html";
+
+        });
+
+    }
+</script>
+</body>
+
+</html>
+```

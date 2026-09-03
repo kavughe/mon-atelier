@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Rapports - Mon Atelier</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         HEADER
+         ===================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            🔧
+
+            <div>
+
+                <h1>Mon Atelier</h1>
+
+                <p>
+                    Gestion de réparations
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menu-btn"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         MENU
+         ===================================== -->
+
+    <nav id="menu" class="menu">
+
+        <a href="index.html">
+            🏠 Accueil
+        </a>
+
+        <a href="clients.html">
+            👥 Clients
+        </a>
+
+        <a href="reparations.html">
+            🔧 Réparations
+        </a>
+
+        <a href="historique.html">
+            📜 Historique
+        </a>
+
+        <a href="rapports.html">
+            📊 Rapports
+        </a>
+
+        <a href="depenses.html">
+            💸 Dépenses
+        </a>
+
+        <a href="services.html">
+            ⚙️ Services
+        </a>
+
+        <a href="apropos.html">
+            ℹ️ À propos
+        </a>
+        <a href="motdepasse.html">
+    🔑 Mot de passe
+</a>
+
+<a href="#" onclick="deconnexion(); return false;">
+    🚪 Déconnexion
+</a>
+
+    </nav>
+
+
+
+    <!-- =====================================
+         CONTENU
+         ===================================== -->
+
+    <main class="container">
+
+
+        <!-- TITRE -->
+
+        <section class="welcome">
+
+            <h2>
+                📊 Rapports financiers
+            </h2>
+
+            <p>
+                Consultez les recettes, les dépenses
+                et le bénéfice de votre atelier.
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================
+             AUJOURD'HUI
+             ================================= -->
+
+        <section class="recent">
+
+            <h2>
+                📅 Aujourd'hui
+            </h2>
+
+
+            <div class="stats">
+
+
+                <!-- RECETTES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💵
+                    </div>
+
+                    <div>
+
+                        <h3 id="recetteJour">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Recettes
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DEPENSES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💸
+                    </div>
+
+                    <div>
+
+                        <h3 id="depenseJour">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Dépenses
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BENEFICE -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        📈
+                    </div>
+
+                    <div>
+
+                        <h3 id="beneficeJour">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Bénéfice
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             SEMAINE
+             ================================= -->
+
+        <section class="recent">
+
+            <h2>
+                📅 Cette semaine
+            </h2>
+
+
+            <div class="stats">
+
+
+                <!-- RECETTES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💵
+                    </div>
+
+                    <div>
+
+                        <h3 id="recetteSemaine">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Recettes
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DEPENSES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💸
+                    </div>
+
+                    <div>
+
+                        <h3 id="depenseSemaine">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Dépenses
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BENEFICE -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        📈
+                    </div>
+
+                    <div>
+
+                        <h3 id="beneficeSemaine">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Bénéfice
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             MOIS
+             ================================= -->
+
+        <section class="recent">
+
+            <h2>
+                📆 Ce mois
+            </h2>
+
+
+            <div class="stats">
+
+
+                <!-- RECETTES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💵
+                    </div>
+
+                    <div>
+
+                        <h3 id="recetteMois">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Recettes
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DEPENSES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💸
+                    </div>
+
+                    <div>
+
+                        <h3 id="depenseMois">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Dépenses
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BENEFICE -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        📈
+                    </div>
+
+                    <div>
+
+                        <h3 id="beneficeMois">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Bénéfice
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             BILAN GENERAL
+             ================================= -->
+
+        <section class="recent">
+
+            <h2>
+                💰 Bilan général
+            </h2>
+
+
+            <div class="stats">
+
+
+                <!-- TOTAL RECETTES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💵
+                    </div>
+
+                    <div>
+
+                        <h3 id="recetteTotale">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Total recettes
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL DEPENSES -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💸
+                    </div>
+
+                    <div>
+
+                        <h3 id="depenseTotale">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Total dépenses
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BENEFICE TOTAL -->
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        📈
+                    </div>
+
+                    <div>
+
+                        <h3 id="beneficeTotal">
+                            0 FC
+                        </h3>
+
+                        <p>
+                            Bénéfice total
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+            
+
+        </section>
+
+
+
+        <!-- =================================
+             EXPLICATION
+             ================================= -->
+
+        <section class="recent">
+
+            <h2>
+                ℹ️ Calcul du bénéfice
+            </h2>
+
+            <p>
+                Le bénéfice est calculé automatiquement
+                avec la formule :
+            </p>
+
+            <h3>
+                💵 Recettes − 💸 Dépenses = 📈 Bénéfice
+            </h3>
+
+        </section>
+        <section class="recent">
+
+    <h2>📊 Graphique des finances</h2>
+
+    <div class="graphique-container">
+
+        <canvas id="graphiqueFinances"></canvas>
+
+    </div>
+
+</section>
+
+
+    </main>
+
+
+
+    <!-- =====================================
+         FOOTER
+         ===================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Mon Atelier —
+            Gestion de réparations
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================
+         JAVASCRIPT
+         ===================================== -->
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="rapports.js"></script>
+
+
+</body>
+
+</html>

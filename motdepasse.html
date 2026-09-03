@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Changer le mot de passe - Mon Atelier</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="protection.js"></script>
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🔧
+        </div>
+
+        <div>
+            <h1>Mon Atelier</h1>
+            <p>Gestion de l'atelier</p>
+        </div>
+
+    </div>
+
+    <button
+        class="menu-btn"
+        onclick="ouvrirMenu()">
+        ☰
+    </button>
+
+</header>
+
+
+<!-- MENU -->
+
+<nav id="menu" class="menu">
+
+    <a href="index.html">
+        🏠 Accueil
+    </a>
+
+    <a href="clients.html">
+        👥 Clients
+    </a>
+
+    <a href="reparations.html">
+        🔧 Réparations
+    </a>
+
+    <a href="historique.html">
+        📜 Historique
+    </a>
+
+    <a href="services.html">
+        🛠️ Services
+    </a>
+
+    <a href="depenses.html">
+        💸 Dépenses
+    </a>
+
+    <a href="rapports.html">
+        📊 Rapports
+    </a>
+
+    <a href="apropos.html">
+        ℹ️ À propos
+    </a>
+
+    <a href="motdepasse.html" class="active">
+        🔑 Mot de passe
+    </a>
+
+    <a href="#"
+       onclick="deconnexion(); return false;">
+        🚪 Déconnexion
+    </a>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="password-card">
+
+        <div class="password-header">
+
+            <div class="password-icon">
+                🔐
+            </div>
+
+            <div>
+
+                <h2>Changer le mot de passe</h2>
+
+                <p>
+                    Modifiez le mot de passe de votre
+                    compte administrateur.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="formMotDePasse">
+
+
+            <!-- ANCIEN MOT DE PASSE -->
+
+            <div class="form-group">
+
+                <label for="ancienMotDePasse">
+                    🔑 Ancien mot de passe
+                </label>
+
+                <div class="password-input">
+
+                    <input
+                        type="password"
+                        id="ancienMotDePasse"
+                        placeholder="Entrez votre ancien mot de passe"
+                        required>
+
+                    <button
+                        type="button"
+                        onclick="afficherMotDePasse('ancienMotDePasse', this)">
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- NOUVEAU MOT DE PASSE -->
+
+            <div class="form-group">
+
+                <label for="nouveauMotDePasse">
+                    🔐 Nouveau mot de passe
+                </label>
+
+                <div class="password-input">
+
+                    <input
+                        type="password"
+                        id="nouveauMotDePasse"
+                        placeholder="Entrez le nouveau mot de passe"
+                        minlength="4"
+                        required>
+
+                    <button
+                        type="button"
+                        onclick="afficherMotDePasse('nouveauMotDePasse', this)">
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRMATION -->
+
+            <div class="form-group">
+
+                <label for="confirmationMotDePasse">
+                    🔐 Confirmer le nouveau mot de passe
+                </label>
+
+                <div class="password-input">
+
+                    <input
+                        type="password"
+                        id="confirmationMotDePasse"
+                        placeholder="Confirmez le nouveau mot de passe"
+                        minlength="4"
+                        required>
+
+                    <button
+                        type="button"
+                        onclick="afficherMotDePasse('confirmationMotDePasse', this)">
+                        👁️
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div id="messageMotDePasse"
+                 class="password-message">
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-save-password">
+
+                💾 Enregistrer le nouveau mot de passe
+
+            </button>
+
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 Mon Atelier — Gestion d'atelier
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
+<script src="motdepasse.js"></script>
+
+</body>
+
+</html>

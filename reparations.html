@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Réparations - Mon Atelier</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Protection de la connexion -->
+    <script src="protection.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     HEADER
+     ========================================== -->
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🔧
+        </div>
+
+        <div>
+
+            <h1>Mon Atelier</h1>
+
+            <p>
+                Gestion de l'atelier
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <div class="user-role">
+
+            👤
+
+            <span class="role-utilisateur">
+                Utilisateur
+            </span>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="menu-btn"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ==========================================
+     MENU
+     ========================================== -->
+
+<nav id="menu" class="menu">
+
+    <a href="index.html">
+        🏠 Accueil
+    </a>
+
+    <a href="clients.html">
+        👥 Clients
+    </a>
+
+    <a href="reparations.html"
+       class="active">
+
+        🔧 Réparations
+
+    </a>
+
+    <a href="historique.html">
+        📜 Historique
+    </a>
+
+    <a href="services.html">
+        🛠️ Services
+    </a>
+
+    <a href="depenses.html">
+        💸 Dépenses
+    </a>
+
+    <a href="rapports.html">
+        📊 Rapports
+    </a>
+
+    <a href="apropos.html">
+        ℹ️ À propos
+    </a>
+
+    <a href="profil.html">
+        👤 Profil
+    </a>
+
+    <a href="motdepasse.html">
+        🔑 Mot de passe
+    </a>
+
+    <a href="#"
+       onclick="deconnexion(); return false;">
+
+        🚪 Déconnexion
+
+    </a>
+
+</nav>
+
+
+<!-- ==========================================
+     CONTENU
+     ========================================== -->
+
+<main class="container">
+
+
+    <!-- ======================================
+         TITRE
+         ====================================== -->
+
+    <section class="page-header">
+
+        <div>
+
+            <span class="page-label">
+                ATELIER
+            </span>
+
+            <h2>
+                🔧 Réparations
+            </h2>
+
+            <p>
+                Enregistrez et suivez les réparations
+                de votre atelier.
+            </p>
+
+        </div>
+
+
+        <div class="page-header-badge">
+
+            <span id="nombreReparations">
+                0
+            </span>
+
+            <small>
+                Réparations
+            </small>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         RECHERCHE
+         ====================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-label">
+                    RECHERCHE
+                </span>
+
+                <h2>
+                    🔎 Rechercher une réparation
+                </h2>
+
+                <p>
+                    Recherchez par client,
+                    téléphone ou appareil.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="search-box">
+
+            <input
+                type="search"
+                id="rechercheReparation"
+                placeholder="Nom, téléphone ou appareil..."
+                autocomplete="off">
+
+            <button
+                type="button"
+                onclick="rechercherReparation()">
+
+                🔎 Rechercher
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         FORMULAIRE
+         ADMIN + RECEPTION
+         ====================================== -->
+
+    <section
+        class="card modification-only"
+        id="zoneFormulaireReparation">
+
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-label">
+                    NOUVELLE RÉPARATION
+                </span>
+
+                <h2 id="titreFormulaireReparation">
+                    ➕ Nouvelle réparation
+                </h2>
+
+                <p>
+                    Enregistrez les informations
+                    de la réparation.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            id="formReparation"
+            autocomplete="off">
+
+
+            <input
+                type="hidden"
+                id="reparationId">
+
+
+            <!-- CLIENT -->
+
+            <div class="form-group">
+
+                <label for="client">
+                    👤 Client
+                </label>
+
+                <select
+                    id="client"
+                    name="client"
+                    required>
+
+                    <option value="">
+                        -- Sélectionner un client --
+                    </option>
+
+                </select>
+
+                <p
+                    id="aucunClient"
+                    class="form-help"
+                    style="display:none;">
+
+                    ⚠️ Aucun client enregistré.
+                    Ajoutez d'abord un client.
+
+                </p>
+
+            </div>
+
+
+            <!-- APPAREIL -->
+
+            <div class="form-group">
+
+                <label for="appareil">
+                    📱 Appareil
+                </label>
+
+                <input
+                    type="text"
+                    id="appareil"
+                    name="appareil"
+                    placeholder="Ex : iPhone 12, TV Samsung..."
+                    required>
+
+            </div>
+
+
+            <!-- PANNE -->
+
+            <div class="form-group">
+
+                <label for="panne">
+                    🔍 Panne
+                </label>
+
+                <textarea
+                    id="panne"
+                    name="panne"
+                    rows="3"
+                    placeholder="Décrivez la panne..."
+                    required></textarea>
+
+            </div>
+
+
+            <!-- PRIX -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="prix">
+                        💰 Prix total
+                    </label>
+
+                    <input
+                        type="number"
+                        id="prix"
+                        name="prix"
+                        min="0"
+                        step="1"
+                        placeholder="0"
+                        required>
+
+                </div>
+
+
+                <!-- PAYE -->
+
+                <div class="form-group">
+
+                    <label for="paye">
+                        💵 Montant payé
+                    </label>
+
+                    <input
+                        type="number"
+                        id="paye"
+                        name="paye"
+                        min="0"
+                        step="1"
+                        value="0"
+                        placeholder="0">
+
+                </div>
+
+            </div>
+
+
+            <!-- RESTE -->
+
+            <div class="payment-summary">
+
+                <span>
+                    ⏳ Reste à payer
+                </span>
+
+                <strong id="reste">
+                    0 FC
+                </strong>
+
+            </div>
+
+
+            <!-- STATUT -->
+
+            <div class="form-group">
+
+                <label for="statut">
+                    📌 Statut
+                </label>
+
+                <select
+                    id="statut"
+                    name="statut">
+
+                    <option value="En attente">
+                        🟡 En attente
+                    </option>
+
+                    <option value="En cours">
+                        🔵 En cours
+                    </option>
+
+                    <option value="Terminée">
+                        🟢 Terminée
+                    </option>
+
+                    <option value="Livrée">
+                        ⚫ Livrée
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- BOUTONS -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn-primary">
+
+                    💾 Enregistrer la réparation
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="annulerModificationReparation()">
+
+                    ✖️ Annuler
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ======================================
+         LISTE DES REPARATIONS
+         ====================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <span class="card-label">
+                    SUIVI
+                </span>
+
+                <h2>
+                    📋 Liste des réparations
+                </h2>
+
+                <p>
+                    Toutes les réparations enregistrées.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="listeReparations"
+            class="reparations-list">
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🔧
+                </div>
+
+                <h3>
+                    Aucune réparation
+                </h3>
+
+                <p>
+                    Aucune réparation n'est encore
+                    enregistrée.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         MODE CONSULTATION
+         ====================================== -->
+
+    <section
+        class="info-box consultation-only">
+
+        <div class="info-icon">
+            👁️
+        </div>
+
+        <div>
+
+            <strong>
+                Mode consultation
+            </strong>
+
+            <p>
+                Vous pouvez consulter les réparations,
+                mais vous ne pouvez pas les modifier.
+            </p>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+
+<footer>
+
+    <p>
+        © 2026 Mon Atelier — Gestion d'atelier
+    </p>
+
+</footer>
+
+
+<!-- ==========================================
+     JAVASCRIPT
+     ========================================== -->
+
+<script src="script.js"></script>
+
+<script src="reparations.js"></script>
+
+
+</body>
+
+</html>

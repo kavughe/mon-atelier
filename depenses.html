@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dépenses - Mon Atelier</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         EN-TÊTE
+         ===================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            🔧
+
+            <div>
+
+                <h1>Mon Atelier</h1>
+
+                <p>
+                    Gestion de réparations
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="menu-btn"
+            onclick="ouvrirMenu()">
+
+            ☰
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         MENU
+         ===================================== -->
+
+    <nav id="menu" class="menu">
+
+        <a href="index.html">
+            🏠 Accueil
+        </a>
+
+        <a href="clients.html">
+            👥 Clients
+        </a>
+
+        <a href="reparations.html">
+            🔧 Réparations
+        </a>
+
+        <a href="historique.html">
+            📜 Historique
+        </a>
+
+        <a href="rapports.html">
+            📊 Rapports
+        </a>
+
+        <a href="depenses.html">
+            💸 Dépenses
+        </a>
+
+        <a href="services.html">
+            ⚙️ Services
+        </a>
+
+        <a href="apropos.html">
+            ℹ️ À propos
+
+            <a href="motdepasse.html">
+    🔑 Mot de passe
+</a>
+
+<a href="#" onclick="deconnexion(); return false;">
+    🚪 Déconnexion
+</a>
+    </nav>
+
+
+
+    <!-- =====================================
+         CONTENU PRINCIPAL
+         ===================================== -->
+
+    <main class="container">
+
+
+        <!-- TITRE -->
+
+        <section class="welcome">
+
+            <h2>
+                💸 Dépenses de l'atelier
+            </h2>
+
+            <p>
+                Enregistrez et gérez les dépenses
+                de votre atelier.
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================
+             FORMULAIRE
+             ================================= -->
+
+        <section class="recent">
+
+            <h2 id="titreDepense">
+                ➕ Nouvelle dépense
+            </h2>
+
+
+            <form id="formDepense">
+
+
+                <!-- ID CACHÉ -->
+
+                <input
+                    type="hidden"
+                    id="depenseId"
+                >
+
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label for="description">
+                        📝 Description
+                    </label>
+
+                    <input
+                        type="text"
+                        id="description"
+                        placeholder="Ex : Achat de pièces"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- CATÉGORIE -->
+
+                <div class="form-group">
+
+                    <label for="categorie">
+                        📂 Catégorie
+                    </label>
+
+                    <select id="categorie">
+
+                        <option value="Pièces">
+                            🔧 Pièces
+                        </option>
+
+                        <option value="Transport">
+                            🛵 Transport
+                        </option>
+
+                        <option value="Électricité">
+                            ⚡ Électricité
+                        </option>
+
+                        <option value="Loyer">
+                            🏠 Loyer
+                        </option>
+
+                        <option value="Outils">
+                            🛠️ Outils
+                        </option>
+
+                        <option value="Autre">
+                            📦 Autre
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- MONTANT -->
+
+                <div class="form-group">
+
+                    <label for="montantDepense">
+                        💰 Montant (FC)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="montantDepense"
+                        min="1"
+                        placeholder="Ex : 10000"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label for="dateDepense">
+                        📅 Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dateDepense"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- BOUTON ENREGISTRER -->
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btnDepense">
+
+                    💾 Enregistrer la dépense
+
+                </button>
+
+
+
+                <!-- BOUTON ANNULER -->
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    id="btnAnnulerDepense"
+                    onclick="annulerModificationDepense()"
+                    style="display: none;">
+
+                    ❌ Annuler
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =================================
+             STATISTIQUES
+             ================================= -->
+
+        <section class="stats">
+
+
+            <!-- AUJOURD'HUI -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    💸
+                </div>
+
+                <div>
+
+                    <h3 id="depensesJour">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Aujourd'hui
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SEMAINE -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📅
+                </div>
+
+                <div>
+
+                    <h3 id="depensesSemaine">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Cette semaine
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MOIS -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    📆
+                </div>
+
+                <div>
+
+                    <h3 id="depensesMois">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Ce mois
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <h3 id="depensesTotales">
+                        0 FC
+                    </h3>
+
+                    <p>
+                        Total dépenses
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================
+             HISTORIQUE DES DÉPENSES
+             ================================= -->
+
+        <section class="recent">
+
+            <h2>
+                📋 Historique des dépenses
+            </h2>
+
+
+            <div id="listeDepenses">
+
+                <p class="empty">
+                    Aucune dépense enregistrée.
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================
+         PIED DE PAGE
+         ===================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Mon Atelier —
+            Gestion de réparations
+        </p>
+
+    </footer>
+
+
+
+    <!-- =====================================
+         JAVASCRIPT
+         ===================================== -->
+
+    <script src="script.js"></script>
+
+    <script src="depenses.js"></script>
+
+
+</body>
+
+</html>
