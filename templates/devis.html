@@ -1,331 +1,438 @@
 
-<!DOCTYPE html>
-<html lang="fr">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Devis - Mon Atelier{% endblock %}
 
-    <title>Mon Atelier - Devis</title>
+{% block page_title %}
+Gestion des devis
+{% endblock %}
 
-    <style>
+{% block content %}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+<style>
+    .devis-page {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* EN-TÊTE */
+    .devis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .devis-description {
+        color: #6b7280;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .devis-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    /* STATISTIQUES */
+    .devis-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .devis-stat {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 17px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,.04);
+    }
+
+    .devis-stat-icon {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        background: #f3f4f6;
+    }
+
+    .devis-stat-label {
+        color: #6b7280;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+
+    .devis-stat-value {
+        color: #111827;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    /* RECHERCHE */
+    .devis-toolbar {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px 12px 0 0;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .devis-search {
+        position: relative;
+        width: 300px;
+        max-width: 100%;
+    }
+
+    .devis-search input {
+        padding-left: 36px;
+    }
+
+    .devis-search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        pointer-events: none;
+    }
+
+    .devis-count {
+        font-size: 12px;
+        color: #6b7280;
+        white-space: nowrap;
+    }
+
+    /* TABLEAU */
+    .devis-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 14px rgba(0,0,0,.05);
+    }
+
+    .devis-table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .devis-table {
+        width: 100%;
+        min-width: 850px;
+        border-collapse: collapse;
+    }
+
+    .devis-table thead {
+        background: #111827;
+        color: white;
+    }
+
+    .devis-table th {
+        padding: 12px 14px;
+        font-size: 11px;
+        font-weight: 600;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .devis-table td {
+        padding: 13px 14px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .devis-table tbody tr {
+        transition: background .15s ease;
+    }
+
+    .devis-table tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    .numero {
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .client-name {
+        color: #111827;
+        font-weight: 600;
+    }
+
+    .client-phone {
+        color: #6b7280;
+        font-size: 10px;
+        margin-top: 3px;
+    }
+
+    .date-main {
+        color: #374151;
+        font-weight: 500;
+    }
+
+    .date-time {
+        color: #9ca3af;
+        font-size: 10px;
+        margin-top: 3px;
+    }
+
+    .total {
+        color: #111827;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* STATUTS */
+    .statut {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .statut-brouillon {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .statut-accepte {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .statut-refuse {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* ACTIONS */
+    .devis-actions-cell {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        border: none;
+        border-radius: 6px;
+        padding: 7px 9px;
+        font-size: 11px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: .2s ease;
+    }
+
+    .action-view {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .action-view:hover {
+        background: #bfdbfe;
+    }
+
+    .action-edit {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .action-edit:hover {
+        background: #fde68a;
+    }
+
+    .action-delete {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .action-delete:hover {
+        background: #fecaca;
+    }
+
+    .action-form {
+        display: inline;
+        margin: 0;
+    }
+
+    /* BOUTONS PRINCIPAUX */
+    .btn-devis {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 13px;
+        border-radius: 7px;
+        border: none;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-new-devis {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-new-devis:hover {
+        background: #15803d;
+    }
+
+    .btn-back-devis {
+        background: #6b7280;
+        color: white;
+    }
+
+    .btn-back-devis:hover {
+        background: #4b5563;
+    }
+
+    /* VIDE */
+    .devis-empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6b7280;
+    }
+
+    .devis-empty-icon {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 15px;
+        border-radius: 16px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    .devis-empty h2 {
+        color: #111827;
+        font-size: 18px;
+        margin-bottom: 7px;
+    }
+
+    .devis-empty p {
+        font-size: 13px;
+        margin-bottom: 18px;
+    }
+
+    /* MOBILE */
+    @media (max-width: 800px) {
+
+        .devis-stats {
+            grid-template-columns: 1fr;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #1f2937;
+        .devis-header {
+            align-items: flex-start;
+            flex-direction: column;
         }
 
-        .container {
-            width: 95%;
-            max-width: 1400px;
-            margin: 30px auto;
-        }
-
-        /* EN-TÊTE */
-
-        .header {
-            background: white;
-            padding: 22px 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 25px;
-        }
-
-        .header h1 {
-            font-size: 25px;
-            color: #111827;
-        }
-
-        .header p {
-            margin-top: 5px;
-            color: #6b7280;
-        }
-
-        /* BOUTONS */
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-back {
-            background: #6b7280;
-            color: white;
-        }
-
-        .btn-back:hover {
-            background: #4b5563;
-        }
-
-        .btn-new {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-new:hover {
-            background: #15803d;
-        }
-
-        .btn-view {
-            background: #2563eb;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 7px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 13px;
-        }
-
-        .btn-view:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-edit {
-            background: #f59e0b;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 7px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 13px;
-            margin-left: 5px;
-        }
-
-        .btn-edit:hover {
-            background: #d97706;
-        }
-
-        .btn-delete {
-            background: #dc2626;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 7px;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-            margin-left: 5px;
-        }
-
-        .btn-delete:hover {
-            background: #b91c1c;
-        }
-
-        /* CARTE */
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        /* TABLEAU */
-
-        table {
+        .devis-actions {
             width: 100%;
-            border-collapse: collapse;
         }
 
-        thead {
-            background: #111827;
-            color: white;
+        .devis-actions .btn-devis {
+            flex: 1;
         }
 
-        th {
-            padding: 15px;
+        .devis-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .devis-search {
+            width: 100%;
+        }
+
+        .devis-count {
             text-align: left;
-            font-size: 14px;
-            white-space: nowrap;
+        }
+    }
+
+    @media (max-width: 500px) {
+
+        .devis-header h2 {
+            font-size: 19px;
         }
 
-        td {
-            padding: 14px 15px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 14px;
-        }
-
-        tbody tr:hover {
-            background: #f9fafb;
-        }
-
-        .numero {
-            font-weight: bold;
-            color: #2563eb;
-        }
-
-        .client {
-            font-weight: bold;
-        }
-
-        .telephone {
-            color: #6b7280;
+        .devis-description {
             font-size: 12px;
-            margin-top: 3px;
         }
 
-        .total {
-            font-weight: bold;
-            font-size: 15px;
+        .devis-stat {
+            padding: 14px;
         }
 
-        /* STATUT */
-
-        .statut {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+        .devis-stat-value {
+            font-size: 16px;
         }
 
-        .statut-brouillon {
-            background: #fef3c7;
-            color: #92400e;
+        .devis-actions {
+            flex-direction: column;
         }
 
-        .statut-accepte {
-            background: #dcfce7;
-            color: #166534;
+        .devis-actions .btn-devis {
+            width: 100%;
         }
 
-        .statut-refuse {
-            background: #fee2e2;
-            color: #991b1b;
+        .devis-card {
+            border-radius: 8px;
         }
+    }
+</style>
 
-        /* ACTIONS */
 
-        .actions {
-            white-space: nowrap;
-        }
+<div class="devis-page">
 
-        .actions form {
-            display: inline;
-        }
+    <!-- EN-TÊTE -->
 
-        /* AUCUN DEVIS */
-
-        .empty {
-            text-align: center;
-            padding: 50px 20px;
-            color: #6b7280;
-        }
-
-        .empty-icon {
-            font-size: 45px;
-            margin-bottom: 15px;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 768px) {
-
-            .container {
-                width: 97%;
-                margin: 15px auto;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .header h1 {
-                font-size: 21px;
-            }
-
-            .buttons {
-                width: 100%;
-            }
-
-            .btn {
-                flex: 1;
-                text-align: center;
-            }
-
-            th,
-            td {
-                padding: 11px;
-            }
-
-            .actions {
-                min-width: 270px;
-            }
-
-        }
-
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <!-- =========================
-         EN-TÊTE
-    ========================= -->
-
-    <div class="header">
+    <div class="devis-header">
 
         <div>
+            <h2>📄 Gestion des devis</h2>
 
-            <h1>
-                📄 Gestion des devis
-            </h1>
-
-            <p>
-                Consultez et gérez les devis de votre atelier.
+            <p class="devis-description">
+                Consultez, créez et gérez les devis de votre atelier.
             </p>
-
         </div>
 
 
-        <div class="buttons">
+        <div class="devis-actions">
 
-            <a
-                href="{{ url_for('index') }}"
-                class="btn btn-back"
-            >
-                ← Tableau de bord
-            </a>
+            {% if current_user.role in ['admin', 'reception'] %}
 
+            <a href="{{ url_for('ajouter_devis') }}"
+               class="btn-devis btn-new-devis">
 
-            {% if current_user.role == 'admin' or current_user.role == 'reception' %}
-
-            <a
-                href="{{ url_for('ajouter_devis') }}"
-                class="btn btn-new"
-            >
                 ➕ Nouveau devis
+
             </a>
 
             {% endif %}
@@ -335,45 +442,131 @@
     </div>
 
 
-    <!-- =========================
-         LISTE DES DEVIS
-    ========================= -->
+    <!-- STATISTIQUES -->
 
-    <div class="card">
+    {% set total_devis = devis|length %}
 
-        <div class="table-container">
+    {% set nb_acceptes = devis|selectattr('statut', 'equalto', 'Accepté')|list|length %}
 
-            {% if devis %}
+    {% set nb_brouillons = devis|selectattr('statut', 'equalto', 'Brouillon')|list|length %}
 
-            <table>
+
+    <div class="devis-stats">
+
+        <div class="devis-stat">
+
+            <div class="devis-stat-icon">
+                📄
+            </div>
+
+            <div>
+
+                <div class="devis-stat-label">
+                    TOTAL DEVIS
+                </div>
+
+                <div class="devis-stat-value">
+                    {{ total_devis }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="devis-stat">
+
+            <div class="devis-stat-icon">
+                ✅
+            </div>
+
+            <div>
+
+                <div class="devis-stat-label">
+                    DEVIS ACCEPTÉS
+                </div>
+
+                <div class="devis-stat-value">
+                    {{ nb_acceptes }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="devis-stat">
+
+            <div class="devis-stat-icon">
+                📝
+            </div>
+
+            <div>
+
+                <div class="devis-stat-label">
+                    BROUILLONS
+                </div>
+
+                <div class="devis-stat-value">
+                    {{ nb_brouillons }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BARRE RECHERCHE -->
+
+    <div class="devis-toolbar">
+
+        <div class="devis-search">
+
+            <span class="devis-search-icon">
+                🔎
+            </span>
+
+            <input
+                type="text"
+                id="rechercheDevis"
+                placeholder="Rechercher un devis, client..."
+                onkeyup="rechercherDevis()"
+            >
+
+        </div>
+
+
+        <div class="devis-count">
+
+            {{ total_devis }} devis
+
+        </div>
+
+    </div>
+
+
+    <!-- LISTE -->
+
+    <div class="devis-card">
+
+        {% if devis %}
+
+        <div class="devis-table-container">
+
+            <table class="devis-table" id="tableDevis">
 
                 <thead>
 
                     <tr>
 
-                        <th>
-                            N° Devis
-                        </th>
-
-                        <th>
-                            Client
-                        </th>
-
-                        <th>
-                            Date
-                        </th>
-
-                        <th>
-                            Total
-                        </th>
-
-                        <th>
-                            Statut
-                        </th>
-
-                        <th>
-                            Actions
-                        </th>
+                        <th>N° DEVIS</th>
+                        <th>CLIENT</th>
+                        <th>DATE</th>
+                        <th>TOTAL</th>
+                        <th>STATUT</th>
+                        <th>ACTIONS</th>
 
                     </tr>
 
@@ -386,28 +579,22 @@
 
                     <tr>
 
-                        <!-- NUMÉRO -->
-
                         <td>
-
                             <span class="numero">
                                 {{ d.numero }}
                             </span>
-
                         </td>
 
 
-                        <!-- CLIENT -->
-
                         <td>
 
-                            <div class="client">
+                            <div class="client-name">
                                 {{ d.client_nom }}
                             </div>
 
                             {% if d.client_telephone %}
 
-                            <div class="telephone">
+                            <div class="client-phone">
                                 📞 {{ d.client_telephone }}
                             </div>
 
@@ -416,19 +603,17 @@
                         </td>
 
 
-                        <!-- DATE -->
-
                         <td>
 
                             {% if d.date_creation %}
 
-                            {{ d.date_creation.strftime('%d/%m/%Y') }}
+                            <div class="date-main">
+                                {{ d.date_creation.strftime('%d/%m/%Y') }}
+                            </div>
 
-                            <br>
-
-                            <small style="color:#6b7280;">
+                            <div class="date-time">
                                 {{ d.date_creation.strftime('%H:%M') }}
-                            </small>
+                            </div>
 
                             {% else %}
 
@@ -438,8 +623,6 @@
 
                         </td>
 
-
-                        <!-- TOTAL -->
 
                         <td>
 
@@ -459,8 +642,6 @@
 
                         </td>
 
-
-                        <!-- STATUT -->
 
                         <td>
 
@@ -487,53 +668,56 @@
                         </td>
 
 
-                        <!-- ACTIONS -->
+                        <td>
 
-                        <td class="actions">
+                            <div class="devis-actions-cell">
 
-                            <!-- VOIR -->
+                                <!-- VOIR -->
 
-                            <a
-                                href="{{ url_for('voir_devis', id=d.id) }}"
-                                class="btn-view"
-                                title="Voir le devis"
-                            >
-                                👁️ Voir
-                            </a>
-
-
-                            {% if current_user.role == 'admin' or current_user.role == 'reception' %}
-
-                            <!-- MODIFIER -->
-
-                            <a
-                                href="{{ url_for('modifier_devis', id=d.id) }}"
-                                class="btn-edit"
-                                title="Modifier le devis"
-                            >
-                                ✏️ Modifier
-                            </a>
-
-
-                            <!-- SUPPRIMER -->
-
-                            <form
-                                action="{{ url_for('supprimer_devis', id=d.id) }}"
-                                method="POST"
-                                onsubmit="return confirm('Voulez-vous vraiment supprimer le devis {{ d.numero }} ?');"
-                            >
-
-                                <button
-                                    type="submit"
-                                    class="btn-delete"
-                                    title="Supprimer le devis"
+                                <a
+                                    href="{{ url_for('voir_devis', id=d.id) }}"
+                                    class="action-btn action-view"
+                                    title="Voir le devis"
                                 >
-                                    🗑️ Supprimer
-                                </button>
+                                    👁️
+                                </a>
 
-                            </form>
 
-                            {% endif %}
+                                {% if current_user.role in ['admin', 'reception'] %}
+
+                                <!-- MODIFIER -->
+
+                                <a
+                                    href="{{ url_for('modifier_devis', id=d.id) }}"
+                                    class="action-btn action-edit"
+                                    title="Modifier le devis"
+                                >
+                                    ✏️
+                                </a>
+
+
+                                <!-- SUPPRIMER -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('supprimer_devis', id=d.id) }}"
+                                    class="action-form"
+                                    onsubmit="return confirmerSuppression('{{ d.numero }}');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="action-btn action-delete"
+                                        title="Supprimer le devis"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+                            </div>
 
                         </td>
 
@@ -545,53 +729,120 @@
 
             </table>
 
-
-            {% else %}
-
-            <!-- =========================
-                 AUCUN DEVIS
-            ========================= -->
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    📄
-                </div>
-
-                <h2>
-                    Aucun devis
-                </h2>
-
-                <p style="margin-top:8px;">
-                    Aucun devis n'a encore été créé.
-                </p>
+        </div>
 
 
-                {% if current_user.role == 'admin' or current_user.role == 'reception' %}
+        <!-- AUCUN RÉSULTAT -->
 
-                <div style="margin-top:20px;">
+        <div
+            id="aucunResultat"
+            style="display:none; padding:40px; text-align:center; color:#6b7280;"
+        >
 
-                    <a
-                        href="{{ url_for('ajouter_devis') }}"
-                        class="btn btn-new"
-                    >
-                        ➕ Créer le premier devis
-                    </a>
+            🔎 Aucun devis correspondant à votre recherche.
 
-                </div>
+        </div>
 
-                {% endif %}
 
+        {% else %}
+
+        <div class="devis-empty">
+
+            <div class="devis-empty-icon">
+                📄
             </div>
+
+            <h2>
+                Aucun devis
+            </h2>
+
+            <p>
+                Aucun devis n'a encore été créé dans votre atelier.
+            </p>
+
+
+            {% if current_user.role in ['admin', 'reception'] %}
+
+            <a
+                href="{{ url_for('ajouter_devis') }}"
+                class="btn-devis btn-new-devis"
+            >
+                ➕ Créer le premier devis
+            </a>
 
             {% endif %}
 
         </div>
 
+        {% endif %}
+
     </div>
 
 </div>
 
-</body>
 
-</html>
+<script>
+
+function rechercherDevis() {
+
+    const input =
+        document.getElementById("rechercheDevis");
+
+    const filtre =
+        input.value.toLowerCase().trim();
+
+    const table =
+        document.getElementById("tableDevis");
+
+    const aucun =
+        document.getElementById("aucunResultat");
+
+    if (!table) {
+        return;
+    }
+
+    const lignes =
+        table.querySelectorAll("tbody tr");
+
+    let visible = 0;
+
+    lignes.forEach(function(ligne) {
+
+        const texte =
+            ligne.textContent.toLowerCase();
+
+        if (texte.includes(filtre)) {
+
+            ligne.style.display = "";
+
+            visible++;
+
+        } else {
+
+            ligne.style.display = "none";
+
+        }
+
+    });
+
+    if (aucun) {
+
+        aucun.style.display =
+            visible === 0 ? "block" : "none";
+
+    }
+}
+
+
+function confirmerSuppression(numero) {
+
+    return confirm(
+        "Voulez-vous vraiment supprimer le devis " +
+        numero +
+        " ?"
+    );
+}
+
+</script>
+
+{% endblock %}
