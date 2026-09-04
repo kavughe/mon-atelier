@@ -2730,6 +2730,32 @@ def supprimer_reparation(id):
     return redirect(
         url_for("reparations")
     )
+@app.route("/paiement/<int:id>", methods=["GET", "POST"])
+@login_required
+def paiement(id):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("""
+        SELECT *
+        FROM reparations
+        WHERE id = %s
+    """, (id,))
+
+    reparation = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if not reparation:
+        flash("Réparation introuvable.", "danger")
+        return redirect(url_for("reparations"))
+
+    return render_template(
+        "paiement.html",
+        reparation=reparation
+    )
+
 # =========================================================
 # HISTORIQUE DES RÉPARATIONS
 # =========================================================
@@ -5823,33 +5849,7 @@ def historique_finance():
         "historique_finance.html",
         operations=operations
     )
-@app.route("/paiement/<int:id>", methods=["GET", "POST"])
-@login_required
-def paiement(id):
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("""
-        SELECT *
-        FROM reparations
-        WHERE id = %s
-    """, (id,))
-
-    reparation = cur.fetchone()
-
-    if not reparation:
-        cur.close()
-        conn.close()
-        flash("Réparation introuvable.", "danger")
-        return redirect(url_for("reparations"))
-
-    cur.close()
-    conn.close()
-
-    return render_template(
-        "paiement.html",
-        reparation=reparation
-    )
 
 if __name__ == "__main__":
 
