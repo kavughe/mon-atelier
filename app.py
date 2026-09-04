@@ -2797,12 +2797,19 @@ def supprimer_reparation(id):
 # PAIEMENT D'UNE RÉPARATION
 # =========================================================
 
+# =========================================================
+# PAIEMENT D'UNE RÉPARATION
+# =========================================================
+
 @app.route("/paiement/<int:id>", methods=["GET", "POST"])
 @login_required
 def paiement(id):
 
     conn = get_db()
     cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    # Valeur par défaut pour éviter une erreur
+    reparation = None
 
     try:
 
@@ -2842,7 +2849,7 @@ def paiement(id):
             )
 
         # =====================================================
-        # 2. INFORMATIONS DE LA RÉPARATION
+        # 2. DONNÉES DE LA RÉPARATION
         # =====================================================
 
         prix = float(
@@ -2853,44 +2860,54 @@ def paiement(id):
             reparation.get("montant_paye") or 0
         )
 
-        reste_a_payer = prix - ancien_paye
+        reste_a_payer = float(
+            reparation.get("reste_a_payer") or 0
+        )
 
-        if reste_a_payer < 0:
-            reste_a_payer = 0
+        # Recalcul de sécurité
+        reste_calcule = prix - ancien_paye
+
+        if reste_calcule < 0:
+            reste_calcule = 0
+
+        # On utilise le montant réellement calculé
+        reste_a_payer = reste_calcule
 
         # =====================================================
-        # 3. DEVISE
+        # 3. DEVISE DE LA RÉPARATION
         # =====================================================
 
-        devise = str(
+        devise_reparation = str(
             reparation.get("devise") or "FC"
         ).strip().upper()
 
-        if devise not in ("FC", "USD"):
+        if devise_reparation not in ("FC", "USD"):
 
-            devise = "FC"
-
-        # =====================================================
-        # 4. CLIENT ET APPAREIL
-        # =====================================================
-
-        client_nom = (
-            reparation.get("client_nom")
-            or ""
-        )
-
-        appareil = (
-            reparation.get("appareil")
-            or ""
-        )
-
-        panne = (
-            reparation.get("panne")
-            or ""
-        )
+            devise_reparation = "FC"
 
         # =====================================================
-        # 5. AFFICHER LA PAGE
+        # 4. INFORMATIONS
+        # =====================================================
+
+        client_nom = str(
+            reparation.get("client_nom") or ""
+        ).strip()
+
+        appareil = str(
+            reparation.get("appareil") or ""
+        ).strip()
+
+        panne = str(
+            reparation.get("panne") or ""
+        ).strip()
+
+        ancien_statut = (
+            reparation.get("statut")
+            or "En attente"
+        )
+
+        # =====================================================
+        # 5. AFFICHER LE FORMULAIRE
         # =====================================================
 
         if request.method == "GET":
@@ -2909,6 +2926,11 @@ def paiement(id):
             ""
         ).strip()
 
+        devise_paiement = request.form.get(
+            "devise",
+            ""
+        ).strip().upper()
+
         mode_paiement = request.form.get(
             "mode_paiement",
             ""
@@ -2920,7 +2942,41 @@ def paiement(id):
         ).strip()
 
         # =====================================================
-        # 7. VÉRIFIER LE MONTANT
+        # 7. VÉRIFIER LA DEVISE
+        # =====================================================
+
+        if devise_paiement not in ("FC", "USD"):
+
+            flash(
+                "Devise de paiement invalide.",
+                "danger"
+            )
+
+            return render_template(
+                "paiement.html",
+                reparation=reparation
+            )
+
+        # =====================================================
+        # 8. EMPÊCHER LE MÉLANGE DES DEVISES
+        # =====================================================
+
+        if devise_paiement != devise_reparation:
+
+            flash(
+                "La devise du paiement doit être la même "
+                f"que celle de la réparation : "
+                f"{devise_reparation}.",
+                "danger"
+            )
+
+            return render_template(
+                "paiement.html",
+                reparation=reparation
+            )
+
+        # =====================================================
+        # 9. VÉRIFIER LE MONTANT
         # =====================================================
 
         try:
@@ -2942,7 +2998,7 @@ def paiement(id):
             )
 
         # =====================================================
-        # 8. VALIDATIONS
+        # 10. VALIDATION DU MONTANT
         # =====================================================
 
         if montant <= 0:
@@ -2972,8 +3028,9 @@ def paiement(id):
         if montant > reste_a_payer:
 
             flash(
-                f"Le paiement dépasse le reste à payer : "
-                f"{reste_a_payer:,.2f} {devise}.",
+                "Le montant du paiement ne peut pas dépasser "
+                f"le reste à payer de "
+                f"{reste_a_payer:,.2f} {devise_reparation}.",
                 "danger"
             )
 
@@ -2983,7 +3040,7 @@ def paiement(id):
             )
 
         # =====================================================
-        # 9. CALCULER LES NOUVEAUX MONTANTS
+        # 11. CALCUL DU NOUVEAU TOTAL
         # =====================================================
 
         nouveau_paye = (
@@ -2997,14 +3054,13 @@ def paiement(id):
         if nouveau_reste < 0:
             nouveau_reste = 0
 
-        # =====================================================
-        # 10. NOUVEAU STATUT
-        # =====================================================
+        # Petite sécurité contre les problèmes de flottants
+        if abs(nouveau_reste) < 0.000001:
+            nouveau_reste = 0
 
-        ancien_statut = (
-            reparation.get("statut")
-            or "En attente"
-        )
+        # =====================================================
+        # 12. NOUVEAU STATUT
+        # =====================================================
 
         if nouveau_reste == 0:
 
@@ -3015,7 +3071,7 @@ def paiement(id):
             nouveau_statut = ancien_statut
 
         # =====================================================
-        # 11. UTILISATEUR
+        # 13. UTILISATEUR
         # =====================================================
 
         utilisateur = ""
@@ -3033,7 +3089,17 @@ def paiement(id):
             utilisateur = ""
 
         # =====================================================
-        # 12. METTRE À JOUR LA RÉPARATION
+        # 14. IDENTIFIANT UTILISATEUR
+        # =====================================================
+
+        utilisateur_id = getattr(
+            current_user,
+            "id",
+            None
+        )
+
+        # =====================================================
+        # 15. METTRE À JOUR LA RÉPARATION
         # =====================================================
 
         cur.execute("""
@@ -3051,7 +3117,7 @@ def paiement(id):
         ))
 
         # =====================================================
-        # 13. HISTORIQUE DES PAIEMENTS
+        # 16. HISTORIQUE DES PAIEMENTS
         # =====================================================
 
         cur.execute("""
@@ -3086,19 +3152,15 @@ def paiement(id):
             client_nom,
             appareil,
             montant,
-            devise,
+            devise_reparation,
             ancien_paye,
             nouveau_paye,
             nouveau_reste,
-            getattr(
-                current_user,
-                "id",
-                None
-            )
+            utilisateur_id
         ))
 
         # =====================================================
-        # 14. HISTORIQUE DES RÉPARATIONS
+        # 17. HISTORIQUE DES RÉPARATIONS
         # =====================================================
 
         cur.execute("""
@@ -3149,11 +3211,11 @@ def paiement(id):
             reparation.get("date_recuperation"),
             "Paiement",
             utilisateur,
-            devise
+            devise_reparation
         ))
 
         # =====================================================
-        # 15. DESCRIPTION POUR LES FINANCES
+        # 18. DESCRIPTION FINANCIÈRE
         # =====================================================
 
         description = (
@@ -3185,8 +3247,12 @@ def paiement(id):
             )
 
         # =====================================================
-        # 16. ENTRÉE FINANCIÈRE
+        # 19. CRÉER UNE ENTRÉE FINANCIÈRE
         # =====================================================
+
+        # IMPORTANT :
+        # transactions_financieres ne possède PAS
+        # de colonne "utilisateur".
 
         cur.execute("""
             INSERT INTO transactions_financieres
@@ -3213,41 +3279,45 @@ def paiement(id):
             "Réparation",
             description,
             montant,
-            devise,
+            devise_reparation,
             id
         ))
 
         # =====================================================
-        # 17. VALIDER TOUT
+        # 20. VALIDER TOUTES LES OPÉRATIONS
         # =====================================================
 
         conn.commit()
 
         # =====================================================
-        # 18. MESSAGE DE SUCCÈS
+        # 21. MESSAGE DE SUCCÈS
         # =====================================================
 
         if nouveau_reste == 0:
 
             flash(
-                f"Paiement de {montant:,.2f} {devise} "
-                f"enregistré avec succès. "
-                f"La réparation est entièrement payée.",
+                f"Paiement de "
+                f"{montant:,.2f} {devise_reparation} "
+                "enregistré avec succès. "
+                "La réparation est entièrement payée.",
                 "success"
             )
 
         else:
 
             flash(
-                f"Paiement de {montant:,.2f} {devise} "
-                f"enregistré avec succès. "
-                f"Total payé : {nouveau_paye:,.2f} {devise}. "
-                f"Reste : {nouveau_reste:,.2f} {devise}.",
+                f"Paiement de "
+                f"{montant:,.2f} {devise_reparation} "
+                "enregistré avec succès. "
+                f"Total payé : "
+                f"{nouveau_paye:,.2f} {devise_reparation}. "
+                f"Reste : "
+                f"{nouveau_reste:,.2f} {devise_reparation}.",
                 "success"
             )
 
         # =====================================================
-        # 19. RETOUR AUX FINANCES
+        # 22. RETOUR AUX FINANCES
         # =====================================================
 
         return redirect(
@@ -3278,7 +3348,7 @@ def paiement(id):
         )
 
     # =========================================================
-    # FERMER LA CONNEXION
+    # FERMER
     # =========================================================
 
     finally:
