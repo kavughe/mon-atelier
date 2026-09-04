@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}
@@ -11,489 +10,633 @@ Modifier la réparation
 
 {% block content %}
 
-<div class="form-container">
+<div class="repair-edit-container">
 
-    <div class="form-header">
-        <div class="form-icon">🔧</div>
+```
+<!-- EN-TÊTE -->
+<div class="repair-header">
+    <div class="repair-icon">
+        🔧
+    </div>
+
+    <div class="repair-header-text">
+        <h2>Modifier la réparation</h2>
+        <p>
+            Modifiez les informations de la réparation puis enregistrez les changements.
+        </p>
+    </div>
+</div>
+
+<form method="POST" id="repairForm">
+
+    <!-- INFORMATIONS CLIENT -->
+    <div class="section-title">
+        <span>👤</span>
         <div>
-            <h2>Modifier la réparation</h2>
-            <p>Modifiez les informations de cette réparation.</p>
+            <h3>Informations du client</h3>
+            <p>Client concerné par cette réparation</p>
         </div>
     </div>
 
-    <form method="POST">
+    <div class="form-group">
+        <label for="client_id">
+            Client <span class="required">*</span>
+        </label>
 
-        <!-- CLIENT -->
-        <div class="form-group">
-            <label for="client_id">
-                Client *
-            </label>
+        <select name="client_id" id="client_id" required>
+            <option value="">
+                -- Sélectionner un client --
+            </option>
 
-            <select name="client_id" id="client_id" required>
-
-                <option value="">
-                    -- Sélectionner un client --
-                </option>
-
-                {% for client in clients %}
-
-                <option
-                    value="{{ client.id }}"
-                    {% if client.nom == reparation.client_nom %}
-                        selected
-                    {% endif %}
-                >
-
-                    {{ client.nom }}
-
-                    {% if client.telephone %}
-                        — {{ client.telephone }}
-                    {% endif %}
-
-                </option>
-
-                {% endfor %}
-
-            </select>
-
-            {% if not clients %}
-                <div class="warning">
-                    ⚠️ Aucun client enregistré.
-                </div>
-            {% endif %}
-
-        </div>
-
-
-        <!-- APPAREIL -->
-        <div class="form-group">
-
-            <label for="appareil">
-                Appareil *
-            </label>
-
-            <input
-                type="text"
-                id="appareil"
-                name="appareil"
-                value="{{ reparation.appareil or '' }}"
-                placeholder="Exemple : Téléphone Samsung A15"
-                required
+            {% for client in clients %}
+            <option
+                value="{{ client.id }}"
+                {% if client.nom == reparation.client_nom %}
+                    selected
+                {% endif %}
             >
+                {{ client.nom }}
+                {% if client.telephone %}
+                    — {{ client.telephone }}
+                {% endif %}
+            </option>
+            {% endfor %}
+        </select>
 
+        {% if not clients %}
+        <div class="warning">
+            ⚠️ Aucun client enregistré.
+            <a href="{{ url_for('ajouter_client') }}">
+                Ajouter un client
+            </a>
         </div>
+        {% endif %}
+    </div>
 
 
-        <!-- PANNE -->
-        <div class="form-group">
-
-            <label for="panne">
-                Panne constatée *
-            </label>
-
-            <textarea
-                id="panne"
-                name="panne"
-                rows="4"
-                placeholder="Décrivez la panne..."
-                required
-            >{{ reparation.panne or '' }}</textarea>
-
+    <!-- INFORMATIONS APPAREIL -->
+    <div class="section-title">
+        <span>📱</span>
+        <div>
+            <h3>Informations de l'appareil</h3>
+            <p>Identifiez l'appareil et décrivez la panne</p>
         </div>
+    </div>
 
+    <div class="form-group">
+        <label for="appareil">
+            Appareil <span class="required">*</span>
+        </label>
+
+        <input
+            type="text"
+            id="appareil"
+            name="appareil"
+            value="{{ reparation.appareil or '' }}"
+            placeholder="Exemple : Samsung Galaxy A15"
+            required
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="panne">
+            Panne constatée <span class="required">*</span>
+        </label>
+
+        <textarea
+            id="panne"
+            name="panne"
+            rows="5"
+            placeholder="Décrivez la panne constatée..."
+            required
+        >{{ reparation.panne or '' }}</textarea>
+    </div>
+
+
+    <!-- INFORMATIONS FINANCIÈRES -->
+    <div class="section-title">
+        <span>💰</span>
+        <div>
+            <h3>Informations financières</h3>
+            <p>Montant de la réparation et paiement du client</p>
+        </div>
+    </div>
+
+    <div class="form-row">
 
         <!-- PRIX -->
-        <div class="form-row">
+        <div class="form-group">
+            <label for="prix">
+                Prix de la réparation <span class="required">*</span>
+            </label>
 
-            <div class="form-group">
-
-                <label for="prix">
-                    Prix de la réparation *
-                </label>
-
-                <div class="input-money">
-
-                    <input
-                        type="number"
-                        id="prix"
-                        name="prix"
-                        value="{{ reparation.prix or 0 }}"
-                        min="0"
-                        step="1"
-                        required
-                        oninput="calculerReste()"
-                    >
-
-                    <span>FC</span>
-
-                </div>
-
+            <div class="money-input">
+                <input
+                    type="number"
+                    id="prix"
+                    name="prix"
+                    value="{{ reparation.prix or 0 }}"
+                    min="0"
+                    step="1"
+                    required
+                    oninput="calculerReste()"
+                >
+                <span>FC</span>
             </div>
-
-
-            <!-- PAYE -->
-            <div class="form-group">
-
-                <label for="montant_paye">
-                    Montant payé
-                </label>
-
-                <div class="input-money">
-
-                    <input
-                        type="number"
-                        id="montant_paye"
-                        name="montant_paye"
-                        value="{{ reparation.montant_paye or 0 }}"
-                        min="0"
-                        step="1"
-                        oninput="calculerReste()"
-                    >
-
-                    <span>FC</span>
-
-                </div>
-
-            </div>
-
         </div>
 
 
-        <!-- RESTE -->
-        <div class="reste-box">
+        <!-- MONTANT PAYÉ -->
+        <div class="form-group">
+            <label for="montant_paye">
+                Montant déjà payé
+            </label>
 
-            <div>
-                <span class="reste-label">
-                    Reste à payer
-                </span>
-
-                <small>
-                    Calcul automatique
-                </small>
+            <div class="money-input">
+                <input
+                    type="number"
+                    id="montant_paye"
+                    name="montant_paye"
+                    value="{{ reparation.montant_paye or 0 }}"
+                    min="0"
+                    step="1"
+                    oninput="calculerReste()"
+                >
+                <span>FC</span>
             </div>
+        </div>
 
-            <strong id="reste">
-                {{ "{:,.0f}".format(
-                    reparation.reste_a_payer or 0
-                ) }} FC
+    </div>
+
+
+    <!-- RÉSUMÉ FINANCIER -->
+    <div class="financial-summary">
+
+        <div class="summary-item">
+            <span>Prix total</span>
+            <strong id="totalPrix">
+                0 FC
             </strong>
-
         </div>
 
-
-        <!-- STATUT -->
-        <div class="form-group">
-
-            <label for="statut">
-                Statut *
-            </label>
-
-            <select name="statut" id="statut" required>
-
-                <option
-                    value="En attente"
-                    {% if reparation.statut == 'En attente' %}
-                        selected
-                    {% endif %}
-                >
-                    En attente
-                </option>
-
-                <option
-                    value="En réparation"
-                    {% if reparation.statut == 'En réparation' %}
-                        selected
-                    {% endif %}
-                >
-                    En réparation
-                </option>
-
-                <option
-                    value="Terminé"
-                    {% if reparation.statut == 'Terminé' %}
-                        selected
-                    {% endif %}
-                >
-                    Terminé
-                </option>
-
-                <option
-                    value="Livré"
-                    {% if reparation.statut == 'Livré' %}
-                        selected
-                    {% endif %}
-                >
-                    Livré
-                </option>
-
-            </select>
-
+        <div class="summary-item">
+            <span>Déjà payé</span>
+            <strong id="totalPaye">
+                0 FC
+            </strong>
         </div>
 
+        <div class="summary-item remaining">
+            <span>Reste à payer</span>
+            <strong id="reste">
+                0 FC
+            </strong>
+        </div>
 
-        <!-- DATE RECUPERATION -->
-        <div class="form-group">
+    </div>
 
-            <label for="date_recuperation">
-                Date de récupération
-            </label>
 
-            <input
-                type="date"
-                id="date_recuperation"
-                name="date_recuperation"
-                value="{{ reparation.date_recuperation or '' }}"
+    <!-- STATUT -->
+    <div class="section-title">
+        <span>📌</span>
+        <div>
+            <h3>État de la réparation</h3>
+            <p>Indiquez l'état actuel de l'appareil</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="statut">
+            Statut <span class="required">*</span>
+        </label>
+
+        <select name="statut" id="statut" required>
+
+            <option
+                value="En attente"
+                {% if reparation.statut == 'En attente' %}
+                    selected
+                {% endif %}
             >
+                ⏳ En attente
+            </option>
 
-            <small class="help-text">
-                Laissez vide si le client n'a pas encore récupéré l'appareil.
-            </small>
-
-        </div>
-
-
-        <!-- BOUTONS -->
-        <div class="form-actions">
-
-            <a
-                href="{{ url_for('reparations') }}"
-                class="btn-cancel"
+            <option
+                value="En réparation"
+                {% if reparation.statut == 'En réparation' %}
+                    selected
+                {% endif %}
             >
-                Annuler
-            </a>
+                🔧 En réparation
+            </option>
 
-            <button
-                type="submit"
-                class="btn-save"
+            <option
+                value="Terminé"
+                {% if reparation.statut == 'Terminé' %}
+                    selected
+                {% endif %}
             >
-                💾 Enregistrer les modifications
-            </button>
+                ✅ Terminé
+            </option>
 
-        </div>
+            <option
+                value="Livré"
+                {% if reparation.statut == 'Livré' %}
+                    selected
+                {% endif %}
+            >
+                📦 Livré
+            </option>
 
-    </form>
+        </select>
+    </div>
+
+
+    <!-- DATE DE RÉCUPÉRATION -->
+    <div class="form-group">
+        <label for="date_recuperation">
+            📅 Date de récupération
+        </label>
+
+        <input
+            type="date"
+            id="date_recuperation"
+            name="date_recuperation"
+            value="{{ reparation.date_recuperation or '' }}"
+        >
+
+        <small class="help-text">
+            Laissez vide si le client n'a pas encore récupéré l'appareil.
+        </small>
+    </div>
+
+
+    <!-- BOUTONS -->
+    <div class="form-actions">
+
+        <a
+            href="{{ url_for('reparations') }}"
+            class="btn-cancel"
+        >
+            ← Annuler
+        </a>
+
+        <button
+            type="submit"
+            class="btn-save"
+        >
+            💾 Enregistrer les modifications
+        </button>
+
+    </div>
+
+</form>
+```
 
 </div>
 
 {% endblock %}
 
-
 {% block extra_css %}
 
-.form-container {
-    max-width: 850px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+.repair-edit-container {
+max-width: 900px;
+margin: 0 auto;
+background: #ffffff;
+border-radius: 16px;
+padding: 30px;
+box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
 }
 
-.form-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e5e7eb;
+/* HEADER */
+
+.repair-header {
+display: flex;
+align-items: center;
+gap: 16px;
+padding-bottom: 24px;
+margin-bottom: 28px;
+border-bottom: 1px solid #e5e7eb;
 }
 
-.form-icon {
-    width: 55px;
-    height: 55px;
-    border-radius: 12px;
-    background: #eff6ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
+.repair-icon {
+width: 58px;
+height: 58px;
+min-width: 58px;
+border-radius: 14px;
+background: #eff6ff;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 28px;
 }
 
-.form-header h2 {
-    margin: 0;
-    color: #111827;
-    font-size: 21px;
+.repair-header h2 {
+margin: 0;
+color: #111827;
+font-size: 22px;
 }
 
-.form-header p {
-    margin: 5px 0 0;
-    color: #6b7280;
-    font-size: 14px;
+.repair-header p {
+margin: 6px 0 0;
+color: #6b7280;
+font-size: 14px;
 }
+
+/* SECTION */
+
+.section-title {
+display: flex;
+align-items: center;
+gap: 12px;
+margin: 28px 0 18px;
+padding-bottom: 12px;
+border-bottom: 1px solid #f1f5f9;
+}
+
+.section-title > span {
+width: 38px;
+height: 38px;
+border-radius: 10px;
+background: #f8fafc;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 19px;
+}
+
+.section-title h3 {
+margin: 0;
+font-size: 16px;
+color: #1f2937;
+}
+
+.section-title p {
+margin: 3px 0 0;
+font-size: 12px;
+color: #9ca3af;
+}
+
+/* FORM */
 
 .form-group {
-    margin-bottom: 20px;
+margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #374151;
-    font-size: 14px;
+display: block;
+margin-bottom: 8px;
+font-size: 14px;
+font-weight: 600;
+color: #374151;
+}
+
+.required {
+color: #dc2626;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 14px;
-    box-sizing: border-box;
-    background: white;
-    transition: 0.2s;
+width: 100%;
+padding: 13px 14px;
+border: 1px solid #d1d5db;
+border-radius: 9px;
+background: #ffffff;
+color: #111827;
+font-size: 14px;
+font-family: inherit;
+box-sizing: border-box;
+transition: all 0.2s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+outline: none;
+border-color: #2563eb;
+box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
 .form-group textarea {
-    resize: vertical;
+resize: vertical;
+min-height: 120px;
 }
+
+/* DEUX COLONNES */
 
 .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 20px;
 }
 
-.input-money {
-    position: relative;
+/* ARGENT */
+
+.money-input {
+position: relative;
 }
 
-.input-money input {
-    padding-right: 55px;
+.money-input input {
+padding-right: 55px;
 }
 
-.input-money span {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-weight: 600;
-    font-size: 13px;
+.money-input span {
+position: absolute;
+right: 15px;
+top: 50%;
+transform: translateY(-50%);
+color: #6b7280;
+font-size: 13px;
+font-weight: 700;
 }
 
-.reste-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin-bottom: 22px;
+/* RÉSUMÉ FINANCIER */
+
+.financial-summary {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+margin: 8px 0 25px;
 }
 
-.reste-label {
-    display: block;
-    font-weight: 600;
-    color: #374151;
+.summary-item {
+padding: 16px;
+border: 1px solid #e5e7eb;
+border-radius: 10px;
+background: #f9fafb;
 }
 
-.reste-box small {
-    display: block;
-    margin-top: 4px;
-    color: #9ca3af;
+.summary-item span {
+display: block;
+margin-bottom: 7px;
+font-size: 12px;
+color: #6b7280;
 }
 
-.reste-box strong {
-    font-size: 20px;
-    color: #dc2626;
+.summary-item strong {
+font-size: 18px;
+color: #374151;
 }
 
-.help-text {
-    display: block;
-    margin-top: 6px;
-    color: #6b7280;
-    font-size: 12px;
+.summary-item.remaining {
+background: #fff7ed;
+border-color: #fed7aa;
 }
+
+.summary-item.remaining strong {
+color: #dc2626;
+}
+
+/* AVERTISSEMENT */
 
 .warning {
-    margin-top: 8px;
-    padding: 10px 12px;
-    background: #fff7ed;
-    color: #c2410c;
-    border-radius: 7px;
-    font-size: 13px;
+margin-top: 8px;
+padding: 11px 13px;
+background: #fff7ed;
+color: #c2410c;
+border-radius: 8px;
+font-size: 13px;
 }
 
+.warning a {
+color: #c2410c;
+font-weight: 700;
+text-decoration: underline;
+}
+
+/* AIDE */
+
+.help-text {
+display: block;
+margin-top: 7px;
+color: #6b7280;
+font-size: 12px;
+}
+
+/* BOUTONS */
+
 .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
+display: flex;
+justify-content: flex-end;
+gap: 12px;
+margin-top: 32px;
+padding-top: 22px;
+border-top: 1px solid #e5e7eb;
 }
 
 .btn-cancel,
 .btn-save {
-    border: none;
-    border-radius: 8px;
-    padding: 12px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
+min-height: 46px;
+padding: 12px 20px;
+border-radius: 9px;
+font-size: 14px;
+font-weight: 700;
+text-decoration: none;
+cursor: pointer;
+border: none;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+box-sizing: border-box;
+transition: all 0.2s ease;
 }
 
 .btn-cancel {
-    background: #f3f4f6;
-    color: #374151;
+background: #f3f4f6;
+color: #374151;
 }
 
 .btn-cancel:hover {
-    background: #e5e7eb;
+background: #e5e7eb;
 }
 
 .btn-save {
-    background: #2563eb;
-    color: white;
+background: #2563eb;
+color: white;
 }
 
 .btn-save:hover {
-    background: #1d4ed8;
+background: #1d4ed8;
+transform: translateY(-1px);
 }
+
+/* MOBILE */
 
 @media (max-width: 700px) {
 
-    .form-container {
-        padding: 20px;
-    }
+```
+.repair-edit-container {
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: none;
+}
 
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
+.repair-header {
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
 
-    .form-actions {
-        flex-direction: column;
-    }
+.repair-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    font-size: 23px;
+}
 
-    .btn-cancel,
-    .btn-save {
-        width: 100%;
-        text-align: center;
-        box-sizing: border-box;
-    }
+.repair-header h2 {
+    font-size: 19px;
+}
+
+.repair-header p {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.section-title {
+    margin-top: 23px;
+}
+
+.form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+
+.financial-summary {
+    grid-template-columns: 1fr;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-item span {
+    margin: 0;
+}
+
+.form-actions {
+    flex-direction: column-reverse;
+}
+
+.btn-cancel,
+.btn-save {
+    width: 100%;
+}
+```
 
 }
 
 {% endblock %}
 
-
 {% block scripts %}
 
 <script>
+
+function formaterFC(nombre) {
+    return new Intl.NumberFormat("fr-FR").format(nombre) + " FC";
+}
 
 function calculerReste() {
 
@@ -510,14 +653,49 @@ function calculerReste() {
     const reste =
         Math.max(prix - paye, 0);
 
+    document.getElementById("totalPrix").textContent =
+        formaterFC(prix);
+
+    document.getElementById("totalPaye").textContent =
+        formaterFC(paye);
+
     document.getElementById("reste").textContent =
-        new Intl.NumberFormat("fr-FR").format(reste)
-        + " FC";
+        formaterFC(reste);
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    calculerReste();
-});
+
+/* CALCUL AU CHARGEMENT */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+        calculerReste();
+    }
+);
+
+
+/* EMPÊCHER UN PAIEMENT SUPÉRIEUR AU PRIX */
+
+document.getElementById("montant_paye").addEventListener(
+    "input",
+    function() {
+
+        const prix =
+            parseFloat(
+                document.getElementById("prix").value
+            ) || 0;
+
+        const paye =
+            parseFloat(this.value)
+            || 0;
+
+        if (paye > prix) {
+            this.value = prix;
+        }
+
+        calculerReste();
+    }
+);
 
 </script>
 
