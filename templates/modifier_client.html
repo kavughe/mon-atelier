@@ -1,7 +1,8 @@
+
 {% extends "base.html" %}
 
 {% block title %}
-Mon Atelier - Modifier un client
+Mon Atelier - Modifier client
 {% endblock %}
 
 {% block page_title %}
@@ -10,153 +11,298 @@ Modifier le client
 
 {% block content %}
 
-<div class="form-container">
+<div class="client-page">
 
-    <div class="form-header">
+    <!-- ==========================================
+         EN-TÊTE
+    =========================================== -->
+    <div class="client-header">
 
-        <div>
-            <h2>✏️ Modifier le client</h2>
-            <p>Modifier les informations de {{ client.nom }}.</p>
+        <div class="header-left">
+
+            <div class="client-icon">
+                👤
+            </div>
+
+            <div>
+                <h2>Modifier le client</h2>
+
+                <p>
+                    Modifiez les informations de
+                    <strong>{{ client.nom }}</strong>
+                </p>
+            </div>
+
         </div>
 
-        <a href="{{ url_for('clients') }}" class="btn-secondary">
-            ← Retour aux clients
+        <a href="{{ url_for('clients') }}"
+           class="btn-back">
+            ← Retour
         </a>
 
     </div>
 
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+    <!-- ==========================================
+         FORMULAIRE
+    =========================================== -->
+    <form method="POST"
+          action="{{ url_for('modifier_client', id=client.id) }}"
+          class="client-form"
+          id="clientForm">
 
-        {% if messages %}
 
-            {% for category, message in messages %}
+        <!-- ======================================
+             NOM
+        ======================================= -->
+        <div class="form-group">
 
-                <div class="flash">
-                    {{ message }}
+            <label for="nom">
+                Nom complet <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+
+                <input type="text"
+                       name="nom"
+                       id="nom"
+                       value="{{ client.nom or '' }}"
+                       placeholder="Nom complet du client"
+                       autocomplete="name"
+                       required>
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             TÉLÉPHONE
+        ======================================= -->
+        <div class="form-group">
+
+            <label for="telephone">
+                Téléphone
+            </label>
+
+            <div class="input-wrapper">
+                <span class="input-icon">📞</span>
+
+                <input type="tel"
+                       name="telephone"
+                       id="telephone"
+                       value="{{ client.telephone or '' }}"
+                       placeholder="Ex : 099 000 0000"
+                       autocomplete="tel">
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             ADRESSE
+        ======================================= -->
+        <div class="form-group">
+
+            <label for="adresse">
+                Adresse
+            </label>
+
+            <div class="input-wrapper textarea-wrapper">
+                <span class="input-icon">📍</span>
+
+                <textarea name="adresse"
+                          id="adresse"
+                          rows="3"
+                          placeholder="Adresse du client"
+                          autocomplete="street-address">{{ client.adresse or '' }}</textarea>
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             OBSERVATION
+        ======================================= -->
+        <div class="form-group">
+
+            <label for="observation">
+                Observation
+            </label>
+
+            <textarea name="observation"
+                      id="observation"
+                      rows="4"
+                      placeholder="Ajouter une observation concernant le client...">{{ client.observation or '' }}</textarea>
+
+        </div>
+
+
+        <!-- ======================================
+             INFORMATIONS DU CLIENT
+        ======================================= -->
+        <div class="client-info">
+
+            <div class="info-title">
+                ℹ️ Informations
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span>
+                        ID client
+                    </span>
+
+                    <strong>
+                        #{{ client.id }}
+                    </strong>
+
                 </div>
 
-            {% endfor %}
 
-        {% endif %}
+                {% if client.date_creation %}
 
-    {% endwith %}
+                <div class="info-item">
 
+                    <span>
+                        Client depuis
+                    </span>
 
-    <div class="form-card">
+                    <strong>
+                        {{ client.date_creation }}
+                    </strong>
 
-        <form method="POST">
+                </div>
 
-            <div class="form-group">
-
-                <label for="nom">
-                    Nom du client *
-                </label>
-
-                <input
-                    type="text"
-                    id="nom"
-                    name="nom"
-                    value="{{ client.nom or '' }}"
-                    placeholder="Nom du client"
-                    required
-                >
+                {% endif %}
 
             </div>
 
-
-            <div class="form-group">
-
-                <label for="telephone">
-                    Téléphone
-                </label>
-
-                <input
-                    type="text"
-                    id="telephone"
-                    name="telephone"
-                    value="{{ client.telephone or '' }}"
-                    placeholder="Numéro de téléphone"
-                >
-
-            </div>
+        </div>
 
 
-            <div class="form-group">
+        <!-- ======================================
+             BOUTONS
+        ======================================= -->
+        <div class="form-actions">
 
-                <label for="adresse">
-                    Adresse
-                </label>
+            <a href="{{ url_for('clients') }}"
+               class="btn-cancel">
+                Annuler
+            </a>
 
-                <textarea
-                    id="adresse"
-                    name="adresse"
-                    rows="3"
-                    placeholder="Adresse du client"
-                >{{ client.adresse or '' }}</textarea>
+            <button type="submit"
+                    class="btn-save">
+                💾 Enregistrer les modifications
+            </button>
 
-            </div>
+        </div>
 
-
-            <div class="form-actions">
-
-                <a
-                    href="{{ url_for('clients') }}"
-                    class="btn-cancel"
-                >
-                    Annuler
-                </a>
-
-                <button
-                    type="submit"
-                    class="btn-save"
-                >
-                    💾 Enregistrer les modifications
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
+    </form>
 
 </div>
 
-{% endblock %}
 
+<style>
 
-{% block extra_css %}
+/* ==========================================
+   BASE
+========================================== */
 
-.form-container {
-    max-width: 850px;
-    margin: 0 auto;
+* {
+    box-sizing: border-box;
 }
 
-.form-header {
+.client-page {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.client-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+
     margin-bottom: 25px;
 }
 
-.form-header h2 {
-    font-size: 24px;
-    color: #111827;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.form-header p {
-    margin-top: 6px;
-    color: #6b7280;
-    font-size: 14px;
+.client-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: #f1f1f1;
+
+    font-size: 28px;
 }
 
-.form-card {
+.client-header h2 {
+    margin: 0 0 5px;
+
+    font-size: 26px;
+}
+
+.client-header p {
+    margin: 0;
+
+    color: #666;
+}
+
+.btn-back {
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    background: #eeeeee;
+
+    color: #333;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.btn-back:hover {
+    background: #dddddd;
+}
+
+
+/* ==========================================
+   FORMULAIRE
+========================================== */
+
+.client-form {
+
+    padding: 28px;
+
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .form-group {
@@ -164,105 +310,303 @@ Modifier le client
 }
 
 .form-group label {
+
     display: block;
+
     margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #374151;
+
+    font-weight: 600;
+
+    color: #333;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group label span {
+    color: #d00000;
+}
+
+
+/* ==========================================
+   INPUT
+========================================== */
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+
+    position: absolute;
+
+    left: 14px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 18px;
+
+    pointer-events: none;
+}
+
+.input-wrapper input {
+
     width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    outline: none;
+
+    padding: 13px 14px 13px 45px;
+
+    border: 1px solid #d5d5d5;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    background: #fff;
+
     transition: 0.2s;
+}
+
+.form-group textarea {
+
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border: 1px solid #d5d5d5;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    font-family: inherit;
+
+    background: #fff;
+
+    resize: vertical;
+
+    transition: 0.2s;
+}
+
+.textarea-wrapper textarea {
+    padding-left: 45px;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+
+    outline: none;
+
+    border-color: #555;
+
+    box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.06);
 }
 
-.form-group textarea {
-    resize: vertical;
+
+/* ==========================================
+   INFORMATIONS
+========================================== */
+
+.client-info {
+
+    margin-top: 10px;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    background: #f7f7f7;
+
+    border: 1px solid #e4e4e4;
 }
+
+.info-title {
+
+    margin-bottom: 15px;
+
+    font-weight: 700;
+
+    font-size: 16px;
+}
+
+.info-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 12px;
+}
+
+.info-item {
+
+    padding: 13px;
+
+    border-radius: 9px;
+
+    background: white;
+
+    border: 1px solid #e5e5e5;
+}
+
+.info-item span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+.info-item strong {
+    font-size: 15px;
+}
+
+
+/* ==========================================
+   BOUTONS
+========================================== */
 
 .form-actions {
+
     display: flex;
+
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
+
+    gap: 12px;
+
+    margin-top: 28px;
 }
 
-.btn-secondary,
 .btn-cancel,
 .btn-save {
-    display: inline-block;
-    padding: 11px 18px;
-    border-radius: 7px;
+
+    padding: 13px 20px;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
     text-decoration: none;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
+
     cursor: pointer;
-}
 
-.btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-.btn-secondary:hover {
-    background: #e5e7eb;
+    transition: 0.2s;
 }
 
 .btn-cancel {
-    background: #f3f4f6;
-    color: #374151;
-}
 
-.btn-cancel:hover {
-    background: #e5e7eb;
+    background: #eeeeee;
+
+    color: #333;
 }
 
 .btn-save {
-    background: #2563eb;
+
+    border: none;
+
+    background: #222;
+
     color: white;
 }
 
-.btn-save:hover {
-    background: #1d4ed8;
+.btn-cancel:hover {
+    background: #dddddd;
 }
 
-@media (max-width: 650px) {
+.btn-save:hover {
+    background: #444;
+}
 
-    .form-header {
-        flex-direction: column;
-        align-items: flex-start;
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 700px) {
+
+    .client-page {
+        padding: 12px;
     }
 
-    .form-card {
-        padding: 20px;
+    .client-header {
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .client-header h2 {
+        font-size: 22px;
+    }
+
+    .btn-back {
+        text-align: center;
+    }
+
+    .client-form {
+        padding: 18px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
     }
 
     .form-actions {
+
         flex-direction: column;
     }
 
-    .btn-secondary,
     .btn-cancel,
     .btn-save {
+
         width: 100%;
+
         text-align: center;
     }
+
 }
+
+</style>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form =
+        document.getElementById("clientForm");
+
+    const nom =
+        document.getElementById("nom");
+
+
+    form.addEventListener("submit", function (event) {
+
+        const nomValue =
+            nom.value.trim();
+
+
+        if (nomValue.length < 2) {
+
+            event.preventDefault();
+
+            alert(
+                "Veuillez saisir un nom de client valide."
+            );
+
+            nom.focus();
+
+            return;
+        }
+
+    });
+
+});
+
+</script>
 
 {% endblock %}
