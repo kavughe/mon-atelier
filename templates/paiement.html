@@ -19,18 +19,24 @@ Enregistrer un paiement
     <div class="payment-header">
 
         <div class="header-left">
-            <div class="payment-icon">💰</div>
+
+            <div class="payment-icon">
+                💰
+            </div>
 
             <div>
                 <h2>Enregistrer un paiement</h2>
+
                 <p>
                     Paiement de la réparation
                     <strong>#{{ reparation.id }}</strong>
                 </p>
             </div>
+
         </div>
 
-        <a href="{{ url_for('reparations') }}" class="btn-back">
+        <a href="{{ url_for('reparations') }}"
+           class="btn-back">
             ← Retour
         </a>
 
@@ -43,24 +49,41 @@ Enregistrer un paiement
     <div class="repair-info">
 
         <div class="info-item">
-            <span class="info-label">Client</span>
+
+            <span class="info-label">
+                Client
+            </span>
+
             <strong>
                 {{ reparation.client_nom or 'Client non renseigné' }}
             </strong>
+
         </div>
 
+
         <div class="info-item">
-            <span class="info-label">Appareil</span>
+
+            <span class="info-label">
+                Appareil
+            </span>
+
             <strong>
                 {{ reparation.appareil or '-' }}
             </strong>
+
         </div>
 
+
         <div class="info-item">
-            <span class="info-label">Panne</span>
+
+            <span class="info-label">
+                Panne
+            </span>
+
             <strong>
                 {{ reparation.panne or '-' }}
             </strong>
+
         </div>
 
     </div>
@@ -72,27 +95,44 @@ Enregistrer un paiement
     <div class="payment-summary">
 
         <div class="summary-card">
-            <span>Prix total</span>
+
+            <span>
+                Prix total
+            </span>
+
             <strong>
                 {{ "%.2f"|format(reparation.prix or 0) }}
                 {{ reparation.devise }}
             </strong>
+
         </div>
 
+
         <div class="summary-card">
-            <span>Déjà payé</span>
+
+            <span>
+                Déjà payé
+            </span>
+
             <strong>
                 {{ "%.2f"|format(reparation.montant_paye or 0) }}
                 {{ reparation.devise }}
             </strong>
+
         </div>
 
+
         <div class="summary-card remaining">
-            <span>Reste à payer</span>
+
+            <span>
+                Reste à payer
+            </span>
+
             <strong>
                 {{ "%.2f"|format(reparation.reste_a_payer or 0) }}
                 {{ reparation.devise }}
             </strong>
+
         </div>
 
     </div>
@@ -123,7 +163,8 @@ Enregistrer un paiement
                    readonly>
 
             <small>
-                La devise du paiement doit rester identique à celle de la réparation.
+                La devise du paiement doit rester identique
+                à celle de la réparation.
             </small>
 
         </div>
@@ -157,6 +198,7 @@ Enregistrer un paiement
 
             <small>
                 Maximum :
+
                 <strong>
                     {{ "%.2f"|format(reparation.reste_a_payer or 0) }}
                     {{ reparation.devise }}
@@ -279,36 +321,62 @@ Enregistrer un paiement
 
 
         <!-- ======================================
-             APERÇU
+             APERÇU DU PAIEMENT
         ======================================= -->
         <div class="live-summary">
 
             <div>
-                <span>Montant du paiement</span>
+
+                <span>
+                    Montant du paiement
+                </span>
+
                 <strong>
-                    <span id="previewPayment">0.00</span>
+                    <span id="previewPayment">
+                        0.00
+                    </span>
+
                     {{ reparation.devise }}
                 </strong>
+
             </div>
 
+
             <div>
-                <span>Nouveau total payé</span>
+
+                <span>
+                    Nouveau total payé
+                </span>
+
                 <strong>
+
                     <span id="previewTotal">
                         {{ "%.2f"|format(reparation.montant_paye or 0) }}
                     </span>
+
                     {{ reparation.devise }}
+
                 </strong>
+
             </div>
 
+
             <div>
-                <span>Nouveau reste</span>
+
+                <span>
+                    Nouveau reste
+                </span>
+
                 <strong class="preview-remaining">
+
                     <span id="previewRemaining">
                         {{ "%.2f"|format(reparation.reste_a_payer or 0) }}
                     </span>
+
                     {{ reparation.devise }}
+
                 </strong>
+
             </div>
 
         </div>
@@ -354,7 +422,7 @@ Enregistrer un paiement
 
 
 /* ==========================================
-   HEADER
+   EN-TÊTE
 ========================================== */
 
 .payment-header {
@@ -374,11 +442,14 @@ Enregistrer un paiement
 .payment-icon {
     width: 55px;
     height: 55px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     border-radius: 14px;
     background: #f1f1f1;
+
     font-size: 27px;
 }
 
@@ -394,36 +465,50 @@ Enregistrer un paiement
 
 .btn-back {
     padding: 10px 16px;
+
     border-radius: 8px;
+
     background: #eeeeee;
     color: #333;
+
     text-decoration: none;
     font-weight: 600;
 }
 
+.btn-back:hover {
+    background: #dddddd;
+}
+
 
 /* ==========================================
-   REPAIR INFO
+   INFORMATIONS RÉPARATION
 ========================================== */
 
 .repair-info {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+
     gap: 15px;
+
     margin-bottom: 20px;
 }
 
 .info-item {
     padding: 17px;
+
     border: 1px solid #e3e3e3;
     border-radius: 10px;
+
     background: white;
 }
 
 .info-label {
     display: block;
+
     color: #777;
+
     font-size: 13px;
+
     margin-bottom: 7px;
 }
 
@@ -433,27 +518,35 @@ Enregistrer un paiement
 
 
 /* ==========================================
-   SUMMARY
+   RÉSUMÉ FINANCIER
 ========================================== */
 
 .payment-summary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+
     gap: 15px;
+
     margin-bottom: 25px;
 }
 
 .summary-card {
     padding: 20px;
+
     border-radius: 12px;
+
     background: #f7f7f7;
+
     border: 1px solid #e2e2e2;
 }
 
 .summary-card span {
     display: block;
+
     color: #666;
+
     font-size: 14px;
+
     margin-bottom: 8px;
 }
 
@@ -467,14 +560,18 @@ Enregistrer un paiement
 
 
 /* ==========================================
-   FORM
+   FORMULAIRE
 ========================================== */
 
 .payment-form {
     padding: 25px;
+
     background: white;
+
     border-radius: 14px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
 .form-group {
@@ -483,8 +580,11 @@ Enregistrer un paiement
 
 .form-group label {
     display: block;
+
     margin-bottom: 8px;
+
     font-weight: 600;
+
     color: #333;
 }
 
@@ -495,19 +595,28 @@ Enregistrer un paiement
 .form-group input,
 .form-group select,
 .form-group textarea {
+
     width: 100%;
+
     padding: 12px 14px;
+
     border: 1px solid #d5d5d5;
+
     border-radius: 8px;
+
     background: white;
+
     font-size: 15px;
+
     font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
+
     outline: none;
+
     border-color: #555;
 }
 
@@ -516,14 +625,17 @@ Enregistrer un paiement
 }
 
 .form-group small {
+
     display: block;
+
     margin-top: 6px;
+
     color: #777;
 }
 
 
 /* ==========================================
-   AMOUNT
+   MONTANT
 ========================================== */
 
 .amount-input {
@@ -535,27 +647,41 @@ Enregistrer un paiement
 }
 
 .amount-input span {
+
     position: absolute;
+
     right: 15px;
+
     top: 50%;
+
     transform: translateY(-50%);
+
     font-weight: 700;
+
     color: #555;
 }
 
 
 /* ==========================================
-   LIVE SUMMARY
+   APERÇU
 ========================================== */
 
 .live-summary {
+
     display: grid;
+
     grid-template-columns: repeat(3, 1fr);
+
     gap: 12px;
+
     margin-top: 25px;
+
     padding: 18px;
+
     border-radius: 12px;
+
     background: #f7f7f7;
+
     border: 1px solid #e3e3e3;
 }
 
@@ -564,9 +690,13 @@ Enregistrer un paiement
 }
 
 .live-summary span:first-child {
+
     display: block;
+
     color: #666;
+
     font-size: 13px;
+
     margin-bottom: 7px;
 }
 
@@ -580,35 +710,58 @@ Enregistrer un paiement
 
 
 /* ==========================================
-   BUTTONS
+   BOUTONS
 ========================================== */
 
 .form-actions {
+
     display: flex;
+
     justify-content: flex-end;
+
     gap: 12px;
+
     margin-top: 25px;
 }
 
 .btn-cancel,
 .btn-save {
+
     padding: 13px 20px;
+
     border-radius: 8px;
+
     font-size: 15px;
+
     font-weight: 600;
+
     text-decoration: none;
+
     cursor: pointer;
 }
 
 .btn-cancel {
+
     background: #eeeeee;
+
     color: #333;
 }
 
 .btn-save {
+
     border: none;
+
     background: #222;
+
     color: white;
+}
+
+.btn-cancel:hover {
+    background: #dddddd;
+}
+
+.btn-save:hover {
+    background: #444;
 }
 
 
@@ -623,7 +776,9 @@ Enregistrer un paiement
     }
 
     .payment-header {
+
         flex-direction: column;
+
         align-items: stretch;
     }
 
@@ -632,14 +787,17 @@ Enregistrer un paiement
     }
 
     .repair-info {
+
         grid-template-columns: 1fr;
     }
 
     .payment-summary {
+
         grid-template-columns: 1fr;
     }
 
     .live-summary {
+
         grid-template-columns: 1fr;
     }
 
@@ -648,12 +806,15 @@ Enregistrer un paiement
     }
 
     .form-actions {
+
         flex-direction: column;
     }
 
     .btn-cancel,
     .btn-save {
+
         width: 100%;
+
         text-align: center;
     }
 }
@@ -665,12 +826,20 @@ Enregistrer un paiement
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const montantInput = document.getElementById("montant");
-    const statutInput = document.getElementById("statut");
+    const montantInput =
+        document.getElementById("montant");
 
-    const prixTotal = Number("{{ reparation.prix or 0 }}");
-    const dejaPaye = Number("{{ reparation.montant_paye or 0 }}");
-    const resteActuel = Number("{{ reparation.reste_a_payer or 0 }}");
+    const statutInput =
+        document.getElementById("statut");
+
+    const prixTotal =
+        Number("{{ reparation.prix or 0 }}");
+
+    const dejaPaye =
+        Number("{{ reparation.montant_paye or 0 }}");
+
+    const resteActuel =
+        Number("{{ reparation.reste_a_payer or 0 }}");
 
     const previewPayment =
         document.getElementById("previewPayment");
@@ -682,32 +851,50 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("previewRemaining");
 
 
+    /* ==========================================
+       CALCUL DU PAIEMENT
+    ========================================== */
+
     function updatePreview() {
 
-        let paiement = parseFloat(montantInput.value) || 0;
+        let paiement =
+            parseFloat(montantInput.value) || 0;
+
 
         if (paiement < 0) {
             paiement = 0;
         }
 
+
         if (paiement > resteActuel) {
+
             paiement = resteActuel;
-            montantInput.value = resteActuel.toFixed(2);
+
+            montantInput.value =
+                resteActuel.toFixed(2);
         }
 
-        const nouveauTotal = dejaPaye + paiement;
 
-        let nouveauReste = prixTotal - nouveauTotal;
+        const nouveauTotal =
+            dejaPaye + paiement;
+
+
+        let nouveauReste =
+            prixTotal - nouveauTotal;
+
 
         if (nouveauReste < 0) {
             nouveauReste = 0;
         }
 
+
         previewPayment.textContent =
             paiement.toFixed(2);
 
+
         previewTotal.textContent =
             nouveauTotal.toFixed(2);
+
 
         previewRemaining.textContent =
             nouveauReste.toFixed(2);
@@ -720,49 +907,67 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
+    /* ==========================================
+       VALIDATION
+    ========================================== */
+
     document.getElementById("paymentForm")
-        .addEventListener("submit", function (event) {
+        .addEventListener(
+            "submit",
+            function (event) {
 
-            const paiement =
-                parseFloat(montantInput.value) || 0;
+                const paiement =
+                    parseFloat(montantInput.value) || 0;
 
-            if (paiement <= 0) {
-                event.preventDefault();
 
-                alert(
-                    "Veuillez saisir un montant de paiement supérieur à zéro."
-                );
+                if (paiement <= 0) {
 
-                montantInput.focus();
-                return;
+                    event.preventDefault();
+
+                    alert(
+                        "Veuillez saisir un montant de paiement supérieur à zéro."
+                    );
+
+                    montantInput.focus();
+
+                    return;
+                }
+
+
+                if (paiement > resteActuel) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Le paiement ne peut pas dépasser le reste à payer."
+                    );
+
+                    montantInput.focus();
+
+                    return;
+                }
+
+
+                if (!statutInput.value) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Veuillez sélectionner le statut de la réparation."
+                    );
+
+                    statutInput.focus();
+
+                    return;
+                }
+
             }
+        );
 
 
-            if (paiement > resteActuel) {
-                event.preventDefault();
-
-                alert(
-                    "Le paiement ne peut pas dépasser le reste à payer."
-                );
-
-                montantInput.focus();
-                return;
-            }
-
-
-            if (!statutInput.value) {
-                event.preventDefault();
-
-                alert(
-                    "Veuillez sélectionner le statut de la réparation."
-                );
-
-                statutInput.focus();
-                return;
-            }
-
-        });
-
+    /* ==========================================
+       INITIALISATION
+    ========================================== */
 
     updatePreview();
 
