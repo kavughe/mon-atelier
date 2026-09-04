@@ -13,150 +13,82 @@ Enregistrer un paiement
 
 <style>
     .payment-page {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 20px;
+        max-width: 850px;
+        margin: 30px auto;
+        padding: 15px;
     }
 
-    .payment-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-    }
-
-    .payment-title h2 {
-        margin: 0;
-        font-size: 28px;
-        color: #222;
-    }
-
-    .payment-title p {
-        margin: 6px 0 0;
-        color: #777;
-    }
-
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 10px 16px;
-        background: #f1f1f1;
-        color: #333;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 600;
-    }
-
-    .back-btn:hover {
-        background: #ddd;
-    }
-
-    /* =====================================================
-       CARTE RÉPARATION
-    ===================================================== */
-
-    .repair-card {
+    .payment-card {
         background: #fff;
         border-radius: 14px;
-        padding: 22px;
+        padding: 25px;
         margin-bottom: 20px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-        border: 1px solid #eee;
+        box-shadow: 0 4px 15px rgba(0,0,0,.08);
     }
 
-    .repair-card h3 {
+    .payment-card h2,
+    .payment-card h3 {
         margin-top: 0;
-        margin-bottom: 18px;
-        color: #222;
     }
 
-    .repair-info {
+    .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
 
-    .info-box {
-        background: #f8f9fa;
+    .info-item {
+        background: #f7f7f7;
         padding: 14px;
-        border-radius: 9px;
+        border-radius: 8px;
     }
 
     .info-label {
         display: block;
-        font-size: 13px;
         color: #777;
+        font-size: 13px;
         margin-bottom: 5px;
     }
 
     .info-value {
-        font-size: 16px;
         font-weight: 600;
         color: #222;
-        word-break: break-word;
     }
 
-    /* =====================================================
-       RÉSUMÉ FINANCIER
-    ===================================================== */
-
-    .money-summary {
+    .amount-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 15px;
         margin-top: 20px;
     }
 
-    .money-box {
+    .amount-box {
         padding: 18px;
         border-radius: 10px;
+        background: #f7f7f7;
         text-align: center;
-        background: #f8f9fa;
     }
 
-    .money-box span {
+    .amount-box small {
         display: block;
-        font-size: 13px;
         color: #777;
-        margin-bottom: 7px;
+        margin-bottom: 8px;
     }
 
-    .money-box strong {
+    .amount-box strong {
         font-size: 20px;
-        color: #222;
     }
 
-    .money-box.total {
+    .total {
         border-left: 4px solid #007bff;
     }
 
-    .money-box.paid {
+    .paid {
         border-left: 4px solid #28a745;
     }
 
-    .money-box.remaining {
+    .remaining {
         border-left: 4px solid #dc3545;
-    }
-
-    /* =====================================================
-       FORMULAIRE
-    ===================================================== */
-
-    .payment-card {
-        background: #fff;
-        border-radius: 14px;
-        padding: 25px;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-        border: 1px solid #eee;
-    }
-
-    .payment-card h3 {
-        margin-top: 0;
-        margin-bottom: 20px;
-        color: #222;
     }
 
     .form-group {
@@ -165,178 +97,99 @@ Enregistrer un paiement
 
     .form-group label {
         display: block;
-        margin-bottom: 7px;
         font-weight: 600;
-        color: #333;
+        margin-bottom: 7px;
     }
 
     .form-control {
         width: 100%;
-        padding: 12px 14px;
+        padding: 12px;
         border: 1px solid #ccc;
         border-radius: 8px;
         font-size: 15px;
-        outline: none;
-        background: #fff;
-        transition: 0.2s;
+        box-sizing: border-box;
     }
 
     .form-control:focus {
+        outline: none;
         border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.10);
-    }
-
-    .form-control:disabled {
-        background: #f1f1f1;
-        cursor: not-allowed;
-        color: #555;
     }
 
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px;
+        gap: 15px;
     }
 
-    .currency-display {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .currency-badge {
-        min-width: 70px;
-        padding: 11px 14px;
-        text-align: center;
+    .currency {
+        padding: 12px;
+        background: #f0f0f0;
         border-radius: 8px;
-        background: #222;
-        color: white;
         font-weight: bold;
     }
 
-    .amount-help {
-        margin-top: 6px;
+    .help {
         font-size: 13px;
         color: #777;
+        margin-top: 6px;
     }
 
-    /* =====================================================
-       STATUT
-    ===================================================== */
-
-    .status-box {
-        padding: 14px 16px;
-        margin-bottom: 20px;
-        border-radius: 9px;
-        background: #f8f9fa;
-        border: 1px solid #ddd;
+    .status {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 20px;
+        background: #eee;
+        font-weight: 600;
     }
 
-    .status-box strong {
-        margin-right: 8px;
-    }
-
-    .status-en-attente {
-        color: #856404;
-    }
-
-    .status-en-cours {
-        color: #0056b3;
-    }
-
-    .status-terminee {
-        color: #155724;
-    }
-
-    /* =====================================================
-       BOUTONS
-    ===================================================== */
-
-    .form-actions {
+    .buttons {
         display: flex;
-        gap: 12px;
         justify-content: flex-end;
+        gap: 10px;
         margin-top: 25px;
-        flex-wrap: wrap;
     }
 
     .btn {
         border: none;
         border-radius: 8px;
         padding: 12px 20px;
-        font-size: 15px;
+        text-decoration: none;
         font-weight: 600;
         cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
+        font-size: 15px;
     }
 
-    .btn-cancel {
+    .btn-back {
         background: #e9ecef;
         color: #333;
     }
 
-    .btn-cancel:hover {
-        background: #d6d8db;
-    }
-
-    .btn-payment {
+    .btn-save {
         background: #28a745;
         color: white;
     }
 
-    .btn-payment:hover {
+    .btn-save:hover {
         background: #218838;
     }
 
-    .btn-payment:disabled {
-        background: #999;
-        cursor: not-allowed;
-    }
-
-    /* =====================================================
-       MESSAGE
-    ===================================================== */
-
-    .payment-warning {
-        padding: 14px 16px;
-        border-radius: 9px;
-        margin-bottom: 20px;
+    .warning {
+        padding: 15px;
+        border-radius: 8px;
         background: #fff3cd;
-        border: 1px solid #ffeeba;
         color: #856404;
+        margin-bottom: 20px;
     }
-
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
 
     @media (max-width: 700px) {
 
-        .payment-page {
-            padding: 12px;
-        }
-
-        .repair-info {
-            grid-template-columns: 1fr;
-        }
-
-        .money-summary {
-            grid-template-columns: 1fr;
-        }
-
+        .info-grid,
+        .amount-grid,
         .form-row {
             grid-template-columns: 1fr;
         }
 
-        .payment-title h2 {
-            font-size: 23px;
-        }
-
-        .form-actions {
+        .buttons {
             flex-direction: column;
         }
 
@@ -350,60 +203,54 @@ Enregistrer un paiement
 <div class="payment-page">
 
     <!-- =====================================================
-         EN-TÊTE
+         INFORMATIONS
     ====================================================== -->
 
-    <div class="payment-header">
+    <div class="payment-card">
 
-        <div class="payment-title">
-            <h2>💳 Enregistrer un paiement</h2>
-            <p>
-                Enregistrement d'un paiement pour une réparation
-            </p>
-        </div>
+        <h2>💳 Enregistrer un paiement</h2>
 
-        <a href="{{ url_for('reparations') }}" class="back-btn">
-            ← Retour aux réparations
-        </a>
+        <div class="info-grid">
 
-    </div>
-
-
-    <!-- =====================================================
-         INFORMATIONS RÉPARATION
-    ====================================================== -->
-
-    <div class="repair-card">
-
-        <h3>🔧 Informations de la réparation</h3>
-
-        <div class="repair-info">
-
-            <div class="info-box">
+            <div class="info-item">
                 <span class="info-label">Référence</span>
                 <span class="info-value">
                     REP-{{ reparation.id }}
                 </span>
             </div>
 
-            <div class="info-box">
+            <div class="info-item">
                 <span class="info-label">Client</span>
                 <span class="info-value">
-                    {{ reparation.client_nom or "Client non renseigné" }}
+                    {{ reparation.client_nom or "Non renseigné" }}
                 </span>
             </div>
 
-            <div class="info-box">
+            <div class="info-item">
                 <span class="info-label">Appareil</span>
                 <span class="info-value">
                     {{ reparation.appareil or "Non renseigné" }}
                 </span>
             </div>
 
-            <div class="info-box">
+            <div class="info-item">
                 <span class="info-label">Panne</span>
                 <span class="info-value">
                     {{ reparation.panne or "Non renseignée" }}
+                </span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Statut</span>
+                <span class="status">
+                    {{ reparation.statut or "En attente" }}
+                </span>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Devise de la réparation</span>
+                <span class="currency">
+                    {{ reparation.devise or "FC" }}
                 </span>
             </div>
 
@@ -411,32 +258,32 @@ Enregistrer un paiement
 
 
         <!-- =================================================
-             RÉSUMÉ FINANCIER
+             MONTANTS
         ================================================== -->
 
-        <div class="money-summary">
+        <div class="amount-grid">
 
-            <div class="money-box total">
-                <span>Montant total</span>
+            <div class="amount-box total">
+                <small>Montant total</small>
                 <strong>
-                    {{ "{:,.2f}".format(reparation.montant_total or 0) }}
-                    {{ reparation.devise }}
+                    {{ "%.2f"|format(reparation.montant_total or 0) }}
+                    {{ reparation.devise or "FC" }}
                 </strong>
             </div>
 
-            <div class="money-box paid">
-                <span>Total payé</span>
+            <div class="amount-box paid">
+                <small>Total payé</small>
                 <strong>
-                    {{ "{:,.2f}".format(reparation.montant_paye or 0) }}
-                    {{ reparation.devise }}
+                    {{ "%.2f"|format(reparation.montant_paye or 0) }}
+                    {{ reparation.devise or "FC" }}
                 </strong>
             </div>
 
-            <div class="money-box remaining">
-                <span>Reste à payer</span>
+            <div class="amount-box remaining">
+                <small>Reste à payer</small>
                 <strong>
-                    {{ "{:,.2f}".format(reparation.reste_a_payer or 0) }}
-                    {{ reparation.devise }}
+                    {{ "%.2f"|format(reparation.reste_a_payer or 0) }}
+                    {{ reparation.devise or "FC" }}
                 </strong>
             </div>
 
@@ -446,283 +293,210 @@ Enregistrer un paiement
 
 
     <!-- =====================================================
-         STATUT
-    ====================================================== -->
-
-    {% set statut = reparation.statut or "En attente" %}
-
-    <div class="status-box">
-
-        <strong>Statut :</strong>
-
-        {% if statut == "Terminée" %}
-
-            <span class="status-terminee">
-                ✅ Terminée
-            </span>
-
-        {% elif statut == "En cours" %}
-
-            <span class="status-en-cours">
-                🔧 En cours
-            </span>
-
-        {% else %}
-
-            <span class="status-en-attente">
-                ⏳ En attente
-            </span>
-
-        {% endif %}
-
-    </div>
-
-
-    <!-- =====================================================
-         SI DÉJÀ PAYÉ
+         PAIEMENT TERMINÉ
     ====================================================== -->
 
     {% if (reparation.reste_a_payer or 0) <= 0 %}
 
-        <div class="payment-warning">
-            <strong>⚠️ Paiement terminé</strong><br>
-            Cette réparation est déjà entièrement payée.
+        <div class="warning">
+            <strong>✅ Réparation entièrement payée</strong>
+            <br>
+            Aucun paiement supplémentaire n'est nécessaire.
         </div>
 
     {% else %}
 
+        <!-- =================================================
+             FORMULAIRE
+        ================================================== -->
 
-    <!-- =====================================================
-         FORMULAIRE PAIEMENT
-    ====================================================== -->
+        <div class="payment-card">
 
-    <div class="payment-card">
+            <h3>💰 Nouveau paiement</h3>
 
-        <h3>💰 Nouveau paiement</h3>
+            <form
+                method="POST"
+                action="{{ url_for('paiement', id=reparation.id) }}"
+                id="paymentForm"
+            >
 
-        <form
-            method="POST"
-            action="{{ url_for('paiement', id=reparation.id) }}"
-            id="paymentForm"
-        >
+                <!-- MONTANT + DEVISE -->
 
-            <!-- =============================================
-                 MONTANT + DEVISE
-            ============================================== -->
+                <div class="form-row">
 
-            <div class="form-row">
+                    <div class="form-group">
 
-                <div class="form-group">
+                        <label for="montant">
+                            Montant *
+                        </label>
 
-                    <label for="montant">
-                        Montant du paiement *
-                    </label>
-
-                    <input
-                        type="number"
-                        id="montant"
-                        name="montant"
-                        class="form-control"
-                        min="0.01"
-                        max="{{ reparation.reste_a_payer }}"
-                        step="0.01"
-                        placeholder="Entrez le montant"
-                        required
-                    >
-
-                    <div class="amount-help">
-                        Maximum :
-                        <strong>
-                            {{ "{:,.2f}".format(reparation.reste_a_payer or 0) }}
-                            {{ reparation.devise }}
-                        </strong>
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="devise">
-                        Devise *
-                    </label>
-
-                    <!--
-                        La devise est volontairement verrouillée.
-                        Elle vient directement de la réparation.
-                    -->
-
-                    <div class="currency-display">
-
-                        <select
-                            id="devise"
-                            name="devise"
+                        <input
+                            type="number"
+                            id="montant"
+                            name="montant"
                             class="form-control"
-                            disabled
+                            min="0.01"
+                            max="{{ reparation.reste_a_payer }}"
+                            step="0.01"
+                            placeholder="Ex : 10000"
+                            required
                         >
 
-                            {% if reparation.devise == "USD" %}
-
-                                <option value="USD" selected>
-                                    USD — Dollar américain
-                                </option>
-
-                            {% else %}
-
-                                <option value="FC" selected>
-                                    FC — Franc congolais
-                                </option>
-
-                            {% endif %}
-
-                        </select>
-
-                        <div class="currency-badge">
-                            {{ reparation.devise }}
+                        <div class="help">
+                            Maximum autorisé :
+                            <strong>
+                                {{ "%.2f"|format(reparation.reste_a_payer or 0) }}
+                                {{ reparation.devise or "FC" }}
+                            </strong>
                         </div>
 
                     </div>
 
-                    <!--
-                        Le champ hidden permet d'envoyer la devise
-                        malgré le select disabled.
-                    -->
+
+                    <div class="form-group">
+
+                        <label for="devise">
+                            Devise *
+                        </label>
+
+                        <!--
+                            La devise ne peut pas être changée.
+                        -->
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="{{ reparation.devise or 'FC' }}"
+                            disabled
+                        >
+
+                        <!--
+                            Ce champ est envoyé à Flask.
+                        -->
+
+                        <input
+                            type="hidden"
+                            id="devise"
+                            name="devise"
+                            value="{{ reparation.devise or 'FC' }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- MODE DE PAIEMENT -->
+
+                <div class="form-group">
+
+                    <label for="mode_paiement">
+                        Mode de paiement
+                    </label>
+
+                    <select
+                        id="mode_paiement"
+                        name="mode_paiement"
+                        class="form-control"
+                    >
+
+                        <option value="">
+                            -- Sélectionner --
+                        </option>
+
+                        <option value="Espèces">
+                            💵 Espèces
+                        </option>
+
+                        <option value="Mobile Money">
+                            📱 Mobile Money
+                        </option>
+
+                        <option value="Virement">
+                            🏦 Virement
+                        </option>
+
+                        <option value="Carte">
+                            💳 Carte bancaire
+                        </option>
+
+                        <option value="Autre">
+                            Autre
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label for="date_paiement">
+                        Date du paiement
+                    </label>
 
                     <input
-                        type="hidden"
-                        name="devise"
-                        value="{{ reparation.devise }}"
+                        type="date"
+                        id="date_paiement"
+                        name="date_paiement"
+                        class="form-control"
                     >
 
                 </div>
 
-            </div>
+
+                <!-- OBSERVATION -->
+
+                <div class="form-group">
+
+                    <label for="observation">
+                        Observation
+                    </label>
+
+                    <textarea
+                        id="observation"
+                        name="observation"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Ex : acompte, paiement final..."
+                    ></textarea>
+
+                </div>
 
 
-            <!-- =============================================
-                 MODE DE PAIEMENT
-            ============================================== -->
+                <!-- BOUTONS -->
 
-            <div class="form-group">
+                <div class="buttons">
 
-                <label for="mode_paiement">
-                    Mode de paiement
-                </label>
+                    <a
+                        href="{{ url_for('reparations') }}"
+                        class="btn btn-back"
+                    >
+                        ← Annuler
+                    </a>
 
-                <select
-                    id="mode_paiement"
-                    name="mode_paiement"
-                    class="form-control"
-                >
+                    <button
+                        type="submit"
+                        class="btn btn-save"
+                        id="saveButton"
+                    >
+                        💾 Enregistrer le paiement
+                    </button>
 
-                    <option value="">
-                        Sélectionner
-                    </option>
+                </div>
 
-                    <option value="Espèces">
-                        💵 Espèces
-                    </option>
+            </form>
 
-                    <option value="Mobile Money">
-                        📱 Mobile Money
-                    </option>
-
-                    <option value="Virement">
-                        🏦 Virement bancaire
-                    </option>
-
-                    <option value="Carte">
-                        💳 Carte bancaire
-                    </option>
-
-                    <option value="Autre">
-                        Autre
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- =============================================
-                 DATE
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label for="date_paiement">
-                    Date du paiement
-                </label>
-
-                <input
-                    type="date"
-                    id="date_paiement"
-                    name="date_paiement"
-                    class="form-control"
-                >
-
-            </div>
-
-
-            <!-- =============================================
-                 DESCRIPTION / OBSERVATION
-            ============================================== -->
-
-            <div class="form-group">
-
-                <label for="observation">
-                    Observation
-                </label>
-
-                <textarea
-                    id="observation"
-                    name="observation"
-                    class="form-control"
-                    rows="4"
-                    placeholder="Exemple : acompte, paiement final, paiement en espèces..."
-                ></textarea>
-
-            </div>
-
-
-            <!-- =============================================
-                 BOUTONS
-            ============================================== -->
-
-            <div class="form-actions">
-
-                <a
-                    href="{{ url_for('reparations') }}"
-                    class="btn btn-cancel"
-                >
-                    Annuler
-                </a>
-
-                <button
-                    type="submit"
-                    class="btn btn-payment"
-                    id="submitBtn"
-                >
-                    💾 Enregistrer le paiement
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
+        </div>
 
     {% endif %}
 
 </div>
 
 
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
-
 <script>
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("paymentForm");
@@ -731,67 +505,85 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    const montantInput = document.getElementById("montant");
-    const submitBtn = document.getElementById("submitBtn");
+    const montant = document.getElementById("montant");
+    const bouton = document.getElementById("saveButton");
 
     const reste = parseFloat(
         "{{ reparation.reste_a_payer or 0 }}"
     );
 
-    const devise = "{{ reparation.devise }}";
+    const devise = "{{ reparation.devise or 'FC' }}";
+
 
     /* =====================================================
-       VÉRIFICATION DU MONTANT
-    ===================================================== */
+       DATE DU JOUR
+    ====================================================== */
 
-    montantInput.addEventListener("input", function () {
+    const dateInput =
+        document.getElementById("date_paiement");
 
-        let montant = parseFloat(
-            montantInput.value
-        );
+    if (dateInput) {
 
-        if (isNaN(montant)) {
-            submitBtn.disabled = false;
+        const aujourdHui =
+            new Date().toISOString().split("T")[0];
+
+        dateInput.value = aujourdHui;
+    }
+
+
+    /* =====================================================
+       CONTRÔLE DU MONTANT
+    ====================================================== */
+
+    montant.addEventListener("input", function () {
+
+        const valeur =
+            parseFloat(montant.value);
+
+        if (isNaN(valeur)) {
+
+            montant.setCustomValidity("");
+            bouton.disabled = false;
+
             return;
         }
 
-        if (montant <= 0) {
+        if (valeur <= 0) {
 
-            montantInput.setCustomValidity(
+            montant.setCustomValidity(
                 "Le montant doit être supérieur à zéro."
             );
 
-            submitBtn.disabled = true;
+            bouton.disabled = true;
 
-        } else if (montant > reste) {
+        } else if (valeur > reste) {
 
-            montantInput.setCustomValidity(
-                "Le montant ne peut pas dépasser le reste à payer."
+            montant.setCustomValidity(
+                "Le montant dépasse le reste à payer."
             );
 
-            submitBtn.disabled = true;
+            bouton.disabled = true;
 
         } else {
 
-            montantInput.setCustomValidity("");
+            montant.setCustomValidity("");
 
-            submitBtn.disabled = false;
+            bouton.disabled = false;
         }
 
     });
 
 
     /* =====================================================
-       SOUMISSION
-    ===================================================== */
+       CONFIRMATION
+    ====================================================== */
 
     form.addEventListener("submit", function (event) {
 
-        const montant = parseFloat(
-            montantInput.value
-        );
+        const valeur =
+            parseFloat(montant.value);
 
-        if (isNaN(montant) || montant <= 0) {
+        if (isNaN(valeur) || valeur <= 0) {
 
             event.preventDefault();
 
@@ -802,7 +594,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (montant > reste) {
+        if (valeur > reste) {
 
             event.preventDefault();
 
@@ -817,13 +609,9 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        /*
-         * Confirmation avant enregistrement.
-         */
-
         const confirmation = confirm(
             "Confirmer le paiement de "
-            + montant.toLocaleString("fr-FR")
+            + valeur.toLocaleString("fr-FR")
             + " "
             + devise
             + " ?"
@@ -836,35 +624,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        /*
-         * Évite les doubles clics.
-         */
+        bouton.disabled = true;
 
-        submitBtn.disabled = true;
-
-        submitBtn.innerHTML =
+        bouton.innerHTML =
             "⏳ Enregistrement...";
 
     });
 
-
-    /* =====================================================
-       DATE DU JOUR
-    ===================================================== */
-
-    const dateInput =
-        document.getElementById("date_paiement");
-
-    if (dateInput && !dateInput.value) {
-
-        const today =
-            new Date().toISOString().split("T")[0];
-
-        dateInput.value = today;
-    }
-
 });
-
 </script>
 
 {% endblock %}

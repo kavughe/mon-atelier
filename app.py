@@ -2797,21 +2797,25 @@ def supprimer_reparation(id):
 # PAIEMENT D'UNE RÉPARATION
 # =========================================================
 
-# =========================================================
-# PAIEMENT D'UNE RÉPARATION
-# =========================================================
-
 @app.route("/paiement/<int:id>", methods=["GET", "POST"])
 @login_required
 def paiement(id):
 
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-
-    # Valeur par défaut pour éviter une erreur
+    conn = None
+    cur = None
     reparation = None
 
     try:
+
+        # =====================================================
+        # CONNEXION
+        # =====================================================
+
+        conn = get_db()
+
+        cur = conn.cursor(
+            cursor_factory=RealDictCursor
+        )
 
         # =====================================================
         # 1. RÉCUPÉRER LA RÉPARATION
@@ -2832,7 +2836,6 @@ def paiement(id):
                 date_recuperation
             FROM reparations
             WHERE id = %s
-            FOR UPDATE
         """, (id,))
 
         reparation = cur.fetchone()
@@ -2849,44 +2852,7 @@ def paiement(id):
             )
 
         # =====================================================
-        # 2. DONNÉES DE LA RÉPARATION
-        # =====================================================
-
-        prix = float(
-            reparation.get("prix") or 0
-        )
-
-        ancien_paye = float(
-            reparation.get("montant_paye") or 0
-        )
-
-        reste_a_payer = float(
-            reparation.get("reste_a_payer") or 0
-        )
-
-        # Recalcul de sécurité
-        reste_calcule = prix - ancien_paye
-
-        if reste_calcule < 0:
-            reste_calcule = 0
-
-        # On utilise le montant réellement calculé
-        reste_a_payer = reste_calcule
-
-        # =====================================================
-        # 3. DEVISE DE LA RÉPARATION
-        # =====================================================
-
-        devise_reparation = str(
-            reparation.get("devise") or "FC"
-        ).strip().upper()
-
-        if devise_reparation not in ("FC", "USD"):
-
-            devise_reparation = "FC"
-
-        # =====================================================
-        # 4. INFORMATIONS
+        # 2. INFORMATIONS DE LA RÉPARATION
         # =====================================================
 
         client_nom = str(
@@ -2901,13 +2867,83 @@ def paiement(id):
             reparation.get("panne") or ""
         ).strip()
 
-        ancien_statut = (
-            reparation.get("statut")
-            or "En attente"
-        )
+        # =====================================================
+        # 3. PRIX TOTAL
+        # =====================================================
+
+        try:
+
+            prix = float(
+                reparation.get("prix") or 0
+            )
+
+        except (ValueError, TypeError):
+
+            prix = 0.0
+
+        if prix < 0:
+            prix = 0.0
 
         # =====================================================
-        # 5. AFFICHER LE FORMULAIRE
+        # 4. MONTANT DÉJÀ PAYÉ
+        # =====================================================
+
+        try:
+
+            ancien_paye = float(
+                reparation.get("montant_paye") or 0
+            )
+
+        except (ValueError, TypeError):
+
+            ancien_paye = 0.0
+
+        if ancien_paye < 0:
+            ancien_paye = 0.0
+
+        if ancien_paye > prix:
+            ancien_paye = prix
+
+        # =====================================================
+        # 5. CALCUL DU RESTE
+        # =====================================================
+
+        reste_a_payer = prix - ancien_paye
+
+        if reste_a_payer < 0:
+            reste_a_payer = 0.0
+
+        # =====================================================
+        # 6. DEVISE
+        # =====================================================
+
+        devise_reparation = str(
+            reparation.get("devise") or "FC"
+        ).strip().upper()
+
+        if devise_reparation not in ("FC", "USD"):
+
+            devise_reparation = "FC"
+
+        # =====================================================
+        # 7. STATUT
+        # =====================================================
+
+        ancien_statut = str(
+            reparation.get("statut") or "En attente"
+        ).strip()
+
+        # =====================================================
+        # 8. PRÉPARER LES DONNÉES POUR LE HTML
+        # =====================================================
+
+        reparation["montant_total"] = prix
+        reparation["montant_paye"] = ancien_paye
+        reparation["reste_a_payer"] = reste_a_payer
+        reparation["devise"] = devise_reparation
+
+        # =====================================================
+        # 9. AFFICHER LA PAGE
         # =====================================================
 
         if request.method == "GET":
@@ -2918,7 +2954,97 @@ def paiement(id):
             )
 
         # =====================================================
-        # 6. RÉCUPÉRER LES DONNÉES DU FORMULAIRE
+        # 10. VERROUILLER LA RÉPARATION AVANT PAIEMENT
+        # =====================================================
+        #
+        # Le verrouillage est utile uniquement en POST,
+        # afin d'éviter deux paiements simultanés.
+
+        cur.execute("""
+            SELECT
+                id,
+                montant_paye,
+                prix,
+                reste_a_payer,
+                devise,
+                statut
+            FROM reparations
+            WHERE id = %s
+            FOR UPDATE
+        """, (id,))
+
+        reparation_locked = cur.fetchone()
+
+        if not reparation_locked:
+
+            flash(
+                "Réparation introuvable.",
+                "danger"
+            )
+
+            conn.rollback()
+
+            return redirect(
+                url_for("reparations")
+            )
+
+        # =====================================================
+        # 11. RELIRE LES MONTANTS APRÈS VERROUILLAGE
+        # =====================================================
+
+        try:
+
+            prix = float(
+                reparation_locked.get("prix") or 0
+            )
+
+        except (ValueError, TypeError):
+
+            prix = 0.0
+
+        try:
+
+            ancien_paye = float(
+                reparation_locked.get("montant_paye") or 0
+            )
+
+        except (ValueError, TypeError):
+
+            ancien_paye = 0.0
+
+        if prix < 0:
+            prix = 0.0
+
+        if ancien_paye < 0:
+            ancien_paye = 0.0
+
+        if ancien_paye > prix:
+            ancien_paye = prix
+
+        reste_a_payer = prix - ancien_paye
+
+        if reste_a_payer < 0:
+            reste_a_payer = 0.0
+
+        # =====================================================
+        # 12. DEVISE APRÈS VERROUILLAGE
+        # =====================================================
+
+        devise_reparation = str(
+            reparation_locked.get("devise") or "FC"
+        ).strip().upper()
+
+        if devise_reparation not in ("FC", "USD"):
+
+            devise_reparation = "FC"
+
+        ancien_statut = str(
+            reparation_locked.get("statut")
+            or "En attente"
+        ).strip()
+
+        # =====================================================
+        # 13. DONNÉES DU FORMULAIRE
         # =====================================================
 
         montant_str = request.form.get(
@@ -2941,14 +3067,28 @@ def paiement(id):
             ""
         ).strip()
 
+        if not observation:
+
+            observation = request.form.get(
+                "description",
+                ""
+            ).strip()
+
         # =====================================================
-        # 7. VÉRIFIER LA DEVISE
+        # 14. VÉRIFICATION DE LA DEVISE
         # =====================================================
 
         if devise_paiement not in ("FC", "USD"):
 
+            conn.rollback()
+
+            reparation["montant_total"] = prix
+            reparation["montant_paye"] = ancien_paye
+            reparation["reste_a_payer"] = reste_a_payer
+            reparation["devise"] = devise_reparation
+
             flash(
-                "Devise de paiement invalide.",
+                "Devise invalide. Choisissez FC ou USD.",
                 "danger"
             )
 
@@ -2958,14 +3098,22 @@ def paiement(id):
             )
 
         # =====================================================
-        # 8. EMPÊCHER LE MÉLANGE DES DEVISES
+        # 15. INTERDIRE FC ↔ USD
         # =====================================================
 
         if devise_paiement != devise_reparation:
 
+            conn.rollback()
+
+            reparation["montant_total"] = prix
+            reparation["montant_paye"] = ancien_paye
+            reparation["reste_a_payer"] = reste_a_payer
+            reparation["devise"] = devise_reparation
+
             flash(
-                "La devise du paiement doit être la même "
-                f"que celle de la réparation : "
+                "Paiement refusé : cette réparation est en "
+                f"{devise_reparation}. "
+                f"Le paiement doit être en "
                 f"{devise_reparation}.",
                 "danger"
             )
@@ -2976,16 +3124,20 @@ def paiement(id):
             )
 
         # =====================================================
-        # 9. VÉRIFIER LE MONTANT
+        # 16. CONVERTIR LE MONTANT
         # =====================================================
 
         try:
 
             montant = float(
-                montant_str.replace(",", ".")
+                montant_str
+                .replace(" ", "")
+                .replace(",", ".")
             )
 
         except (ValueError, TypeError):
+
+            conn.rollback()
 
             flash(
                 "Veuillez entrer un montant valide.",
@@ -2998,10 +3150,12 @@ def paiement(id):
             )
 
         # =====================================================
-        # 10. VALIDATION DU MONTANT
+        # 17. VALIDATION DU MONTANT
         # =====================================================
 
         if montant <= 0:
+
+            conn.rollback()
 
             flash(
                 "Le montant doit être supérieur à zéro.",
@@ -3015,6 +3169,8 @@ def paiement(id):
 
         if reste_a_payer <= 0:
 
+            conn.rollback()
+
             flash(
                 "Cette réparation est déjà entièrement payée.",
                 "warning"
@@ -3027,10 +3183,12 @@ def paiement(id):
 
         if montant > reste_a_payer:
 
+            conn.rollback()
+
             flash(
-                "Le montant du paiement ne peut pas dépasser "
-                f"le reste à payer de "
-                f"{reste_a_payer:,.2f} {devise_reparation}.",
+                "Le montant ne peut pas dépasser le reste à payer : "
+                f"{reste_a_payer:,.2f} "
+                f"{devise_reparation}.",
                 "danger"
             )
 
@@ -3040,57 +3198,54 @@ def paiement(id):
             )
 
         # =====================================================
-        # 11. CALCUL DU NOUVEAU TOTAL
+        # 18. NOUVEAUX MONTANTS
         # =====================================================
 
-        nouveau_paye = (
-            ancien_paye + montant
-        )
+        nouveau_paye = ancien_paye + montant
 
-        nouveau_reste = (
-            prix - nouveau_paye
-        )
+        nouveau_reste = prix - nouveau_paye
 
         if nouveau_reste < 0:
-            nouveau_reste = 0
+            nouveau_reste = 0.0
 
-        # Petite sécurité contre les problèmes de flottants
         if abs(nouveau_reste) < 0.000001:
-            nouveau_reste = 0
+            nouveau_reste = 0.0
 
         # =====================================================
-        # 12. NOUVEAU STATUT
+        # 19. NOUVEAU STATUT
         # =====================================================
 
         if nouveau_reste == 0:
 
             nouveau_statut = "Terminée"
 
+        elif nouveau_paye > 0:
+
+            nouveau_statut = "En cours"
+
         else:
 
-            nouveau_statut = ancien_statut
+            nouveau_statut = "En attente"
 
         # =====================================================
-        # 13. UTILISATEUR
+        # 20. UTILISATEUR
         # =====================================================
 
         utilisateur = ""
 
         try:
 
-            utilisateur = getattr(
-                current_user,
-                "username",
-                ""
-            ) or ""
+            utilisateur = str(
+                getattr(
+                    current_user,
+                    "username",
+                    ""
+                ) or ""
+            ).strip()
 
         except Exception:
 
             utilisateur = ""
-
-        # =====================================================
-        # 14. IDENTIFIANT UTILISATEUR
-        # =====================================================
 
         utilisateur_id = getattr(
             current_user,
@@ -3099,7 +3254,7 @@ def paiement(id):
         )
 
         # =====================================================
-        # 15. METTRE À JOUR LA RÉPARATION
+        # 21. MISE À JOUR DE LA RÉPARATION
         # =====================================================
 
         cur.execute("""
@@ -3117,7 +3272,7 @@ def paiement(id):
         ))
 
         # =====================================================
-        # 16. HISTORIQUE DES PAIEMENTS
+        # 22. HISTORIQUE PAIEMENT
         # =====================================================
 
         cur.execute("""
@@ -3160,7 +3315,7 @@ def paiement(id):
         ))
 
         # =====================================================
-        # 17. HISTORIQUE DES RÉPARATIONS
+        # 23. HISTORIQUE RÉPARATION
         # =====================================================
 
         cur.execute("""
@@ -3215,7 +3370,7 @@ def paiement(id):
         ))
 
         # =====================================================
-        # 18. DESCRIPTION FINANCIÈRE
+        # 24. DESCRIPTION FINANCIÈRE
         # =====================================================
 
         description = (
@@ -3247,12 +3402,8 @@ def paiement(id):
             )
 
         # =====================================================
-        # 19. CRÉER UNE ENTRÉE FINANCIÈRE
+        # 25. TRANSACTION FINANCIÈRE
         # =====================================================
-
-        # IMPORTANT :
-        # transactions_financieres ne possède PAS
-        # de colonne "utilisateur".
 
         cur.execute("""
             INSERT INTO transactions_financieres
@@ -3284,21 +3435,20 @@ def paiement(id):
         ))
 
         # =====================================================
-        # 20. VALIDER TOUTES LES OPÉRATIONS
+        # 26. COMMIT
         # =====================================================
 
         conn.commit()
 
         # =====================================================
-        # 21. MESSAGE DE SUCCÈS
+        # 27. MESSAGE DE SUCCÈS
         # =====================================================
 
         if nouveau_reste == 0:
 
             flash(
-                f"Paiement de "
-                f"{montant:,.2f} {devise_reparation} "
-                "enregistré avec succès. "
+                f"Paiement de {montant:,.2f} "
+                f"{devise_reparation} enregistré avec succès. "
                 "La réparation est entièrement payée.",
                 "success"
             )
@@ -3306,18 +3456,17 @@ def paiement(id):
         else:
 
             flash(
-                f"Paiement de "
-                f"{montant:,.2f} {devise_reparation} "
-                "enregistré avec succès. "
-                f"Total payé : "
-                f"{nouveau_paye:,.2f} {devise_reparation}. "
-                f"Reste : "
-                f"{nouveau_reste:,.2f} {devise_reparation}.",
+                f"Paiement de {montant:,.2f} "
+                f"{devise_reparation} enregistré avec succès. "
+                f"Total payé : {nouveau_paye:,.2f} "
+                f"{devise_reparation}. "
+                f"Reste : {nouveau_reste:,.2f} "
+                f"{devise_reparation}.",
                 "success"
             )
 
         # =====================================================
-        # 22. RETOUR AUX FINANCES
+        # 28. RETOUR FINANCES
         # =====================================================
 
         return redirect(
@@ -3330,31 +3479,53 @@ def paiement(id):
 
     except Exception as e:
 
-        conn.rollback()
+        if conn:
+
+            conn.rollback()
 
         print(
-            "ERREUR PAIEMENT :",
-            e
+            "======================================"
+        )
+
+        print(
+            "ERREUR ROUTE PAIEMENT :",
+            repr(e)
+        )
+
+        print(
+            "======================================"
         )
 
         flash(
-            f"Erreur lors de l'enregistrement du paiement : {e}",
+            "Erreur lors de l'enregistrement du paiement. "
+            "Consultez les logs du serveur.",
             "danger"
         )
 
-        return render_template(
-            "paiement.html",
-            reparation=reparation
-        )
+        if reparation:
 
-    # =========================================================
-    # FERMER
-    # =========================================================
+            return render_template(
+                "paiement.html",
+                reparation=reparation
+            )
+
+        return redirect(
+            url_for("reparations")
+        )
 
     finally:
 
-        cur.close()
-        conn.close()
+        if cur:
+
+            cur.close()
+
+        if conn:
+
+            conn.close()
+
+
+
+
 @app.route("/historique-paiements")
 @login_required
 def historique_paiements():
