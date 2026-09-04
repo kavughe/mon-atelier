@@ -1,56 +1,54 @@
-
 {% extends "base.html" %}
 
-{% block title %}Nouvelle réparation{% endblock %}
+{% block title %}Ajouter une entrée{% endblock %}
 
 {% block content %}
 
 <style>
-    .repair-container {
-        max-width: 1000px;
-        margin: 30px auto;
+    .finance-container {
+        max-width: 850px;
+        margin: 35px auto;
         padding: 0 20px;
     }
 
-    .repair-header {
-        background: linear-gradient(135deg, #1e293b, #334155);
+    .finance-header {
+        background: linear-gradient(135deg, #166534, #15803d);
         color: white;
-        padding: 28px 32px;
+        padding: 28px 30px;
         border-radius: 18px;
-        margin-bottom: 24px;
+        margin-bottom: 25px;
         box-shadow: 0 10px 30px rgba(0,0,0,.10);
     }
 
-    .repair-header h1 {
+    .finance-header h1 {
         margin: 0 0 8px;
         font-size: 28px;
     }
 
-    .repair-header p {
+    .finance-header p {
         margin: 0;
-        color: #cbd5e1;
+        color: #dcfce7;
     }
 
-    .repair-card {
+    .finance-card {
         background: white;
-        border-radius: 18px;
         padding: 30px;
-        box-shadow: 0 8px 30px rgba(15,23,42,.08);
+        border-radius: 18px;
         border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 30px rgba(15,23,42,.08);
     }
 
     .section-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0 0 20px;
+        margin: 0 0 22px;
         padding-bottom: 12px;
         border-bottom: 1px solid #e5e7eb;
+        color: #1e293b;
+        font-size: 19px;
     }
 
     .form-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
 
@@ -64,10 +62,10 @@
     }
 
     label {
+        margin-bottom: 8px;
+        color: #334155;
         font-size: 14px;
         font-weight: 600;
-        color: #334155;
-        margin-bottom: 8px;
     }
 
     .required {
@@ -79,73 +77,50 @@
     textarea {
         width: 100%;
         box-sizing: border-box;
-        padding: 12px 14px;
+        padding: 13px 14px;
         border: 1px solid #cbd5e1;
         border-radius: 10px;
         font-size: 14px;
-        outline: none;
         background: white;
+        outline: none;
     }
 
     input:focus,
     select:focus,
     textarea:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37,99,235,.10);
+        border-color: #16a34a;
+        box-shadow: 0 0 0 3px rgba(22,163,74,.10);
     }
 
     textarea {
-        min-height: 120px;
+        min-height: 130px;
         resize: vertical;
     }
 
-    .finance-box {
-        margin-top: 28px;
-        padding: 22px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 15px;
-    }
-
-    .finance-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-    }
-
-    .reste-box {
-        margin-top: 20px;
-        padding: 16px 18px;
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        border-radius: 12px;
-    }
-
-    .reste-label {
-        font-size: 13px;
-        color: #64748b;
-        margin-bottom: 5px;
-    }
-
-    .reste-value {
-        font-size: 23px;
-        font-weight: 800;
-        color: #1d4ed8;
-    }
-
-    .automatic-box {
-        margin-top: 20px;
-        padding: 15px 18px;
+    .preview {
+        margin-top: 25px;
+        padding: 20px;
+        border-radius: 14px;
         background: #f0fdf4;
         border: 1px solid #bbf7d0;
-        border-radius: 12px;
-        color: #166534;
-        font-size: 14px;
-        line-height: 1.6;
     }
 
-    .automatic-box strong {
+    .preview-title {
+        color: #166534;
         font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .preview-amount {
+        font-size: 28px;
+        font-weight: 800;
+        color: #15803d;
+    }
+
+    .preview-text {
+        margin-top: 5px;
+        color: #64748b;
+        font-size: 13px;
     }
 
     .actions {
@@ -158,13 +133,14 @@
     }
 
     .btn {
-        padding: 12px 20px;
-        border-radius: 10px;
         border: none;
-        text-decoration: none;
+        border-radius: 10px;
+        padding: 13px 20px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
     }
 
     .btn-cancel {
@@ -173,17 +149,26 @@
     }
 
     .btn-save {
-        background: #2563eb;
+        background: #16a34a;
         color: white;
     }
 
     .btn-save:hover {
-        background: #1d4ed8;
+        background: #15803d;
     }
 
-    @media (max-width: 750px) {
-        .form-grid,
-        .finance-grid {
+    @media (max-width: 700px) {
+
+        .finance-container {
+            margin: 20px auto;
+            padding: 0 12px;
+        }
+
+        .finance-card {
+            padding: 20px;
+        }
+
+        .form-grid {
             grid-template-columns: 1fr;
         }
 
@@ -197,248 +182,185 @@
 
         .btn {
             width: 100%;
+            text-align: center;
+        }
+
+        .finance-header h1 {
+            font-size: 23px;
         }
     }
 </style>
 
-<div class="repair-container">
+
+<div class="finance-container">
 
     <!-- EN-TÊTE -->
-    <div class="repair-header">
-        <h1>🔧 Nouvelle réparation</h1>
+
+    <div class="finance-header">
+
+        <h1>💰 Ajouter une entrée</h1>
+
         <p>
-            Enregistrer une réparation et gérer automatiquement son paiement.
+            Enregistrer une nouvelle entrée financière dans Mon Atelier.
         </p>
+
     </div>
 
-    <div class="repair-card">
+
+    <!-- FORMULAIRE -->
+
+    <div class="finance-card">
+
+        <h2 class="section-title">
+            📋 Informations de l'entrée
+        </h2>
+
 
         <form method="POST"
-              action="{{ url_for('ajouter_reparation') }}">
-
-            <!-- =============================== -->
-            <!-- INFORMATIONS RÉPARATION -->
-            <!-- =============================== -->
-
-            <h2 class="section-title">
-                📋 Informations de la réparation
-            </h2>
+              action="{{ url_for('ajouter_entree') }}">
 
             <div class="form-grid">
 
-                <!-- CLIENT -->
+
+                <!-- CATÉGORIE -->
+
                 <div class="form-group">
-                    <label for="client_id">
-                        Client <span class="required">*</span>
+
+                    <label for="categorie">
+                        Catégorie <span class="required">*</span>
                     </label>
 
                     <select
-                        id="client_id"
-                        name="client_id"
+                        id="categorie"
+                        name="categorie"
                         required
                     >
+
                         <option value="">
-                            Sélectionner un client
+                            Sélectionner une catégorie
                         </option>
 
-                        {% for client in clients %}
-                        <option value="{{ client.id }}">
-                            {{ client.nom }}
-                            {% if client.telephone %}
-                                — {{ client.telephone }}
-                            {% endif %}
+                        <option value="Réparation">
+                            🔧 Réparation
                         </option>
-                        {% endfor %}
+
+                        <option value="Vente">
+                            🛒 Vente
+                        </option>
+
+                        <option value="Service">
+                            🛠️ Service
+                        </option>
+
+                        <option value="Avance">
+                            💵 Avance
+                        </option>
+
+                        <option value="Autre">
+                            📦 Autre
+                        </option>
+
                     </select>
+
                 </div>
 
-                <!-- APPAREIL -->
+
+                <!-- DEVISE -->
+
                 <div class="form-group">
-                    <label for="appareil">
-                        Appareil <span class="required">*</span>
+
+                    <label for="devise">
+                        Devise <span class="required">*</span>
+                    </label>
+
+                    <select
+                        id="devise"
+                        name="devise"
+                        required
+                    >
+
+                        <option value="FC" selected>
+                            FC — Franc Congolais
+                        </option>
+
+                        <option value="USD">
+                            USD — Dollar américain
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- MONTANT -->
+
+                <div class="form-group">
+
+                    <label for="montant">
+                        Montant <span class="required">*</span>
                     </label>
 
                     <input
-                        type="text"
-                        id="appareil"
-                        name="appareil"
-                        placeholder="Ex. TV Samsung, ordinateur..."
+                        type="number"
+                        id="montant"
+                        name="montant"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="Ex. 50000"
                         required
                     >
+
                 </div>
 
-                <!-- PANNE -->
+
+                <!-- DESCRIPTION -->
+
                 <div class="form-group full">
-                    <label for="panne">
-                        Description de la panne
-                        <span class="required">*</span>
+
+                    <label for="description">
+                        Description
                     </label>
 
                     <textarea
-                        id="panne"
-                        name="panne"
-                        placeholder="Décrivez la panne ou le problème constaté..."
-                        required
+                        id="description"
+                        name="description"
+                        placeholder="Ex. Paiement client, vente d'une pièce, service..."
                     ></textarea>
-                </div>
 
-                <!-- STATUT -->
-                <div class="form-group">
-                    <label for="statut">
-                        Statut
-                    </label>
-
-                    <select id="statut" name="statut">
-                        <option value="En attente">
-                            En attente
-                        </option>
-
-                        <option value="En réparation">
-                            En réparation
-                        </option>
-
-                        <option value="Terminée">
-                            Terminée
-                        </option>
-
-                        <option value="Livrée">
-                            Livrée
-                        </option>
-                    </select>
-                </div>
-
-                <!-- DATE -->
-                <div class="form-group">
-                    <label for="date_recuperation">
-                        Date prévue de récupération
-                    </label>
-
-                    <input
-                        type="date"
-                        id="date_recuperation"
-                        name="date_recuperation"
-                    >
                 </div>
 
             </div>
 
 
-            <!-- =============================== -->
-            <!-- PAIEMENT -->
-            <!-- =============================== -->
+            <!-- APERÇU -->
 
-            <div class="finance-box">
+            <div class="preview">
 
-                <h2 class="section-title">
-                    💰 Paiement de la réparation
-                </h2>
-
-                <div class="finance-grid">
-
-                    <!-- PRIX -->
-                    <div class="form-group">
-                        <label for="prix">
-                            Prix total <span class="required">*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            id="prix"
-                            name="prix"
-                            min="0"
-                            step="0.01"
-                            value="0"
-                            placeholder="0"
-                            required
-                        >
-                    </div>
-
-                    <!-- MONTANT PAYÉ -->
-                    <div class="form-group">
-                        <label for="montant_paye">
-                            Montant payé
-                        </label>
-
-                        <input
-                            type="number"
-                            id="montant_paye"
-                            name="montant_paye"
-                            min="0"
-                            step="0.01"
-                            value="0"
-                            placeholder="0"
-                        >
-                    </div>
-
-                    <!-- DEVISE -->
-                    <div class="form-group">
-                        <label for="devise">
-                            Devise <span class="required">*</span>
-                        </label>
-
-                        <select
-                            id="devise"
-                            name="devise"
-                            required
-                        >
-                            <option value="FC" selected>
-                                FC — Franc Congolais
-                            </option>
-
-                            <option value="USD">
-                                USD — Dollar américain
-                            </option>
-                        </select>
-                    </div>
-
+                <div class="preview-title">
+                    💰 Entrée à enregistrer
                 </div>
 
-
-                <!-- RESTE À PAYER -->
-
-                <div class="reste-box">
-
-                    <div class="reste-label">
-                        Reste à payer
-                    </div>
-
-                    <div
-                        class="reste-value"
-                        id="resteAffiche"
-                    >
-                        0 FC
-                    </div>
-
+                <div
+                    class="preview-amount"
+                    id="montantAffiche"
+                >
+                    0,00 FC
                 </div>
 
-
-                <!-- AUTOMATISATION -->
-
-                <div class="automatic-box">
-
-                    <strong>⚡ Entrée financière automatique</strong><br>
-
-                    Si vous saisissez un montant payé supérieur à
-                    <strong>0</strong>, ce montant sera automatiquement
-                    enregistré dans <strong>Finances</strong> comme une
-                    <strong>entrée</strong>, avec la devise sélectionnée.
-
-                    <br><br>
-
-                    Aucun paiement → aucune entrée financière.
+                <div class="preview-text">
+                    Cette somme sera ajoutée aux entrées de la page
+                    <strong>Finances</strong>.
                 </div>
 
             </div>
 
 
-            <!-- =============================== -->
-            <!-- ACTIONS -->
-            <!-- =============================== -->
+            <!-- BOUTONS -->
 
             <div class="actions">
 
                 <a
-                    href="{{ url_for('reparations') }}"
+                    href="{{ url_for('finances') }}"
                     class="btn btn-cancel"
                 >
                     ← Annuler
@@ -448,7 +370,7 @@
                     type="submit"
                     class="btn btn-save"
                 >
-                    💾 Enregistrer la réparation
+                    💾 Enregistrer l'entrée
                 </button>
 
             </div>
@@ -462,61 +384,44 @@
 
 <script>
 
-    const prixInput =
-        document.getElementById("prix");
-
-    const payeInput =
-        document.getElementById("montant_paye");
+    const montantInput =
+        document.getElementById("montant");
 
     const deviseInput =
         document.getElementById("devise");
 
-    const resteAffiche =
-        document.getElementById("resteAffiche");
+    const montantAffiche =
+        document.getElementById("montantAffiche");
 
 
-    function calculerReste() {
+    function afficherMontant() {
 
-        const prix =
-            parseFloat(prixInput.value) || 0;
-
-        const paye =
-            parseFloat(payeInput.value) || 0;
-
-        let reste = prix - paye;
-
-        if (reste < 0) {
-            reste = 0;
-        }
+        const montant =
+            parseFloat(montantInput.value) || 0;
 
         const devise =
             deviseInput.value || "FC";
 
-        resteAffiche.textContent =
-            reste.toLocaleString("fr-FR", {
+        montantAffiche.textContent =
+            montant.toLocaleString("fr-FR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }) + " " + devise;
     }
 
 
-    prixInput.addEventListener(
+    montantInput.addEventListener(
         "input",
-        calculerReste
-    );
-
-    payeInput.addEventListener(
-        "input",
-        calculerReste
+        afficherMontant
     );
 
     deviseInput.addEventListener(
         "change",
-        calculerReste
+        afficherMontant
     );
 
 
-    calculerReste();
+    afficherMontant();
 
 </script>
 

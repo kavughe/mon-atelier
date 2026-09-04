@@ -2,1951 +2,1060 @@
 
 {% block title %}Historique des réparations{% endblock %}
 
-{% block page_title %}Historique des réparations{% endblock %}
+{% block page_title %}
+🔧 Historique des réparations
+{% endblock %}
 
 {% block content %}
 
-<div class="history-page">
+<style>
+    .historique-page {
+        padding: 20px;
+    }
 
-<!-- =========================
-     EN-TÊTE
-========================== -->
+    .page-header {
+        background: linear-gradient(135deg, #b71c1c, #e53935);
+        color: white;
+        padding: 24px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.15);
+    }
 
-<div class="history-header">
+    .page-header h2 {
+        margin: 0 0 6px;
+        font-size: 24px;
+    }
 
-    <div class="header-info">
+    .page-header p {
+        margin: 0;
+        opacity: .9;
+    }
 
-        <div class="breadcrumb">
-            Gestion des réparations
-            <span>›</span>
-            Historique
-        </div>
+    /* STATISTIQUES */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
 
-        <h1>
-            Historique des réparations
-        </h1>
+    .stat-card {
+        background: #fff;
+        padding: 18px;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        border-left: 5px solid #d32f2f;
+    }
 
+    .stat-icon {
+        font-size: 27px;
+    }
+
+    .stat-title {
+        color: #777;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .stat-value {
+        color: #222;
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    /* TABLE */
+    .table-card {
+        background: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0,0,0,.08);
+    }
+
+    .table-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+        margin: 0;
+        font-size: 19px;
+    }
+
+    .search-box {
+        width: 280px;
+        max-width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #ddd;
+        border-radius: 9px;
+        outline: none;
+    }
+
+    .search-box:focus {
+        border-color: #d32f2f;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1050px;
+    }
+
+    th {
+        background: #f7f7f7;
+        padding: 13px;
+        text-align: left;
+        color: #555;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px;
+        border-top: 1px solid #eee;
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background: #fff8f8;
+    }
+
+    .id {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .client {
+        font-weight: bold;
+    }
+
+    .appareil {
+        font-weight: 600;
+    }
+
+    .panne {
+        color: #666;
+        max-width: 220px;
+    }
+
+    /* STATUT */
+    .badge {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .badge-termine {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .badge-cours {
+        background: #fff3e0;
+        color: #ef6c00;
+    }
+
+    .badge-attente {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .badge-annule {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    /* MONTANTS */
+    .montant-total {
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    .montant-paye {
+        color: #2e7d32;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+
+    .montant-reste {
+        color: #d32f2f;
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
+    /* DEVISES */
+    .devise-fc {
+        font-weight: bold;
+    }
+
+    .devise-usd {
+        font-weight: bold;
+    }
+
+    .date {
+        white-space: nowrap;
+        color: #666;
+        font-size: 13px;
+    }
+
+    /* ACTIONS */
+    .actions {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-block;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 11px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .btn-details {
+        background: #1976d2;
+        color: white;
+    }
+
+    .btn-details:hover {
+        background: #125ca8;
+    }
+
+    .btn-payment {
+        background: #2e7d32;
+        color: white;
+    }
+
+    .btn-payment:hover {
+        background: #1b5e20;
+    }
+
+    /* VIDE */
+    .empty {
+        text-align: center;
+        padding: 55px 20px;
+        color: #777;
+    }
+
+    .empty-icon {
+        font-size: 55px;
+        margin-bottom: 12px;
+    }
+
+    /* MODAL */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0,0,0,.6);
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        background: white;
+        max-width: 650px;
+        margin: 40px auto;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,.3);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #b71c1c, #e53935);
+        color: white;
+        padding: 18px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+    }
+
+    .close {
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    .modal-body {
+        padding: 22px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .detail {
+        background: #f7f7f7;
+        padding: 14px;
+        border-radius: 9px;
+    }
+
+    .detail.full {
+        grid-column: 1 / -1;
+    }
+
+    .detail-label {
+        color: #777;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: #222;
+    }
+
+    @media (max-width: 900px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .historique-page {
+            padding: 10px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .detail.full {
+            grid-column: auto;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+    }
+</style>
+
+
+{% macro devise_affichee(devise) %}
+    {% if devise and devise|string|upper == 'USD' %}
+        <span class="devise-usd">USD</span>
+    {% else %}
+        <span class="devise-fc">FC</span>
+    {% endif %}
+{% endmacro %}
+
+
+<div class="historique-page">
+
+    <!-- EN-TÊTE -->
+    <div class="page-header">
+        <h2>🔧 Historique des réparations</h2>
         <p>
-            Consultez toutes les opérations effectuées
-            sur les réparations de l'atelier.
+            Consultez toutes les réparations enregistrées dans votre atelier.
         </p>
-
     </div>
 
-    <div class="header-actions">
 
-        <a
-            href="{{ url_for('reparations') }}"
-            class="btn btn-secondary"
-        >
-            ← Réparations
-        </a>
+    <!-- STATISTIQUES -->
+    <div class="stats-grid">
 
-    </div>
-
-</div>
-
-
-<!-- =========================
-     STATISTIQUES
-========================== -->
-
-<div class="stats-grid">
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            📋
-        </div>
-
-        <div class="stat-content">
-
-            <span>Total opérations</span>
-
-            <strong>
+        <div class="stat-card">
+            <div class="stat-icon">🔧</div>
+            <div class="stat-title">Total réparations</div>
+            <div class="stat-value">
                 {{ historique|length }}
-            </strong>
+            </div>
+        </div>
 
+
+        <!-- TOTAL PAYÉ FC -->
+        <div class="stat-card">
+            <div class="stat-icon">🇨🇩</div>
+            <div class="stat-title">Total payé FC</div>
+
+            <div class="stat-value">
+
+                {% set total_fc = namespace(value=0) %}
+
+                {% for item in historique %}
+
+                    {% if item.montant_paye is defined
+                          and item.montant_paye is not none
+                          and (item.devise or 'FC')|upper == 'FC' %}
+
+                        {% set total_fc.value =
+                            total_fc.value + (item.montant_paye|float) %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+                {{ "%.2f"|format(total_fc.value) }} FC
+
+            </div>
+        </div>
+
+
+        <!-- TOTAL PAYÉ USD -->
+        <div class="stat-card">
+            <div class="stat-icon">💵</div>
+            <div class="stat-title">Total payé USD</div>
+
+            <div class="stat-value">
+
+                {% set total_usd = namespace(value=0) %}
+
+                {% for item in historique %}
+
+                    {% if item.montant_paye is defined
+                          and item.montant_paye is not none
+                          and item.devise
+                          and item.devise|upper == 'USD' %}
+
+                        {% set total_usd.value =
+                            total_usd.value + (item.montant_paye|float) %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+                {{ "%.2f"|format(total_usd.value) }} USD
+
+            </div>
+        </div>
+
+
+        <!-- RESTE -->
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-title">Réparations avec solde</div>
+
+            <div class="stat-value">
+
+                {% set restes = namespace(value=0) %}
+
+                {% for item in historique %}
+
+                    {% if item.reste_a_payer is defined
+                          and item.reste_a_payer is not none
+                          and item.reste_a_payer|float > 0 %}
+
+                        {% set restes.value =
+                            restes.value + 1 %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+                {{ restes.value }}
+
+            </div>
         </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <!-- TABLEAU -->
+    <div class="table-card">
 
-        <div class="stat-icon icon-add">
-            ➕
-        </div>
+        <div class="table-header">
 
-        <div class="stat-content">
-
-            <span>Ajouts</span>
-
-            <strong id="statAjouts">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon icon-edit">
-            ✏️
-        </div>
-
-        <div class="stat-content">
-
-            <span>Modifications</span>
-
-            <strong id="statModifications">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon icon-delete">
-            🗑️
-        </div>
-
-        <div class="stat-content">
-
-            <span>Suppressions</span>
-
-            <strong id="statSuppressions">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     FILTRES
-========================== -->
-
-<div class="filter-card">
-
-    <div class="filter-title">
-
-        <span>🔎</span>
-
-        <strong>
-            Rechercher dans l'historique
-        </strong>
-
-    </div>
-
-
-    <div class="filters">
-
-        <div class="search-container">
-
-            <span class="search-icon">
-                🔍
-            </span>
+            <h3>📋 Liste des réparations</h3>
 
             <input
                 type="text"
                 id="searchInput"
-                placeholder="Client, appareil, panne, utilisateur..."
-                autocomplete="off"
+                class="search-box"
+                placeholder="🔎 Rechercher..."
+                onkeyup="searchTable()"
             >
 
         </div>
 
 
-        <select id="actionFilter">
+        {% if historique %}
 
-            <option value="">
-                Toutes les actions
-            </option>
+        <div class="table-wrapper">
 
-            <option value="Ajout">
-                ➕ Ajout
-            </option>
+            <table id="historiqueTable">
 
-            <option value="Modification">
-                ✏️ Modification
-            </option>
-
-            <option value="Suppression">
-                🗑️ Suppression
-            </option>
-
-            <option value="Changement de statut">
-                🔄 Changement de statut
-            </option>
-
-        </select>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Client</th>
+                        <th>Appareil</th>
+                        <th>Panne</th>
+                        <th>Statut</th>
+                        <th>Montants</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
 
-        <select id="statusFilter">
+                <tbody>
 
-            <option value="">
-                Tous les statuts
-            </option>
+                {% for item in historique %}
 
-            <option value="En attente">
-                En attente
-            </option>
+                    <tr>
 
-            <option value="En cours">
-                En cours
-            </option>
-
-            <option value="Terminée">
-                Terminée
-            </option>
-
-            <option value="Livrée">
-                Livrée
-            </option>
-
-        </select>
-
-
-        <button
-            type="button"
-            onclick="resetFilters()"
-            class="btn-reset"
-        >
-            ↻ Réinitialiser
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     TABLEAU
-========================== -->
-
-<div class="history-card">
-
-    <div class="history-card-header">
-
-        <div>
-
-            <h2>
-                Journal des opérations
-            </h2>
-
-            <p>
-                <span id="resultCount">
-                    {{ historique|length }}
-                </span>
-                opération(s)
-            </p>
-
-        </div>
-
-        <div class="live-indicator">
-
-            <span></span>
-
-            Historique actif
-
-        </div>
-
-    </div>
-
-
-    {% if historique %}
-
-    <div class="table-container">
-
-        <table id="historyTable">
-
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>Action</th>
-
-                    <th>Réparation</th>
-
-                    <th>Client</th>
-
-                    <th>Appareil</th>
-
-                    <th>Panne</th>
-
-                    <th>Montants</th>
-
-                    <th>Statut</th>
-
-                    <th>Utilisateur</th>
-
-                    <th>Date</th>
-
-                    <th></th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-            {% for item in historique %}
-
-                <tr
-                    data-action="{{ item.action or '' }}"
-                    data-statut="{{ item.statut or '' }}"
-                >
-
-                    <!-- ID -->
-
-                    <td>
-
-                        <span class="history-id">
-                            #{{ item.id }}
-                        </span>
-
-                    </td>
-
-
-                    <!-- ACTION -->
-
-                    <td>
-
-                        {% if item.action == "Ajout" %}
-
-                            <span class="action-badge action-add">
-                                <span>+</span>
-                                Ajout
+                        <!-- ID -->
+                        <td>
+                            <span class="id">
+                                #{{ item.id }}
                             </span>
-
-                        {% elif item.action == "Modification" %}
-
-                            <span class="action-badge action-edit">
-                                <span>✎</span>
-                                Modification
-                            </span>
-
-                        {% elif item.action == "Suppression" %}
-
-                            <span class="action-badge action-delete">
-                                <span>×</span>
-                                Suppression
-                            </span>
-
-                        {% elif item.action == "Changement de statut" %}
-
-                            <span class="action-badge action-status">
-                                <span>↻</span>
-                                Statut
-                            </span>
-
-                        {% else %}
-
-                            <span class="action-badge action-other">
-                                {{ item.action or "Opération" }}
-                            </span>
-
-                        {% endif %}
-
-                    </td>
+                        </td>
 
 
-                    <!-- NUMERO REPARATION -->
+                        <!-- CLIENT -->
+                        <td>
+                            <div class="client">
+                                {{ item.client_nom
+                                   or item.client
+                                   or 'Client inconnu' }}
+                            </div>
+                        </td>
 
-                    <td>
 
-                        {% if item.reparation_id %}
+                        <!-- APPAREIL -->
+                        <td>
+                            <div class="appareil">
+                                {{ item.appareil or '—' }}
+                            </div>
+                        </td>
 
-                            <span class="repair-number">
-                                REP-{{ "%05d"|format(item.reparation_id) }}
-                            </span>
 
-                        {% else %}
+                        <!-- PANNE -->
+                        <td>
+                            <div class="panne">
+                                {{ item.panne or '—' }}
+                            </div>
+                        </td>
 
-                            <span class="empty-value">
+
+                        <!-- STATUT -->
+                        <td>
+
+                            {% set statut =
+                                (item.statut or 'En attente')|lower %}
+
+                            {% if 'termin' in statut %}
+
+                                <span class="badge badge-termine">
+                                    {{ item.statut }}
+                                </span>
+
+                            {% elif 'cours' in statut %}
+
+                                <span class="badge badge-cours">
+                                    {{ item.statut }}
+                                </span>
+
+                            {% elif 'annul' in statut %}
+
+                                <span class="badge badge-annule">
+                                    {{ item.statut }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-attente">
+                                    {{ item.statut or 'En attente' }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- MONTANTS -->
+                        <td>
+
+                            {% if item.montant_total is defined
+                                  and item.montant_total is not none %}
+
+                                <div class="montant-total">
+
+                                    {{ "%.2f"|format(
+                                        item.montant_total|float
+                                    ) }}
+
+                                    {{ devise_affichee(item.devise) }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if item.montant_paye is defined
+                                  and item.montant_paye is not none %}
+
+                                <div class="montant-paye">
+
+                                    Payé :
+                                    {{ "%.2f"|format(
+                                        item.montant_paye|float
+                                    ) }}
+
+                                    {{ devise_affichee(item.devise) }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if item.reste_a_payer is defined
+                                  and item.reste_a_payer is not none %}
+
+                                <div class="montant-reste">
+
+                                    Reste :
+                                    {{ "%.2f"|format(
+                                        item.reste_a_payer|float
+                                    ) }}
+
+                                    {{ devise_affichee(item.devise) }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- DATE -->
+                        <td class="date">
+
+                            {% if item.date_creation %}
+
+                                {{ item.date_creation.strftime('%d/%m/%Y') }}
+
+                            {% elif item.date_enregistrement %}
+
+                                {{ item.date_enregistrement.strftime('%d/%m/%Y') }}
+
+                            {% elif item.created_at %}
+
+                                {{ item.created_at.strftime('%d/%m/%Y') }}
+
+                            {% else %}
+
                                 —
-                            </span>
 
-                        {% endif %}
+                            {% endif %}
 
-                    </td>
-
-
-                    <!-- CLIENT -->
-
-                    <td>
-
-                        <div class="client-info">
-
-                            <div class="avatar">
-
-                                {{ (item.client_nom or "?")[0]|upper }}
-
-                            </div>
-
-                            <div class="client-name">
-
-                                <strong>
-                                    {{ item.client_nom or "Client supprimé" }}
-                                </strong>
-
-                                <small>
-                                    Client
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    </td>
+                        </td>
 
 
-                    <!-- APPAREIL -->
+                        <!-- ACTIONS -->
+                        <td>
 
-                    <td>
+                            <div class="actions">
 
-                        <div class="device">
-
-                            <span class="device-icon">
-                                🔧
-                            </span>
-
-                            <strong>
-                                {{ item.appareil or "—" }}
-                            </strong>
-
-                        </div>
-
-                    </td>
+                                <button
+                                    type="button"
+                                    class="btn btn-details"
+                                    onclick="openModal('modal-{{ item.id }}')">
+                                    👁️ Détails
+                                </button>
 
 
-                    <!-- PANNE -->
+                                {% if item.reste_a_payer is defined
+                                      and item.reste_a_payer is not none
+                                      and item.reste_a_payer|float > 0 %}
 
-                    <td>
-
-                        <div
-                            class="problem"
-                            title="{{ item.panne or '' }}"
-                        >
-
-                            {{ item.panne or "Aucune panne renseignée" }}
-
-                        </div>
-
-                    </td>
-
-
-                    <!-- MONTANTS -->
-
-                    <td>
-
-                        <div class="amounts">
-
-                            <div>
-                                <span>Prix</span>
-                                <strong>
-                                    {{ "%.2f"|format(item.prix or 0) }}
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>Payé</span>
-                                <strong class="paid">
-                                    {{ "%.2f"|format(item.montant_paye or 0) }}
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>Reste</span>
-
-                                {% if (item.reste_a_payer or 0) > 0 %}
-
-                                    <strong class="remaining">
-                                        {{ "%.2f"|format(item.reste_a_payer or 0) }}
-                                    </strong>
-
-                                {% else %}
-
-                                    <strong class="paid-complete">
-                                        0.00
-                                    </strong>
+                                    <a
+                                        href="{{ url_for('reparations') }}"
+                                        class="btn btn-payment">
+                                        💳 Paiement
+                                    </a>
 
                                 {% endif %}
 
                             </div>
 
-                        </div>
+                        </td>
 
-                    </td>
+                    </tr>
 
+                {% endfor %}
 
-                    <!-- STATUT -->
+                </tbody>
 
-                    <td>
+            </table>
 
-                        {% if item.statut == "En attente" %}
-
-                            <span class="status status-waiting">
-                                En attente
-                            </span>
-
-                        {% elif item.statut == "En cours" %}
-
-                            <span class="status status-progress">
-                                En cours
-                            </span>
-
-                        {% elif item.statut == "Terminée" %}
-
-                            <span class="status status-done">
-                                Terminée
-                            </span>
-
-                        {% elif item.statut == "Livrée" %}
-
-                            <span class="status status-delivered">
-                                Livrée
-                            </span>
-
-                        {% else %}
-
-                            <span class="status">
-                                {{ item.statut or "—" }}
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- UTILISATEUR -->
-
-                    <td>
-
-                        <div class="user-info">
-
-                            <div class="user-avatar">
-
-                                {{ (item.utilisateur or "?")[0]|upper }}
-
-                            </div>
-
-                            <span>
-                                {{ item.utilisateur or "Système" }}
-                            </span>
-
-                        </div>
-
-                    </td>
-
-
-                    <!-- DATE -->
-
-                    <td>
-
-                        {% if item.date_action %}
-
-                            <div class="date-info">
-
-                                <strong>
-                                    {{ item.date_action.strftime("%d/%m/%Y") }}
-                                </strong>
-
-                                <span>
-                                    {{ item.date_action.strftime("%H:%M") }}
-                                </span>
-
-                            </div>
-
-                        {% else %}
-
-                            <span class="empty-value">
-                                —
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- DETAILS -->
-
-                    <td>
-
-                        <button
-                            type="button"
-                            class="details-btn"
-                            onclick="showDetails(this)"
-                            title="Voir les détails"
-                        >
-                            👁
-                        </button>
-
-                        <div class="hidden-details">
-
-                            <div>
-                                <b>Réparation :</b>
-                                REP-{{ "%05d"|format(item.reparation_id or 0) }}
-                            </div>
-
-                            <div>
-                                <b>Client :</b>
-                                {{ item.client_nom or "—" }}
-                            </div>
-
-                            <div>
-                                <b>Appareil :</b>
-                                {{ item.appareil or "—" }}
-                            </div>
-
-                            <div>
-                                <b>Panne :</b>
-                                {{ item.panne or "—" }}
-                            </div>
-
-                            <div>
-                                <b>Prix :</b>
-                                {{ "%.2f"|format(item.prix or 0) }}
-                            </div>
-
-                            <div>
-                                <b>Montant payé :</b>
-                                {{ "%.2f"|format(item.montant_paye or 0) }}
-                            </div>
-
-                            <div>
-                                <b>Reste :</b>
-                                {{ "%.2f"|format(item.reste_a_payer or 0) }}
-                            </div>
-
-                            <div>
-                                <b>Statut :</b>
-                                {{ item.statut or "—" }}
-                            </div>
-
-                            <div>
-                                <b>Action :</b>
-                                {{ item.action or "—" }}
-                            </div>
-
-                            <div>
-                                <b>Utilisateur :</b>
-                                {{ item.utilisateur or "Système" }}
-                            </div>
-
-                            {% if item.date_depot %}
-
-                            <div>
-                                <b>Date dépôt :</b>
-                                {{ item.date_depot.strftime("%d/%m/%Y") }}
-                            </div>
-
-                            {% endif %}
-
-                            {% if item.date_recuperation %}
-
-                            <div>
-                                <b>Date récupération :</b>
-                                {{ item.date_recuperation.strftime("%d/%m/%Y") }}
-                            </div>
-
-                            {% endif %}
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-
-    <!-- AUCUN RESULTAT -->
-
-    <div
-        id="noResults"
-        class="no-results"
-        style="display:none;"
-    >
-
-        <div class="no-results-icon">
-            🔎
         </div>
 
-        <h3>
-            Aucun résultat
-        </h3>
 
-        <p>
-            Aucune opération ne correspond à votre recherche.
-        </p>
+        {% else %}
 
-        <button
-            type="button"
-            onclick="resetFilters()"
-            class="btn-primary"
-        >
-            Réinitialiser les filtres
-        </button>
+        <div class="empty">
 
-    </div>
+            <div class="empty-icon">
+                🔧
+            </div>
 
+            <h3>Aucune réparation enregistrée</h3>
 
-    {% else %}
+            <p>
+                Les réparations apparaîtront ici après leur enregistrement.
+            </p>
 
-    <!-- HISTORIQUE VIDE -->
+            <br>
 
-    <div class="empty-history">
+            <a
+                href="{{ url_for('ajouter_reparation') }}"
+                class="btn btn-payment">
+                ➕ Nouvelle réparation
+            </a>
 
-        <div class="empty-icon">
-            📋
         </div>
 
-        <h3>
-            Aucun historique disponible
-        </h3>
-
-        <p>
-            Les opérations effectuées sur les réparations
-            apparaîtront ici automatiquement.
-        </p>
-
-        <a
-            href="{{ url_for('ajouter_reparation') }}"
-            class="btn-primary"
-        >
-            + Nouvelle réparation
-        </a>
+        {% endif %}
 
     </div>
-
-    {% endif %}
 
 </div>
 
-</div>
 
-<!-- =========================
-     MODALE DETAILS
-========================== -->
+<!-- ========================= -->
+<!-- MODALES -->
+<!-- ========================= -->
+
+{% for item in historique %}
 
 <div
-    id="detailsModal"
-    class="modal-overlay"
-    onclick="closeModal(event)"
->
+    id="modal-{{ item.id }}"
+    class="modal">
 
+    <div class="modal-content">
 
-<div class="details-modal">
-
-    <div class="modal-header">
-
-        <div>
-
-            <span class="modal-label">
-                DÉTAILS
-            </span>
+        <div class="modal-header">
 
             <h3>
-                Détails de l'opération
+                🔧 Réparation #{{ item.id }}
             </h3>
+
+            <span
+                class="close"
+                onclick="closeModal('modal-{{ item.id }}')">
+                &times;
+            </span>
 
         </div>
 
-        <button
-            type="button"
-            onclick="closeDetails()"
-            class="modal-close"
-        >
-            ×
-        </button>
 
-    </div>
+        <div class="modal-body">
+
+            <div class="details-grid">
 
 
-    <div
-        id="modalContent"
-        class="modal-content"
-    >
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Client
+                    </div>
+
+                    <div class="detail-value">
+                        {{ item.client_nom
+                           or item.client
+                           or 'Client inconnu' }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Appareil
+                    </div>
+
+                    <div class="detail-value">
+                        {{ item.appareil or '—' }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail full">
+
+                    <div class="detail-label">
+                        Panne
+                    </div>
+
+                    <div class="detail-value">
+                        {{ item.panne or '—' }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Statut
+                    </div>
+
+                    <div class="detail-value">
+                        {{ item.statut or 'En attente' }}
+                    </div>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Devise
+                    </div>
+
+                    <div class="detail-value">
+                        {{ devise_affichee(item.devise) }}
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL -->
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Montant total
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if item.montant_total is defined
+                              and item.montant_total is not none %}
+
+                            {{ "%.2f"|format(
+                                item.montant_total|float
+                            ) }}
+
+                            {{ devise_affichee(item.devise) }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYÉ -->
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Montant payé
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if item.montant_paye is defined
+                              and item.montant_paye is not none %}
+
+                            {{ "%.2f"|format(
+                                item.montant_paye|float
+                            ) }}
+
+                            {{ devise_affichee(item.devise) }}
+
+                        {% else %}
+
+                            0.00 {{ devise_affichee(item.devise) }}
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESTE -->
+                <div class="detail">
+
+                    <div class="detail-label">
+                        Reste à payer
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if item.reste_a_payer is defined
+                              and item.reste_a_payer is not none %}
+
+                            {{ "%.2f"|format(
+                                item.reste_a_payer|float
+                            ) }}
+
+                            {{ devise_affichee(item.devise) }}
+
+                        {% else %}
+
+                            0.00 {{ devise_affichee(item.devise) }}
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATE -->
+                <div class="detail full">
+
+                    <div class="detail-label">
+                        Date de récupération
+                    </div>
+
+                    <div class="detail-value">
+
+                        {% if item.date_recuperation %}
+
+                            {{ item.date_recuperation.strftime('%d/%m/%Y') }}
+
+                        {% else %}
+
+                            Non définie
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
+{% endfor %}
 
-</div>
-
-<style>
-
-/* =========================
-   PAGE
-========================== */
-
-.history-page {
-    max-width: 1700px;
-    margin: 0 auto;
-}
-
-
-/* =========================
-   HEADER
-========================== */
-
-.history-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 24px;
-}
-
-.breadcrumb {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 7px;
-}
-
-.breadcrumb span {
-    margin: 0 5px;
-    color: #94a3b8;
-}
-
-.history-header h1 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 28px;
-    font-weight: 800;
-}
-
-.history-header p {
-    margin: 7px 0 0;
-    color: #64748b;
-    font-size: 14px;
-}
-
-
-/* =========================
-   BUTTONS
-========================== */
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    padding: 11px 16px;
-    border-radius: 9px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.btn-secondary {
-    background: white;
-    color: #334155;
-    border: 1px solid #e2e8f0;
-}
-
-.btn-secondary:hover {
-    background: #f8fafc;
-}
-
-
-/* =========================
-   STATISTIQUES
-========================== */
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.stat-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 13px;
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.stat-icon {
-    width: 47px;
-    height: 47px;
-    border-radius: 11px;
-    background: #eff6ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 21px;
-    flex-shrink: 0;
-}
-
-.icon-add {
-    background: #ecfdf5;
-}
-
-.icon-edit {
-    background: #fff7ed;
-}
-
-.icon-delete {
-    background: #fef2f2;
-}
-
-.stat-content span {
-    display: block;
-    color: #64748b;
-    font-size: 12px;
-    margin-bottom: 4px;
-}
-
-.stat-content strong {
-    display: block;
-    color: #0f172a;
-    font-size: 24px;
-    font-weight: 800;
-}
-
-
-/* =========================
-   FILTRES
-========================== */
-
-.filter-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 13px;
-    padding: 17px;
-    margin-bottom: 20px;
-}
-
-.filter-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #334155;
-    font-size: 13px;
-    margin-bottom: 13px;
-}
-
-.filters {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.search-container {
-    flex: 1;
-    min-width: 280px;
-    height: 42px;
-    border: 1px solid #e2e8f0;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 0 12px;
-}
-
-.search-container:focus-within {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
-}
-
-.search-icon {
-    font-size: 15px;
-}
-
-.search-container input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    font-size: 13px;
-    color: #334155;
-}
-
-.filters select {
-    height: 42px;
-    min-width: 170px;
-    border: 1px solid #e2e8f0;
-    border-radius: 9px;
-    padding: 0 12px;
-    background: white;
-    color: #334155;
-    outline: none;
-    cursor: pointer;
-}
-
-.filters select:focus {
-    border-color: #2563eb;
-}
-
-.btn-reset {
-    height: 42px;
-    padding: 0 15px;
-    border: none;
-    border-radius: 9px;
-    background: #f1f5f9;
-    color: #334155;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.btn-reset:hover {
-    background: #e2e8f0;
-}
-
-
-/* =========================
-   CARTE HISTORIQUE
-========================== */
-
-.history-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 13px;
-    overflow: hidden;
-}
-
-.history-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 20px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.history-card-header h2 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 17px;
-}
-
-.history-card-header p {
-    margin: 5px 0 0;
-    color: #64748b;
-    font-size: 12px;
-}
-
-.live-indicator {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    color: #64748b;
-    font-size: 12px;
-}
-
-.live-indicator span {
-    width: 8px;
-    height: 8px;
-    background: #22c55e;
-    border-radius: 50%;
-}
-
-
-/* =========================
-   TABLE
-========================== */
-
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    min-width: 1550px;
-    border-collapse: collapse;
-}
-
-thead {
-    background: #f8fafc;
-}
-
-th {
-    padding: 12px 13px;
-    text-align: left;
-    color: #64748b;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    white-space: nowrap;
-}
-
-td {
-    padding: 13px;
-    border-top: 1px solid #f1f5f9;
-    color: #334155;
-    font-size: 12px;
-    vertical-align: middle;
-}
-
-tbody tr {
-    transition: background .15s;
-}
-
-tbody tr:hover {
-    background: #f8fafc;
-}
-
-
-/* =========================
-   ID
-========================== */
-
-.history-id {
-    display: inline-block;
-    padding: 5px 7px;
-    border-radius: 6px;
-    background: #f1f5f9;
-    color: #64748b;
-    font-size: 10px;
-    font-weight: 800;
-}
-
-
-/* =========================
-   ACTION
-========================== */
-
-.action-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 9px;
-    border-radius: 7px;
-    font-size: 10px;
-    font-weight: 800;
-    white-space: nowrap;
-}
-
-.action-add {
-    background: #ecfdf5;
-    color: #047857;
-}
-
-.action-edit {
-    background: #fff7ed;
-    color: #c2410c;
-}
-
-.action-delete {
-    background: #fef2f2;
-    color: #dc2626;
-}
-
-.action-status {
-    background: #eff6ff;
-    color: #2563eb;
-}
-
-.action-other {
-    background: #f1f5f9;
-    color: #475569;
-}
-
-
-/* =========================
-   REPARATION
-========================== */
-
-.repair-number {
-    color: #2563eb;
-    font-weight: 800;
-    white-space: nowrap;
-}
-
-
-/* =========================
-   CLIENT
-========================== */
-
-.client-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 150px;
-}
-
-.avatar,
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #dbeafe;
-    color: #1d4ed8;
-    font-weight: 800;
-    font-size: 11px;
-    flex-shrink: 0;
-}
-
-.client-name strong {
-    display: block;
-    color: #334155;
-    white-space: nowrap;
-}
-
-.client-name small {
-    color: #94a3b8;
-    font-size: 10px;
-}
-
-
-/* =========================
-   APPAREIL
-========================== */
-
-.device {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-}
-
-.device-icon {
-    font-size: 14px;
-}
-
-
-/* =========================
-   PANNE
-========================== */
-
-.problem {
-    max-width: 190px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #475569;
-}
-
-
-/* =========================
-   MONTANTS
-========================== */
-
-.amounts {
-    min-width: 120px;
-}
-
-.amounts div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    line-height: 1.7;
-}
-
-.amounts span {
-    color: #94a3b8;
-    font-size: 10px;
-}
-
-.amounts strong {
-    color: #334155;
-    font-size: 11px;
-}
-
-.amounts .paid {
-    color: #059669;
-}
-
-.amounts .remaining {
-    color: #dc2626;
-}
-
-.amounts .paid-complete {
-    color: #059669;
-}
-
-
-/* =========================
-   STATUT
-========================== */
-
-.status {
-    display: inline-block;
-    padding: 6px 9px;
-    border-radius: 20px;
-    background: #f1f5f9;
-    color: #475569;
-    font-size: 10px;
-    font-weight: 800;
-    white-space: nowrap;
-}
-
-.status-waiting {
-    background: #fff7ed;
-    color: #c2410c;
-}
-
-.status-progress {
-    background: #eff6ff;
-    color: #2563eb;
-}
-
-.status-done {
-    background: #ecfdf5;
-    color: #047857;
-}
-
-.status-delivered {
-    background: #f0fdf4;
-    color: #15803d;
-}
-
-
-/* =========================
-   UTILISATEUR
-========================== */
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    white-space: nowrap;
-}
-
-.user-avatar {
-    width: 29px;
-    height: 29px;
-    background: #f1f5f9;
-    color: #475569;
-}
-
-
-/* =========================
-   DATE
-========================== */
-
-.date-info strong {
-    display: block;
-    color: #334155;
-    white-space: nowrap;
-}
-
-.date-info span {
-    display: block;
-    color: #94a3b8;
-    font-size: 10px;
-    margin-top: 2px;
-}
-
-
-/* =========================
-   DETAILS
-========================== */
-
-.details-btn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.details-btn:hover {
-    background: #eff6ff;
-    border-color: #bfdbfe;
-}
-
-.hidden-details {
-    display: none;
-}
-
-
-/* =========================
-   MODALE
-========================== */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, .55);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 9999;
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.details-modal {
-    width: min(600px, 100%);
-    max-height: 90vh;
-    overflow-y: auto;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 25px 60px rgba(0,0,0,.2);
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-label {
-    display: block;
-    color: #2563eb;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .08em;
-    margin-bottom: 4px;
-}
-
-.modal-header h3 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 18px;
-}
-
-.modal-close {
-    width: 35px;
-    height: 35px;
-    border: none;
-    border-radius: 8px;
-    background: #f1f5f9;
-    color: #475569;
-    font-size: 23px;
-    cursor: pointer;
-}
-
-.modal-close:hover {
-    background: #e2e8f0;
-}
-
-.modal-content {
-    padding: 20px;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 11px 0;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.detail-row:last-child {
-    border-bottom: none;
-}
-
-.detail-label {
-    color: #64748b;
-    font-size: 12px;
-}
-
-.detail-value {
-    color: #0f172a;
-    font-size: 12px;
-    font-weight: 700;
-    text-align: right;
-}
-
-
-/* =========================
-   VIDE
-========================== */
-
-.empty-history,
-.no-results {
-    text-align: center;
-    padding: 65px 20px;
-}
-
-.empty-icon,
-.no-results-icon {
-    font-size: 45px;
-    margin-bottom: 12px;
-}
-
-.empty-history h3,
-.no-results h3 {
-    margin: 0 0 8px;
-    color: #0f172a;
-}
-
-.empty-history p,
-.no-results p {
-    margin: 0 0 20px;
-    color: #64748b;
-    font-size: 13px;
-}
-
-.btn-primary {
-    display: inline-flex;
-    align-items: center;
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 11px 17px;
-    border-radius: 9px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-}
-
-.empty-value {
-    color: #94a3b8;
-}
-
-
-/* =========================
-   RESPONSIVE
-========================== */
-
-@media (max-width: 1100px) {
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .filters {
-        flex-wrap: wrap;
-    }
-
-    .search-container {
-        flex-basis: 100%;
-    }
-
-}
-
-
-@media (max-width: 650px) {
-
-    .history-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .history-header h1 {
-        font-size: 23px;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .filters select,
-    .btn-reset {
-        flex: 1;
-    }
-
-    .history-card-header {
-        align-items: flex-start;
-        gap: 10px;
-        flex-direction: column;
-    }
-
-}
-
-</style>
 
 <script>
 
-/* =========================
-   RECHERCHE ET FILTRES
-========================== */
+/* RECHERCHE */
+function searchTable() {
 
-const searchInput =
-    document.getElementById("searchInput");
+    const input =
+        document.getElementById("searchInput");
 
-const actionFilter =
-    document.getElementById("actionFilter");
+    const table =
+        document.getElementById("historiqueTable");
 
-const statusFilter =
-    document.getElementById("statusFilter");
+    if (!input || !table) {
+        return;
+    }
 
-const resultCount =
-    document.getElementById("resultCount");
-
-const noResults =
-    document.getElementById("noResults");
-
-
-function filterHistory() {
-
-    const search =
-        (searchInput?.value || "")
-        .toLowerCase()
-        .trim();
-
-    const action =
-        actionFilter?.value || "";
-
-    const status =
-        statusFilter?.value || "";
+    const filter =
+        input.value.toLowerCase();
 
     const rows =
-        document.querySelectorAll(
-            "#historyTable tbody tr"
-        );
+        table.querySelectorAll("tbody tr");
 
-    let visible = 0;
-
-
-    rows.forEach(row => {
+    rows.forEach(function(row) {
 
         const text =
             row.innerText.toLowerCase();
 
-        const rowAction =
-            row.dataset.action || "";
-
-        const rowStatus =
-            row.dataset.statut || "";
-
-
-        const searchMatch =
-            !search ||
-            text.includes(search);
-
-        const actionMatch =
-            !action ||
-            rowAction === action;
-
-        const statusMatch =
-            !status ||
-            rowStatus === status;
-
-
-        if (
-            searchMatch &&
-            actionMatch &&
-            statusMatch
-        ) {
-
-            row.style.display = "";
-            visible++;
-
-        } else {
-
-            row.style.display = "none";
-
-        }
+        row.style.display =
+            text.includes(filter) ? "" : "none";
 
     });
-
-
-    if (resultCount) {
-        resultCount.textContent = visible;
-    }
-
-
-    if (noResults) {
-
-        noResults.style.display =
-            visible === 0
-            ? "block"
-            : "none";
-
-    }
-
 }
 
 
-/* =========================
-   RESET
-========================== */
-
-function resetFilters() {
-
-    if (searchInput) {
-        searchInput.value = "";
-    }
-
-    if (actionFilter) {
-        actionFilter.value = "";
-    }
-
-    if (statusFilter) {
-        statusFilter.value = "";
-    }
-
-    filterHistory();
-
-}
-
-
-/* =========================
-   EVENEMENTS
-========================== */
-
-if (searchInput) {
-
-    searchInput.addEventListener(
-        "input",
-        filterHistory
-    );
-
-}
-
-if (actionFilter) {
-
-    actionFilter.addEventListener(
-        "change",
-        filterHistory
-    );
-
-}
-
-if (statusFilter) {
-
-    statusFilter.addEventListener(
-        "change",
-        filterHistory
-    );
-
-}
-
-
-/* =========================
-   STATISTIQUES
-========================== */
-
-function calculateStatistics() {
-
-    const rows =
-        document.querySelectorAll(
-            "#historyTable tbody tr"
-        );
-
-    let ajouts = 0;
-    let modifications = 0;
-    let suppressions = 0;
-
-
-    rows.forEach(row => {
-
-        const action =
-            row.dataset.action || "";
-
-
-        if (action === "Ajout") {
-            ajouts++;
-        }
-
-        else if (action === "Modification") {
-            modifications++;
-        }
-
-        else if (action === "Suppression") {
-            suppressions++;
-        }
-
-    });
-
-
-    const statAjouts =
-        document.getElementById(
-            "statAjouts"
-        );
-
-    const statModifications =
-        document.getElementById(
-            "statModifications"
-        );
-
-    const statSuppressions =
-        document.getElementById(
-            "statSuppressions"
-        );
-
-
-    if (statAjouts) {
-        statAjouts.textContent = ajouts;
-    }
-
-    if (statModifications) {
-        statModifications.textContent =
-            modifications;
-    }
-
-    if (statSuppressions) {
-        statSuppressions.textContent =
-            suppressions;
-    }
-
-}
-
-
-/* =========================
-   DETAILS
-========================== */
-
-function showDetails(button) {
-
-    const row =
-        button.closest("tr");
-
-    const details =
-        row.querySelector(
-            ".hidden-details"
-        );
-
-    if (!details) {
-        return;
-    }
-
+/* OUVRIR MODAL */
+function openModal(id) {
 
     const modal =
-        document.getElementById(
-            "detailsModal"
-        );
+        document.getElementById(id);
 
-    const content =
-        document.getElementById(
-            "modalContent"
-        );
+    if (modal) {
 
+        modal.style.display = "block";
 
-    const items =
-        details.querySelectorAll("div");
+        document.body.style.overflow = "hidden";
 
-
-    let html = "";
-
-
-    items.forEach(item => {
-
-        const text =
-            item.innerHTML;
-
-        const parts =
-            text.split("</b>");
-
-        if (parts.length >= 2) {
-
-            const label =
-                parts[0]
-                .replace("<b>", "")
-                .trim();
-
-            const value =
-                parts[1]
-                .trim();
-
-
-            html += `
-                <div class="detail-row">
-                    <span class="detail-label">
-                        ${label}
-                    </span>
-
-                    <span class="detail-value">
-                        ${value}
-                    </span>
-                </div>
-            `;
-
-        }
-
-    });
-
-
-    content.innerHTML = html;
-
-    modal.classList.add("active");
-
+    }
 }
 
 
-function closeDetails() {
+/* FERMER MODAL */
+function closeModal(id) {
 
     const modal =
-        document.getElementById(
-            "detailsModal"
-        );
+        document.getElementById(id);
 
-    modal.classList.remove("active");
+    if (modal) {
 
+        modal.style.display = "none";
+
+        document.body.style.overflow = "";
+
+    }
 }
 
 
-function closeModal(event) {
+/* FERMER EN CLIQUANT À L'EXTÉRIEUR */
+window.addEventListener("click", function(event) {
 
-    if (
-        event.target.id ===
-        "detailsModal"
-    ) {
+    if (event.target.classList.contains("modal")) {
 
-        closeDetails();
+        event.target.style.display = "none";
+
+        document.body.style.overflow = "";
+
+    }
+
+});
+
+
+/* FERMER AVEC ESC */
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+
+        document.querySelectorAll(".modal").forEach(function(modal) {
+
+            modal.style.display = "none";
+
+        });
+
+        document.body.style.overflow = "";
 
     }
 
-}
-
-
-/* =========================
-   ESC POUR FERMER
-========================== */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (event.key === "Escape") {
-
-            closeDetails();
-
-        }
-
-    }
-);
-
-
-/* =========================
-   INITIALISATION
-========================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        calculateStatistics();
-
-        filterHistory();
-
-    }
-);
+});
 
 </script>
 

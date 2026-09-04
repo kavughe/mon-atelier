@@ -1438,13 +1438,52 @@ def supprimer_client(id):
     return redirect(
         url_for("clients")
     )
+# =========================================================
+# ENREGISTRER L'HISTORIQUE D'UNE RÉPARATION
+# =========================================================
+
 def enregistrer_historique_reparation(
     cursor,
     reparation_id,
     reparation,
     action
 ):
-    cursor.execute("""
+
+    # =====================================================
+    # DEVISE
+    # =====================================================
+
+    devise = reparation.get("devise")
+
+    if devise is None:
+        devise = "FC"
+
+    devise = str(devise).strip().upper()
+
+    if devise not in ("FC", "USD"):
+        devise = "FC"
+
+    # =====================================================
+    # UTILISATEUR
+    # =====================================================
+
+    utilisateur = ""
+
+    try:
+        utilisateur = getattr(
+            current_user,
+            "username",
+            ""
+        ) or ""
+    except Exception:
+        utilisateur = ""
+
+    # =====================================================
+    # ENREGISTRER DANS L'HISTORIQUE
+    # =====================================================
+
+    cursor.execute(
+        """
         INSERT INTO historique_reparations (
             reparation_id,
             client_nom,
@@ -1457,26 +1496,43 @@ def enregistrer_historique_reparation(
             date_depot,
             date_recuperation,
             action,
-            utilisateur
+            utilisateur,
+            date_action,
+            devise
         )
         VALUES (
-            %s, %s, %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            %s,
+            CURRENT_TIMESTAMP,
+            %s
         )
-    """, (
-        reparation_id,
-        reparation["client_nom"],
-        reparation["appareil"],
-        reparation["panne"],
-        reparation["prix"],
-        reparation["montant_paye"],
-        reparation["reste_a_payer"],
-        reparation["statut"],
-        reparation["date_depot"],
-        reparation["date_recuperation"],
-        action,
-        current_user.username
-    ))
+        """,
+        (
+            reparation_id,
+            reparation.get("client_nom", ""),
+            reparation.get("appareil", ""),
+            reparation.get("panne", ""),
+            reparation.get("prix", 0),
+            reparation.get("montant_paye", 0),
+            reparation.get("reste_a_payer", 0),
+            reparation.get("statut", "En attente"),
+            reparation.get("date_depot"),
+            reparation.get("date_recuperation"),
+            action,
+            utilisateur,
+            devise
+        )
+    )
 
 # =========================================================
 # FINANCES - FONCTION AUTOMATIQUE POUR LES RÉPARATIONS
@@ -1986,6 +2042,10 @@ def reparations():
 # =================================================
 
        
+# =================================================
+# AJOUTER UNE RÉPARATION
+# =================================================
+
 @app.route("/ajouter-reparation", methods=["GET", "POST"])
 @login_required
 @role_required("admin", "reception")
@@ -2042,13 +2102,15 @@ def ajouter_reparation():
         prix_text = request.form.get(
             "prix",
             "0"
-        ).strip()
+        ).strip().replace(",", ".")
 
         montant_paye_text = request.form.get(
             "montant_paye",
             "0"
-        ).strip()
+        ).strip().replace(",", ".")
 
+        # IMPORTANT :
+        # On récupère réellement la devise choisie
         devise = request.form.get(
             "devise",
             "FC"
@@ -2063,10 +2125,6 @@ def ajouter_reparation():
             "date_recuperation",
             ""
         ).strip()
-
-        # =================================================
-        # DATE VIDE
-        # =================================================
 
         if not date_recuperation:
             date_recuperation = None
@@ -2091,6 +2149,7 @@ def ajouter_reparation():
         # =================================================
 
         if not client_id:
+
             flash(
                 "Veuillez sélectionner un client.",
                 "warning"
@@ -2284,6 +2343,12 @@ def ajouter_reparation():
 
         if montant_paye > 0:
 
+            description = (
+                f"Paiement réparation #{reparation['id']} - "
+                f"{client['nom']} - "
+                f"{appareil}"
+            )
+
             cursor.execute("""
                 INSERT INTO transactions_financieres (
                     type,
@@ -2292,31 +2357,22 @@ def ajouter_reparation():
                     montant,
                     devise,
                     date_transaction,
-                    utilisateur,
                     reparation_id
                 )
                 VALUES (
                     'entree',
-                    'Paiement réparation',
+                    %s,
                     %s,
                     %s,
                     %s,
                     CURRENT_TIMESTAMP,
-                    %s,
                     %s
                 )
             """, (
-                f"Paiement réparation #{reparation['id']} - "
-                f"{client['nom']} - {appareil}",
-
+                "Réparation",
+                description,
                 montant_paye,
-
                 devise,
-
-                current_user.username
-                if hasattr(current_user, "username")
-                else str(current_user),
-
                 reparation["id"]
             ))
 
@@ -2325,6 +2381,10 @@ def ajouter_reparation():
         # =================================================
 
         conn.commit()
+
+        # =================================================
+        # MESSAGE
+        # =================================================
 
         if montant_paye > 0:
 
@@ -2350,6 +2410,11 @@ def ajouter_reparation():
 
         conn.rollback()
 
+        print(
+            "ERREUR AJOUT RÉPARATION :",
+            e
+        )
+
         flash(
             f"Erreur lors de l'ajout de la réparation : {e}",
             "danger"
@@ -2363,8 +2428,6 @@ def ajouter_reparation():
 
         cursor.close()
         conn.close()
-
-
 # =========================================================
 # MODIFIER UNE RÉPARATION
 # =========================================================
@@ -2730,31 +2793,413 @@ def supprimer_reparation(id):
     return redirect(
         url_for("reparations")
     )
+# =========================================================
+# PAIEMENT D'UNE RÉPARATION
+# =========================================================
+
+# =========================================================
+# PAIEMENT D'UNE RÉPARATION
+# =========================================================
+
 @app.route("/paiement/<int:id>", methods=["GET", "POST"])
 @login_required
 def paiement(id):
+
     conn = get_db()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("""
-        SELECT *
-        FROM reparations
-        WHERE id = %s
-    """, (id,))
+    try:
 
-    reparation = cur.fetchone()
+        # =====================================================
+        # 1. RÉCUPÉRER LA RÉPARATION
+        # =====================================================
 
-    cur.close()
-    conn.close()
+        cur.execute("""
+            SELECT *
+            FROM reparations
+            WHERE id = %s
+        """, (id,))
 
-    if not reparation:
-        flash("Réparation introuvable.", "danger")
-        return redirect(url_for("reparations"))
+        reparation = cur.fetchone()
 
-    return render_template(
-        "paiement.html",
-        reparation=reparation
-    )
+        if not reparation:
+            flash("Réparation introuvable.", "danger")
+            return redirect(url_for("reparations"))
+
+        # =====================================================
+        # 2. CALCULER LE TOTAL ET LE RESTE
+        # =====================================================
+
+        prix = float(
+            reparation.get("prix") or 0
+        )
+
+        ancien_paye = float(
+            reparation.get("montant_paye") or 0
+        )
+
+        reste_a_payer = prix - ancien_paye
+
+        if reste_a_payer < 0:
+            reste_a_payer = 0
+
+        devise = (
+            reparation.get("devise")
+            or "FC"
+        )
+
+        # =====================================================
+        # 3. ENREGISTREMENT DU PAIEMENT
+        # =====================================================
+
+        if request.method == "POST":
+
+            montant_str = request.form.get(
+                "montant",
+                ""
+            ).strip()
+
+            mode_paiement = request.form.get(
+                "mode_paiement",
+                ""
+            ).strip()
+
+            observation = request.form.get(
+                "observation",
+                ""
+            ).strip()
+
+            # =================================================
+            # VALIDATION DU MONTANT
+            # =================================================
+
+            try:
+
+                montant = float(
+                    montant_str.replace(",", ".")
+                )
+
+            except (ValueError, TypeError):
+
+                flash(
+                    "Veuillez entrer un montant valide.",
+                    "danger"
+                )
+
+                return render_template(
+                    "paiement.html",
+                    reparation=reparation
+                )
+
+            if montant <= 0:
+
+                flash(
+                    "Le montant doit être supérieur à zéro.",
+                    "danger"
+                )
+
+                return render_template(
+                    "paiement.html",
+                    reparation=reparation
+                )
+
+            if reste_a_payer <= 0:
+
+                flash(
+                    "Cette réparation est déjà entièrement payée.",
+                    "warning"
+                )
+
+                return render_template(
+                    "paiement.html",
+                    reparation=reparation
+                )
+
+            if montant > reste_a_payer:
+
+                flash(
+                    f"Le paiement dépasse le reste à payer : "
+                    f"{reste_a_payer:,.2f} {devise}.",
+                    "danger"
+                )
+
+                return render_template(
+                    "paiement.html",
+                    reparation=reparation
+                )
+
+            # =================================================
+            # 4. NOUVEAUX MONTANTS
+            # =================================================
+
+            nouveau_paye = (
+                ancien_paye + montant
+            )
+
+            nouveau_reste = (
+                prix - nouveau_paye
+            )
+
+            if nouveau_reste < 0:
+                nouveau_reste = 0
+
+            # =================================================
+            # 5. RÉCUPÉRER CLIENT ET APPAREIL
+            # =================================================
+
+            client_nom = (
+                reparation.get("client_nom")
+                or reparation.get("client")
+                or ""
+            )
+
+            appareil = (
+                reparation.get("appareil")
+                or ""
+            )
+
+            # =================================================
+            # 6. METTRE À JOUR LA RÉPARATION
+            # =================================================
+
+            cur.execute("""
+                UPDATE reparations
+                SET
+                    montant_paye = %s,
+                    reste_a_payer = %s
+                WHERE id = %s
+            """, (
+                nouveau_paye,
+                nouveau_reste,
+                id
+            ))
+
+            # =================================================
+            # 7. ENREGISTRER DANS L'HISTORIQUE DES PAIEMENTS
+            # =================================================
+
+            cur.execute("""
+                INSERT INTO historique_paiements
+                (
+                    reparation_id,
+                    client_nom,
+                    appareil,
+                    montant,
+                    devise,
+                    ancien_total_paye,
+                    nouveau_total_paye,
+                    reste_a_payer,
+                    date_paiement,
+                    utilisateur_id
+                )
+                VALUES
+                (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    CURRENT_TIMESTAMP,
+                    %s
+                )
+            """, (
+                id,
+                client_nom,
+                appareil,
+                montant,
+                devise,
+                ancien_paye,
+                nouveau_paye,
+                nouveau_reste,
+                getattr(current_user, "id", None)
+            ))
+
+            # =================================================
+            # 8. PRÉPARER LA DESCRIPTION FINANCE
+            # =================================================
+
+            description = (
+                f"Paiement réparation #{id}"
+            )
+
+            if client_nom:
+
+                description += (
+                    f" - {client_nom}"
+                )
+
+            if appareil:
+
+                description += (
+                    f" - {appareil}"
+                )
+
+            if mode_paiement:
+
+                description += (
+                    f" - {mode_paiement}"
+                )
+
+            if observation:
+
+                description += (
+                    f" - {observation}"
+                )
+
+            # =================================================
+            # 9. AJOUTER LE PAIEMENT AUX FINANCES
+            # =================================================
+
+            cur.execute("""
+                INSERT INTO transactions_financieres
+                (
+                    type,
+                    categorie,
+                    description,
+                    montant,
+                    devise,
+                    date_transaction,
+                    reparation_id
+                )
+                VALUES
+                (
+                    'entree',
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    CURRENT_TIMESTAMP,
+                    %s
+                )
+            """, (
+                "Réparation",
+                description,
+                montant,
+                devise,
+                id
+            ))
+
+            # =================================================
+            # 10. VALIDER
+            # =================================================
+
+            conn.commit()
+
+            # =================================================
+            # 11. MESSAGE DE SUCCÈS
+            # =================================================
+
+            if nouveau_reste == 0:
+
+                flash(
+                    f"Paiement de {montant:,.2f} {devise} "
+                    f"enregistré avec succès. "
+                    f"La réparation est entièrement payée.",
+                    "success"
+                )
+
+            else:
+
+                flash(
+                    f"Paiement de {montant:,.2f} {devise} "
+                    f"enregistré avec succès. "
+                    f"Reste à payer : "
+                    f"{nouveau_reste:,.2f} {devise}.",
+                    "success"
+                )
+
+            # =================================================
+            # 12. RETOUR VERS FINANCES
+            # =================================================
+
+            return redirect(
+                url_for("finances")
+            )
+
+        # =====================================================
+        # 13. AFFICHER LA PAGE PAIEMENT
+        # =====================================================
+
+        return render_template(
+            "paiement.html",
+            reparation=reparation
+        )
+
+    # =========================================================
+    # ERREUR
+    # =========================================================
+
+    except Exception as e:
+
+        conn.rollback()
+
+        print(
+            "ERREUR PAIEMENT :",
+            e
+        )
+
+        flash(
+            f"Erreur lors de l'enregistrement du paiement : {e}",
+            "danger"
+        )
+
+        return render_template(
+            "paiement.html",
+            reparation=reparation
+        )
+
+    # =========================================================
+    # FERMETURE
+    # =========================================================
+
+    finally:
+
+        cur.close()
+        conn.close()
+@app.route("/historique-paiements")
+@login_required
+def historique_paiements():
+    conn = get_db()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    try:
+        cursor.execute("""
+            SELECT
+                hp.id,
+                hp.reparation_id,
+                hp.client_nom,
+                hp.appareil,
+                hp.montant,
+                hp.devise,
+                hp.ancien_total_paye,
+                hp.nouveau_total_paye,
+                hp.reste_a_payer,
+                hp.date_paiement,
+                hp.utilisateur_id
+            FROM historique_paiements hp
+            ORDER BY hp.date_paiement DESC
+        """)
+
+        paiements = cursor.fetchall()
+
+        return render_template(
+            "historique_paiements.html",
+            paiements=paiements
+        )
+
+    except Exception as e:
+        flash(
+            f"Erreur lors du chargement de l'historique : {e}",
+            "danger"
+        )
+        return redirect(url_for("historique_reparations"))
+
+    finally:
+        cursor.close()
+        conn.close()
 
 # =========================================================
 # HISTORIQUE DES RÉPARATIONS
@@ -2790,6 +3235,7 @@ def historique_reparations():
                 prix,
                 montant_paye,
                 reste_a_payer,
+                devise,
                 statut,
                 action,
                 utilisateur,
@@ -2813,6 +3259,8 @@ def historique_reparations():
 
         conn.rollback()
 
+        print("ERREUR HISTORIQUE RÉPARATIONS :", e)
+
         flash(
             f"Erreur lors du chargement de l'historique : {e}",
             "danger"
@@ -2826,7 +3274,7 @@ def historique_reparations():
 
         cursor.close()
         conn.close()
-    
+
 # =========================================================
 # MATÉRIELS
 # =========================================================
@@ -5318,46 +5766,37 @@ print(app.url_map)
 def finances():
 
     conn = get_db()
-
-    cursor = conn.cursor(
-        cursor_factory=RealDictCursor
-    )
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
 
-        # =================================================
+        # =====================================================
         # FILTRES
-        # =================================================
+        # =====================================================
 
         type_filtre = request.args.get(
-            "type",
-            ""
+            "type", ""
         ).strip()
 
         categorie_filtre = request.args.get(
-            "categorie",
-            ""
+            "categorie", ""
         ).strip()
 
         devise_filtre = request.args.get(
-            "devise",
-            ""
+            "devise", ""
         ).strip()
 
         date_debut = request.args.get(
-            "date_debut",
-            ""
+            "date_debut", ""
         ).strip()
 
         date_fin = request.args.get(
-            "date_fin",
-            ""
+            "date_fin", ""
         ).strip()
 
-
-        # =================================================
-        # LISTE DES TRANSACTIONS
-        # =================================================
+        # =====================================================
+        # TRANSACTIONS
+        # =====================================================
 
         query = """
             SELECT
@@ -5376,63 +5815,35 @@ def finances():
 
         params = []
 
-
-        # Filtre type
-
         if type_filtre in ("entree", "sortie"):
-
             query += """
                 AND type = %s
             """
-
             params.append(type_filtre)
 
-
-        # Filtre catégorie
-
         if categorie_filtre:
-
             query += """
                 AND categorie = %s
             """
-
             params.append(categorie_filtre)
 
-
-        # Filtre devise
-
         if devise_filtre in ("FC", "USD"):
-
             query += """
                 AND devise = %s
             """
-
             params.append(devise_filtre)
 
-
-        # Date début
-
         if date_debut:
-
             query += """
                 AND date_transaction >= %s::date
             """
-
             params.append(date_debut)
 
-
-        # Date fin
-
         if date_fin:
-
             query += """
-                AND date_transaction < (
-                    %s::date + INTERVAL '1 day'
-                )
+                AND date_transaction < (%s::date + INTERVAL '1 day')
             """
-
             params.append(date_fin)
-
 
         query += """
             ORDER BY
@@ -5440,18 +5851,13 @@ def finances():
                 id DESC
         """
 
-
-        cursor.execute(
-            query,
-            params
-        )
+        cursor.execute(query, params)
 
         transactions = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # CATÉGORIES
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT DISTINCT categorie
@@ -5463,14 +5869,12 @@ def finances():
 
         categories = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # TOTAL ENTRÉES FC
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
-            SELECT
-                COALESCE(SUM(montant), 0) AS total
+            SELECT COALESCE(SUM(montant), 0) AS total
             FROM transactions_financieres
             WHERE type = 'entree'
               AND devise = 'FC'
@@ -5478,14 +5882,12 @@ def finances():
 
         entree_fc = cursor.fetchone()
 
-
-        # =================================================
+        # =====================================================
         # TOTAL SORTIES FC
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
-            SELECT
-                COALESCE(SUM(montant), 0) AS total
+            SELECT COALESCE(SUM(montant), 0) AS total
             FROM transactions_financieres
             WHERE type = 'sortie'
               AND devise = 'FC'
@@ -5493,14 +5895,12 @@ def finances():
 
         sortie_fc = cursor.fetchone()
 
-
-        # =================================================
+        # =====================================================
         # TOTAL ENTRÉES USD
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
-            SELECT
-                COALESCE(SUM(montant), 0) AS total
+            SELECT COALESCE(SUM(montant), 0) AS total
             FROM transactions_financieres
             WHERE type = 'entree'
               AND devise = 'USD'
@@ -5508,14 +5908,12 @@ def finances():
 
         entree_usd = cursor.fetchone()
 
-
-        # =================================================
+        # =====================================================
         # TOTAL SORTIES USD
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
-            SELECT
-                COALESCE(SUM(montant), 0) AS total
+            SELECT COALESCE(SUM(montant), 0) AS total
             FROM transactions_financieres
             WHERE type = 'sortie'
               AND devise = 'USD'
@@ -5523,10 +5921,9 @@ def finances():
 
         sortie_usd = cursor.fetchone()
 
-
-        # =================================================
-        # CONVERSION DES TOTAUX
-        # =================================================
+        # =====================================================
+        # CONVERSION
+        # =====================================================
 
         entree_fc_total = float(
             entree_fc["total"] or 0
@@ -5544,10 +5941,9 @@ def finances():
             sortie_usd["total"] or 0
         )
 
-
-        # =================================================
+        # =====================================================
         # SOLDES
-        # =================================================
+        # =====================================================
 
         solde_fc = (
             entree_fc_total
@@ -5559,10 +5955,9 @@ def finances():
             - sortie_usd_total
         )
 
-
-        # =================================================
+        # =====================================================
         # ENTRÉES DU JOUR
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5577,10 +5972,9 @@ def finances():
 
         entrees_jour = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # SORTIES DU JOUR
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5595,10 +5989,9 @@ def finances():
 
         sorties_jour = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # ENTRÉES DE LA SEMAINE
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5616,10 +6009,9 @@ def finances():
 
         entrees_semaine = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # SORTIES DE LA SEMAINE
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5637,10 +6029,9 @@ def finances():
 
         sorties_semaine = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # ENTRÉES DU MOIS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5658,10 +6049,9 @@ def finances():
 
         entrees_mois = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # SORTIES DU MOIS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5679,10 +6069,9 @@ def finances():
 
         sorties_mois = cursor.fetchall()
 
-
-        # =================================================
+        # =====================================================
         # DERNIÈRES TRANSACTIONS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -5703,80 +6092,49 @@ def finances():
 
         dernieres_transactions = cursor.fetchall()
 
-
-        # =================================================
-        # ENVOYER LES DONNÉES À finances.html
-        # =================================================
+        # =====================================================
+        # AFFICHAGE
+        # =====================================================
 
         return render_template(
             "finances.html",
 
             transactions=transactions,
 
-            dernieres_transactions=
-                dernieres_transactions,
+            dernieres_transactions=dernieres_transactions,
 
             categories=categories,
 
-            # -----------------------------
-            # TOTAUX
-            # -----------------------------
-
+            # Totaux
             entree_fc=entree_fc_total,
-
             sortie_fc=sortie_fc_total,
 
             entree_usd=entree_usd_total,
-
             sortie_usd=sortie_usd_total,
 
-            # -----------------------------
-            # SOLDES
-            # -----------------------------
-
+            # Soldes
             solde_fc=solde_fc,
-
             solde_usd=solde_usd,
 
-            # -----------------------------
-            # JOUR
-            # -----------------------------
-
+            # Jour
             entrees_jour=entrees_jour,
-
             sorties_jour=sorties_jour,
 
-            # -----------------------------
-            # SEMAINE
-            # -----------------------------
-
+            # Semaine
             entrees_semaine=entrees_semaine,
-
             sorties_semaine=sorties_semaine,
 
-            # -----------------------------
-            # MOIS
-            # -----------------------------
-
+            # Mois
             entrees_mois=entrees_mois,
-
             sorties_mois=sorties_mois,
 
-            # -----------------------------
-            # FILTRES
-            # -----------------------------
-
+            # Filtres
             type_filtre=type_filtre,
-
             categorie_filtre=categorie_filtre,
-
             devise_filtre=devise_filtre,
-
             date_debut=date_debut,
-
             date_fin=date_fin
         )
-
 
     except Exception as e:
 
@@ -5796,46 +6154,33 @@ def finances():
             "finances.html",
 
             transactions=[],
-
             dernieres_transactions=[],
-
             categories=[],
 
             entree_fc=0,
-
             sortie_fc=0,
 
             entree_usd=0,
-
             sortie_usd=0,
 
             solde_fc=0,
-
             solde_usd=0,
 
             entrees_jour=[],
-
             sorties_jour=[],
 
             entrees_semaine=[],
-
             sorties_semaine=[],
 
             entrees_mois=[],
-
             sorties_mois=[],
 
             type_filtre="",
-
             categorie_filtre="",
-
             devise_filtre="",
-
             date_debut="",
-
             date_fin=""
         )
-
 
     finally:
 

@@ -1,0 +1,1151 @@
+{% extends "base.html" %}
+
+{% block title %}Historique des paiements{% endblock %}
+
+{% block content %}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .payment-history-container {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* ================= HEADER ================= */
+
+    .page-header {
+        background: linear-gradient(135deg, #111827, #1f2937);
+        color: white;
+        padding: 24px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,.10);
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    .page-header p {
+        margin: 7px 0 0;
+        color: #d1d5db;
+        font-size: 14px;
+    }
+
+    .breadcrumb {
+        margin-top: 15px;
+        font-size: 13px;
+        color: #d1d5db;
+    }
+
+    .breadcrumb a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    /* ================= HEADER ACTIONS ================= */
+
+    .header-actions {
+        margin-top: 18px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        padding: 10px 16px;
+
+        background: white;
+        color: #111827;
+
+        border: 1px solid #d1d5db;
+        border-radius: 9px;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        transition: .2s;
+    }
+
+    .back-btn:hover {
+        background: #f3f4f6;
+        transform: translateY(-1px);
+    }
+
+    /* ================= STATS ================= */
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 21px;
+        flex-shrink: 0;
+    }
+
+    .stat-number {
+        font-size: 21px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+    .stat-payment .stat-icon {
+        background: #ecfdf5;
+    }
+
+    .stat-usd .stat-icon {
+        background: #eff6ff;
+    }
+
+    .stat-fc .stat-icon {
+        background: #fff7ed;
+    }
+
+    .stat-rest .stat-icon {
+        background: #fef2f2;
+    }
+
+    /* ================= FILTER ================= */
+
+    .filter-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+
+        padding: 18px;
+        margin-bottom: 20px;
+
+        box-shadow: 0 4px 15px rgba(0,0,0,.04);
+    }
+
+    .filter-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 14px;
+    }
+
+    .filters {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr auto;
+        gap: 10px;
+    }
+
+    .filter-input,
+    .filter-select {
+        width: 100%;
+        height: 42px;
+
+        border: 1px solid #d1d5db;
+        border-radius: 9px;
+
+        padding: 0 12px;
+
+        font-size: 14px;
+        background: white;
+
+        outline: none;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+        border-color: #2563eb;
+
+        box-shadow:
+            0 0 0 3px rgba(37,99,235,.10);
+    }
+
+    .reset-btn {
+        height: 42px;
+
+        padding: 0 16px;
+
+        border: 1px solid #d1d5db;
+
+        background: #f9fafb;
+        color: #374151;
+
+        border-radius: 9px;
+
+        cursor: pointer;
+
+        font-weight: 600;
+    }
+
+    .reset-btn:hover {
+        background: #f3f4f6;
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-card {
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        overflow: hidden;
+
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .table-header {
+        padding: 16px 18px;
+
+        border-bottom: 1px solid #e5e7eb;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 10px;
+    }
+
+    .table-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .result-count {
+        background: #eff6ff;
+        color: #1d4ed8;
+
+        padding: 5px 10px;
+
+        border-radius: 20px;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1100px;
+    }
+
+    th {
+        background: #f9fafb;
+
+        color: #4b5563;
+
+        font-size: 11px;
+
+        text-transform: uppercase;
+
+        letter-spacing: .4px;
+
+        padding: 13px 10px;
+
+        border-bottom: 1px solid #e5e7eb;
+
+        text-align: left;
+
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 10px;
+
+        border-bottom: 1px solid #f0f0f0;
+
+        font-size: 13px;
+
+        color: #374151;
+
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background: #fafafa;
+    }
+
+    tbody tr.hidden-row {
+        display: none;
+    }
+
+    /* ================= ID ================= */
+
+    .id-badge {
+        background: #f3f4f6;
+        color: #374151;
+
+        padding: 4px 8px;
+
+        border-radius: 7px;
+
+        font-weight: 700;
+
+        font-size: 12px;
+    }
+
+    .repair-badge {
+        background: #eff6ff;
+        color: #1d4ed8;
+
+        padding: 4px 8px;
+
+        border-radius: 7px;
+
+        font-weight: 700;
+
+        font-size: 12px;
+    }
+
+    /* ================= PAYMENT ================= */
+
+    .payment-amount {
+        color: #047857;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .currency-badge {
+        display: inline-block;
+
+        margin-left: 4px;
+
+        padding: 3px 7px;
+
+        border-radius: 6px;
+
+        font-size: 10px;
+
+        font-weight: 700;
+    }
+
+    .currency-usd {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .currency-fc {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .total-paid {
+        color: #047857;
+        font-weight: 700;
+    }
+
+    .remaining {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .remaining.zero {
+        color: #047857;
+    }
+
+    /* ================= DATE ================= */
+
+    .date-main {
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .date-time {
+        color: #9ca3af;
+        font-size: 11px;
+        margin-top: 2px;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #6b7280;
+    }
+
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    .empty-state h3 {
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1100px) {
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filters {
+            grid-template-columns: 1fr 1fr;
+        }
+
+    }
+
+    @media (max-width: 650px) {
+
+        .payment-history-container {
+            padding: 12px;
+        }
+
+        .page-header {
+            padding: 18px;
+            border-radius: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 21px;
+        }
+
+        .page-header p {
+            font-size: 13px;
+        }
+
+        .header-actions {
+            justify-content: stretch;
+        }
+
+        .back-btn {
+            width: 100%;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .stat-card {
+            padding: 13px;
+            gap: 9px;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 17px;
+        }
+
+        .stat-number {
+            font-size: 17px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+        }
+
+        .filters {
+            grid-template-columns: 1fr;
+        }
+
+        .reset-btn {
+            width: 100%;
+        }
+
+        .table-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+    }
+</style>
+
+
+<div class="payment-history-container">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="page-header">
+
+        <h1>
+            💳 Historique des paiements
+        </h1>
+
+        <p>
+            Consultez tous les paiements enregistrés
+            pour les réparations.
+        </p>
+
+        <div class="breadcrumb">
+
+            <a href="{{ url_for('index') }}">
+                Accueil
+            </a>
+
+            &nbsp; / &nbsp;
+
+            <a href="{{ url_for('historique_reparations') }}">
+                Historique des réparations
+            </a>
+
+            &nbsp; / &nbsp;
+
+            Historique des paiements
+
+        </div>
+
+        <div class="header-actions">
+
+            <a
+                href="{{ url_for('historique_reparations') }}"
+                class="back-btn"
+            >
+                ← Historique des réparations
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTIQUES
+    ====================================================== -->
+
+    <div class="stats-grid">
+
+        <!-- Nombre paiements -->
+
+        <div class="stat-card stat-payment">
+
+            <div class="stat-icon">
+                💳
+            </div>
+
+            <div>
+
+                <div
+                    class="stat-number"
+                    id="totalPayments"
+                >
+                    {{ paiements|length }}
+                </div>
+
+                <div class="stat-label">
+                    Nombre de paiements
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total USD -->
+
+        <div class="stat-card stat-usd">
+
+            <div class="stat-icon">
+                💵
+            </div>
+
+            <div>
+
+                <div
+                    class="stat-number"
+                    id="totalUSD"
+                >
+                    0.00 USD
+                </div>
+
+                <div class="stat-label">
+                    Paiements USD
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total FC -->
+
+        <div class="stat-card stat-fc">
+
+            <div class="stat-icon">
+                💰
+            </div>
+
+            <div>
+
+                <div
+                    class="stat-number"
+                    id="totalFC"
+                >
+                    0 FC
+                </div>
+
+                <div class="stat-label">
+                    Paiements FC
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Reste -->
+
+        <div class="stat-card stat-rest">
+
+            <div class="stat-icon">
+                ⚠️
+            </div>
+
+            <div>
+
+                <div
+                    class="stat-number"
+                    id="totalRest"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Paiements avec reste
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTRES
+    ====================================================== -->
+
+    <div class="filter-card">
+
+        <div class="filter-title">
+            🔎 Rechercher et filtrer
+        </div>
+
+        <div class="filters">
+
+            <input
+                type="text"
+                id="searchInput"
+                class="filter-input"
+                placeholder="Client, appareil, réparation..."
+                oninput="filterPayments()"
+            >
+
+
+            <select
+                id="currencyFilter"
+                class="filter-select"
+                onchange="filterPayments()"
+            >
+
+                <option value="">
+                    Toutes les devises
+                </option>
+
+                <option value="USD">
+                    USD
+                </option>
+
+                <option value="FC">
+                    FC
+                </option>
+
+            </select>
+
+
+            <input
+                type="date"
+                id="dateFilter"
+                class="filter-input"
+                onchange="filterPayments()"
+            >
+
+
+            <button
+                type="button"
+                class="reset-btn"
+                onclick="resetPaymentFilters()"
+            >
+                ↻ Réinitialiser
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABLEAU
+    ====================================================== -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <div class="table-title">
+                📑 Liste des paiements
+            </div>
+
+            <div
+                class="result-count"
+                id="resultCount"
+            >
+                {{ paiements|length }} paiement(s)
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Réparation
+                        </th>
+
+                        <th>
+                            Client
+                        </th>
+
+                        <th>
+                            Appareil
+                        </th>
+
+                        <th>
+                            Paiement
+                        </th>
+
+                        <th>
+                            Total payé
+                        </th>
+
+                        <th>
+                            Reste
+                        </th>
+
+                        <th>
+                            Utilisateur
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="paymentTable">
+
+                {% if paiements %}
+
+                    {% for paiement in paiements %}
+
+                    <tr
+                        data-currency="{{ paiement.devise or 'USD' }}"
+                        data-date="{% if paiement.date_paiement %}{{ paiement.date_paiement.strftime('%Y-%m-%d') }}{% endif %}"
+                    >
+
+                        <!-- ID -->
+
+                        <td>
+
+                            <span class="id-badge">
+                                #{{ paiement.id }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- REPARATION -->
+
+                        <td>
+
+                            {% if paiement.reparation_id %}
+
+                                <span class="repair-badge">
+                                    #{{ paiement.reparation_id }}
+                                </span>
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CLIENT -->
+
+                        <td>
+
+                            <strong>
+                                {{ paiement.client_nom or 'Client inconnu' }}
+                            </strong>
+
+                        </td>
+
+
+                        <!-- APPAREIL -->
+
+                        <td>
+                            {{ paiement.appareil or '—' }}
+                        </td>
+
+
+                        <!-- PAIEMENT -->
+
+                        <td>
+
+                            <span class="payment-amount">
+                                {{ paiement.montant or 0 }}
+                            </span>
+
+                            {% if (paiement.devise or 'USD')|upper == 'FC' %}
+
+                                <span
+                                    class="currency-badge currency-fc"
+                                >
+                                    FC
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="currency-badge currency-usd"
+                                >
+                                    USD
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- TOTAL PAYE -->
+
+                        <td>
+
+                            <span class="total-paid">
+
+                                {{ paiement.nouveau_total_paye or 0 }}
+
+                                {{ paiement.devise or 'USD' }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- RESTE -->
+
+                        <td>
+
+                            {% set reste = paiement.reste_a_payer or 0 %}
+
+                            {% if reste == 0 %}
+
+                                <span class="remaining zero">
+                                    ✓ Payé
+                                </span>
+
+                            {% else %}
+
+                                <span class="remaining">
+
+                                    {{ reste }}
+
+                                    {{ paiement.devise or 'USD' }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- UTILISATEUR -->
+
+                        <td>
+
+                            {% if paiement.utilisateur_nom %}
+
+                                {{ paiement.utilisateur_nom }}
+
+                            {% elif paiement.utilisateur_id %}
+
+                                #{{ paiement.utilisateur_id }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {% if paiement.date_paiement %}
+
+                                <div class="date-main">
+
+                                    {{ paiement.date_paiement.strftime('%d/%m/%Y') }}
+
+                                </div>
+
+                                <div class="date-time">
+
+                                    {{ paiement.date_paiement.strftime('%H:%M') }}
+
+                                </div>
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="9">
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+                                    💳
+                                </div>
+
+                                <h3>
+                                    Aucun paiement
+                                </h3>
+
+                                <p>
+                                    Aucun paiement n'a encore été enregistré.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       FILTRAGE DES PAIEMENTS
+    ====================================================== */
+
+    function filterPayments() {
+
+        const search =
+            document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const currency =
+            document
+                .getElementById("currencyFilter")
+                .value
+                .toUpperCase();
+
+
+        const date =
+            document
+                .getElementById("dateFilter")
+                .value;
+
+
+        const rows =
+            document.querySelectorAll(
+                "#paymentTable tr[data-currency]"
+            );
+
+
+        let visible = 0;
+
+
+        rows.forEach(function(row) {
+
+            const rowText =
+                row.innerText.toLowerCase();
+
+
+            const rowCurrency =
+                (
+                    row.dataset.currency || ""
+                ).toUpperCase();
+
+
+            const rowDate =
+                row.dataset.date || "";
+
+
+            const matchSearch =
+                !search ||
+                rowText.includes(search);
+
+
+            const matchCurrency =
+                !currency ||
+                rowCurrency === currency;
+
+
+            const matchDate =
+                !date ||
+                rowDate === date;
+
+
+            if (
+                matchSearch &&
+                matchCurrency &&
+                matchDate
+            ) {
+
+                row.classList.remove(
+                    "hidden-row"
+                );
+
+                visible++;
+
+            } else {
+
+                row.classList.add(
+                    "hidden-row"
+                );
+
+            }
+
+        });
+
+
+        document.getElementById(
+            "resultCount"
+        ).textContent =
+            visible + " paiement(s)";
+
+    }
+
+
+    /* =====================================================
+       RESET
+    ====================================================== */
+
+    function resetPaymentFilters() {
+
+        document.getElementById(
+            "searchInput"
+        ).value = "";
+
+
+        document.getElementById(
+            "currencyFilter"
+        ).value = "";
+
+
+        document.getElementById(
+            "dateFilter"
+        ).value = "";
+
+
+        filterPayments();
+
+    }
+
+</script>
+
+{% endblock %}
