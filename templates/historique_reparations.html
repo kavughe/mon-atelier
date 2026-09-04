@@ -687,11 +687,10 @@
                                       and item.reste_a_payer is not none
                                       and item.reste_a_payer|float > 0 %}
 
-                                    <a
-                                        href="{{ url_for('reparations') }}"
-                                        class="btn btn-payment">
-                                        💳 Paiement
-                                    </a>
+                                    <a href="{{ url_for('paiement', id=item.reparation_id) }}"
+   class="btn btn-payment">
+    💳 Paiement
+</a>
 
                                 {% endif %}
 
