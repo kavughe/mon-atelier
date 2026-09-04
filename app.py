@@ -5823,7 +5823,7 @@ def historique_finance():
         "historique_finance.html",
         operations=operations
     )
-    @app.route("/paiement/<int:id>", methods=["GET", "POST"])
+@app.route("/paiement/<int:id>", methods=["GET", "POST"])
 @login_required
 def paiement(id):
     conn = get_db()
