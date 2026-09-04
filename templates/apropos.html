@@ -1,54 +1,100 @@
 
 {% extends "base.html" %}
 
-{% block title %}À propos - Mon Atelier{% endblock %}
+{% block title %}
+À propos - Mon Atelier
+{% endblock %}
+
+{% block page_title %}
+À propos de Mon Atelier
+{% endblock %}
 
 {% block content %}
 
 <style>
-    .about-container {
+    .about-page {
         max-width: 1100px;
         margin: 0 auto;
+        padding: 25px;
     }
 
-    /* HERO */
+    /* ==============================
+       HERO
+    ============================== */
+
     .about-hero {
+        position: relative;
+        overflow: hidden;
         background: linear-gradient(135deg, #111827, #1f2937);
         color: white;
-        border-radius: 18px;
-        padding: 45px 35px;
+        border-radius: 20px;
+        padding: 45px 40px;
         margin-bottom: 25px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }
 
-    .about-logo {
+    .about-hero::after {
+        content: "";
+        position: absolute;
+        width: 230px;
+        height: 230px;
+        border-radius: 50%;
+        right: -90px;
+        top: -90px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .app-logo {
         width: 75px;
         height: 75px;
-        margin: 0 auto 18px;
-        border-radius: 20px;
-        background: #dc2626;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 38px;
-        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
+        background: #dc2626;
+        border-radius: 18px;
+        font-size: 36px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.30);
     }
 
     .about-hero h1 {
-        margin: 0 0 10px;
-        font-size: 32px;
+        margin: 0;
+        font-size: 36px;
+        font-weight: 800;
+    }
+
+    .about-hero h1 span {
+        color: #ef4444;
     }
 
     .about-hero p {
-        max-width: 700px;
-        margin: 0 auto;
+        max-width: 750px;
+        margin: 12px 0 0;
         color: #d1d5db;
-        line-height: 1.7;
         font-size: 16px;
+        line-height: 1.7;
     }
 
-    /* CARDS */
+    .version-badge {
+        display: inline-flex;
+        margin-top: 20px;
+        padding: 7px 14px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.10);
+        color: #e5e7eb;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* ==============================
+       CARTES
+    ============================== */
+
     .about-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -56,140 +102,266 @@
         margin-bottom: 25px;
     }
 
-    .about-card {
-        background: white;
-        border-radius: 16px;
-        padding: 25px;
+    .about-card,
+    .features-card,
+    .developer-card {
+        background: #ffffff;
         border: 1px solid #e5e7eb;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
     }
 
-    .about-card h2 {
-        margin-top: 0;
-        margin-bottom: 12px;
+    .about-card {
+        padding: 25px;
+    }
+
+    .card-title {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 18px;
+    }
+
+    .card-icon {
+        width: 43px;
+        height: 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        background: #fee2e2;
+        font-size: 21px;
+    }
+
+    .card-title h2 {
+        margin: 0;
         color: #111827;
-        font-size: 20px;
+        font-size: 19px;
     }
 
-    .about-card p {
+    .card-text {
+        margin: 0;
         color: #6b7280;
         line-height: 1.7;
-        margin-bottom: 0;
+        font-size: 14px;
     }
 
-    /* FEATURES */
-    .features {
-        background: white;
-        border-radius: 16px;
+    /* ==============================
+       DEVELOPPEUR
+    ============================== */
+
+    .developer-card {
+        display: flex;
+        align-items: center;
+        gap: 22px;
         padding: 28px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
         margin-bottom: 25px;
     }
 
-    .features h2 {
-        margin-top: 0;
-        text-align: center;
+    .developer-avatar {
+        width: 85px;
+        height: 85px;
+        min-width: 85px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f3f4f6;
+        font-size: 40px;
+    }
+
+    .developer-info h2 {
+        margin: 0 0 5px;
         color: #111827;
+        font-size: 23px;
+    }
+
+    .developer-role {
+        margin-bottom: 9px;
+        color: #dc2626;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .developer-description {
+        margin: 0;
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+    /* ==============================
+       CONTACT
+    ============================== */
+
+    .contact-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 11px 17px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .whatsapp {
+        background: #25D366;
+        color: white !important;
+    }
+
+    .whatsapp:hover {
+        background: #1ebe5d;
+    }
+
+    .phone {
+        background: #2563eb;
+        color: white !important;
+    }
+
+    .phone:hover {
+        background: #1d4ed8;
+    }
+
+    .email {
+        background: #dc2626;
+        color: white !important;
+    }
+
+    .email:hover {
+        background: #b91c1c;
+    }
+
+    /* ==============================
+       FONCTIONNALITES
+    ============================== */
+
+    .features-card {
+        padding: 25px;
+        margin-bottom: 25px;
     }
 
     .features-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-        margin-top: 25px;
+        gap: 15px;
     }
 
     .feature {
-        padding: 20px;
-        border-radius: 14px;
-        background: #f9fafb;
-        border: 1px solid #e5e7eb;
-        text-align: center;
+        padding: 18px;
+        border-radius: 12px;
+        background: #f8fafc;
+        border: 1px solid #eef0f3;
     }
 
     .feature-icon {
-        width: 50px;
-        height: 50px;
-        margin: 0 auto 12px;
-        border-radius: 14px;
-        background: #fee2e2;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         font-size: 25px;
+        margin-bottom: 9px;
     }
 
     .feature h3 {
-        margin: 8px 0;
-        font-size: 16px;
+        margin: 0 0 6px;
         color: #111827;
+        font-size: 15px;
     }
 
     .feature p {
         margin: 0;
         color: #6b7280;
-        font-size: 14px;
+        font-size: 13px;
         line-height: 1.5;
     }
 
-    /* TECHNOLOGIES */
-    .tech-section {
-        background: white;
-        border-radius: 16px;
-        padding: 28px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
-        margin-bottom: 25px;
+    /* ==============================
+       INFORMATIONS
+    ============================== */
+
+    .info-list {
+        display: grid;
+        gap: 0;
     }
 
-    .tech-section h2 {
-        text-align: center;
-        margin-top: 0;
-        color: #111827;
-    }
-
-    .tech-list {
+    .info-row {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 20px;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid #eef0f3;
     }
 
-    .tech {
-        padding: 10px 18px;
-        border-radius: 30px;
-        background: #f3f4f6;
-        color: #374151;
-        font-weight: 600;
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #6b7280;
         font-size: 14px;
     }
 
-    /* FOOTER */
+    .info-value {
+        color: #111827;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: right;
+    }
+
+    .info-value a {
+        color: #dc2626;
+        text-decoration: none;
+    }
+
+    .info-value a:hover {
+        text-decoration: underline;
+    }
+
+    /* ==============================
+       FOOTER
+    ============================== */
+
     .about-footer {
         text-align: center;
-        padding: 25px;
+        padding: 25px 10px;
         color: #6b7280;
+        font-size: 13px;
     }
 
     .about-footer strong {
         color: #111827;
     }
 
-    .version {
-        display: inline-block;
-        margin-top: 8px;
-        padding: 6px 12px;
-        border-radius: 20px;
-        background: #fee2e2;
-        color: #b91c1c;
-        font-size: 12px;
-        font-weight: 600;
-    }
+    /* ==============================
+       RESPONSIVE
+    ============================== */
 
-    /* MOBILE */
     @media (max-width: 800px) {
+
+        .about-page {
+            padding: 15px 10px;
+        }
+
+        .about-hero {
+            padding: 30px 22px;
+            border-radius: 15px;
+        }
+
+        .about-hero h1 {
+            font-size: 29px;
+        }
+
         .about-grid {
             grid-template-columns: 1fr;
         }
@@ -197,72 +369,113 @@
         .features-grid {
             grid-template-columns: repeat(2, 1fr);
         }
+    }
+
+    @media (max-width: 550px) {
 
         .about-hero {
-            padding: 35px 22px;
+            padding: 25px 18px;
         }
 
         .about-hero h1 {
-            font-size: 27px;
+            font-size: 25px;
         }
-    }
 
-    @media (max-width: 520px) {
+        .about-hero p {
+            font-size: 14px;
+        }
+
+        .about-card,
+        .features-card,
+        .developer-card {
+            padding: 20px;
+        }
+
+        .developer-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
         .features-grid {
             grid-template-columns: 1fr;
         }
 
-        .about-card,
-        .features,
-        .tech-section {
-            padding: 20px;
+        .contact-buttons {
+            flex-direction: column;
         }
 
-        .about-hero {
-            border-radius: 14px;
+        .contact-btn {
+            width: 100%;
         }
 
-        .about-logo {
-            width: 65px;
-            height: 65px;
-            font-size: 32px;
+        .info-row {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-value {
+            text-align: left;
         }
     }
 </style>
 
 
-<div class="about-container">
+<div class="about-page">
 
-    <!-- PRESENTATION -->
+    <!-- ==========================================
+         PRESENTATION
+    =========================================== -->
+
     <section class="about-hero">
 
-        <div class="about-logo">
-            🔧
+        <div class="hero-content">
+
+            <div class="app-logo">
+                🔧
+            </div>
+
+            <h1>
+                Mon <span>Atelier</span>
+            </h1>
+
+            <p>
+                Une solution moderne et simple pour gérer efficacement
+                les réparations, les clients, les paiements, les finances,
+                les devis et les matériels de votre atelier.
+            </p>
+
+            <div class="version-badge">
+                Version 1.0.0
+            </div>
+
         </div>
-
-        <h1>Mon Atelier</h1>
-
-        <p>
-            Une solution moderne de gestion d'atelier conçue pour
-            simplifier l'organisation, le suivi des réparations,
-            la gestion des clients, des matériels, des devis et des finances.
-        </p>
 
     </section>
 
 
-    <!-- INFORMATIONS -->
+    <!-- ==========================================
+         OBJECTIF
+    =========================================== -->
+
     <div class="about-grid">
 
         <div class="about-card">
 
-            <h2>🏢 Notre système</h2>
+            <div class="card-title">
 
-            <p>
-                <strong>Mon Atelier</strong> est une application web destinée
-                à faciliter la gestion quotidienne d'un atelier.
-                Elle permet de centraliser les informations importantes
-                et d'améliorer le suivi des activités.
+                <div class="card-icon">
+                    💡
+                </div>
+
+                <h2>Notre objectif</h2>
+
+            </div>
+
+            <p class="card-text">
+                Mon Atelier a été conçu pour faciliter la gestion
+                quotidienne d'un atelier de réparation et centraliser
+                les informations importantes au même endroit.
             </p>
 
         </div>
@@ -270,12 +483,19 @@
 
         <div class="about-card">
 
-            <h2>🎯 Notre objectif</h2>
+            <div class="card-title">
 
-            <p>
-                Notre objectif est de rendre la gestion d'un atelier
-                plus simple, rapide et professionnelle grâce à une
-                plateforme accessible depuis un ordinateur ou un téléphone.
+                <div class="card-icon">
+                    🚀
+                </div>
+
+                <h2>Une gestion simplifiée</h2>
+
+            </div>
+
+            <p class="card-text">
+                L'application permet de suivre les opérations de l'atelier
+                depuis un ordinateur, une tablette ou un téléphone.
             </p>
 
         </div>
@@ -283,40 +503,96 @@
     </div>
 
 
-    <!-- FONCTIONNALITES -->
-    <section class="features">
+    <!-- ==========================================
+         DEVELOPPEUR
+    =========================================== -->
 
-        <h2>Fonctionnalités principales</h2>
+    <section class="developer-card">
+
+        <div class="developer-avatar">
+            👨‍💻
+        </div>
+
+        <div class="developer-info">
+
+            <h2>
+                Kavughe
+            </h2>
+
+            <div class="developer-role">
+                Développeur & Ingénieur électrotechnicien
+            </div>
+
+            <p class="developer-description">
+                Conception, développement et amélioration de
+                <strong>Mon Atelier</strong>, avec pour objectif de proposer
+                un outil pratique, fiable et facile à utiliser.
+            </p>
+
+
+            <!-- CONTACT -->
+
+            <div class="contact-buttons">
+
+                <a href="https://wa.me/243977133845"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="contact-btn whatsapp">
+
+                    💬 WhatsApp
+
+                </a>
+
+
+                <a href="tel:+243977133845"
+                   class="contact-btn phone">
+
+                    📞 Appeler
+
+                </a>
+
+
+                <a href="mailto:irkavughemagnifique@gmail.com"
+                   class="contact-btn email">
+
+                    📧 E-mail
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         FONCTIONNALITES
+    =========================================== -->
+
+    <section class="features-card">
+
+        <div class="card-title">
+
+            <div class="card-icon">
+                ⚙️
+            </div>
+
+            <h2>Fonctionnalités principales</h2>
+
+        </div>
+
 
         <div class="features-grid">
 
             <div class="feature">
 
-                <div class="feature-icon">
-                    👥
-                </div>
-
-                <h3>Clients</h3>
-
-                <p>
-                    Enregistrer et gérer facilement les informations
-                    des clients.
-                </p>
-
-            </div>
-
-
-            <div class="feature">
-
-                <div class="feature-icon">
-                    🔧
-                </div>
+                <div class="feature-icon">🔧</div>
 
                 <h3>Réparations</h3>
 
                 <p>
-                    Suivre les réparations et connaître leur état
-                    d'avancement.
+                    Enregistrement et suivi des appareils en réparation.
                 </p>
 
             </div>
@@ -324,15 +600,12 @@
 
             <div class="feature">
 
-                <div class="feature-icon">
-                    📦
-                </div>
+                <div class="feature-icon">👥</div>
 
-                <h3>Matériels</h3>
+                <h3>Clients</h3>
 
                 <p>
-                    Gérer les matériels reçus, disponibles ou
-                    utilisés dans l'atelier.
+                    Gestion des informations et de l'historique des clients.
                 </p>
 
             </div>
@@ -340,14 +613,12 @@
 
             <div class="feature">
 
-                <div class="feature-icon">
-                    🧾
-                </div>
+                <div class="feature-icon">💰</div>
 
-                <h3>Devis</h3>
+                <h3>Paiements</h3>
 
                 <p>
-                    Créer et gérer les devis de manière professionnelle.
+                    Suivi des paiements et des montants restant à payer.
                 </p>
 
             </div>
@@ -355,15 +626,12 @@
 
             <div class="feature">
 
-                <div class="feature-icon">
-                    💰
-                </div>
+                <div class="feature-icon">📊</div>
 
                 <h3>Finances</h3>
 
                 <p>
-                    Suivre les entrées, les sorties et les opérations
-                    financières de l'atelier.
+                    Suivi des entrées, sorties et opérations financières.
                 </p>
 
             </div>
@@ -371,15 +639,25 @@
 
             <div class="feature">
 
-                <div class="feature-icon">
-                    📊
-                </div>
+                <div class="feature-icon">🧾</div>
 
-                <h3>Rapports</h3>
+                <h3>Devis</h3>
 
                 <p>
-                    Consulter les informations et statistiques
-                    importantes de l'activité.
+                    Création et gestion des devis de réparation.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">📦</div>
+
+                <h3>Matériels</h3>
+
+                <p>
+                    Gestion des matériels et équipements de l'atelier.
                 </p>
 
             </div>
@@ -389,45 +667,155 @@
     </section>
 
 
-    <!-- TECHNOLOGIES -->
-    <section class="tech-section">
+    <!-- ==========================================
+         INFORMATIONS
+    =========================================== -->
 
-        <h2>Technologies utilisées</h2>
+    <section class="about-card">
 
-        <div class="tech-list">
+        <div class="card-title">
 
-            <span class="tech">HTML5</span>
+            <div class="card-icon">
+                ℹ️
+            </div>
 
-            <span class="tech">CSS3</span>
+            <h2>Informations de l'application</h2>
 
-            <span class="tech">Python</span>
+        </div>
 
-            <span class="tech">Flask</span>
 
-            <span class="tech">PostgreSQL</span>
+        <div class="info-list">
 
-            <span class="tech">Responsive Design</span>
+            <div class="info-row">
+
+                <span class="info-label">
+                    Application
+                </span>
+
+                <span class="info-value">
+                    Mon Atelier
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Version
+                </span>
+
+                <span class="info-value">
+                    1.0.0
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Développeur
+                </span>
+
+                <span class="info-value">
+                    Kavughe
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Profession
+                </span>
+
+                <span class="info-value">
+                    Ingénieur électrotechnicien
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    📞 Téléphone
+                </span>
+
+                <span class="info-value">
+
+                    <a href="tel:+243977133845">
+                        +243 977 133 845
+                    </a>
+
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    📧 E-mail
+                </span>
+
+                <span class="info-value">
+
+                    <a href="mailto:irkavughemagnifique@gmail.com">
+                        irkavughemagnifique@gmail.com
+                    </a>
+
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Domaine
+                </span>
+
+                <span class="info-value">
+                    Gestion d'atelier
+                </span>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Technologies
+                </span>
+
+                <span class="info-value">
+                    Flask · Python · PostgreSQL · HTML · CSS
+                </span>
+
+            </div>
 
         </div>
 
     </section>
 
 
-    <!-- FOOTER -->
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
     <div class="about-footer">
 
         <p>
-            <strong>Mon Atelier</strong> — Gestion moderne d'atelier
+            © 2026 <strong>Mon Atelier</strong>.
+            Tous droits réservés.
         </p>
 
         <p>
-            Développé pour faciliter la gestion et améliorer
-            l'organisation du travail.
+            Développé avec passion par <strong>Kavughe</strong>.
         </p>
-
-        <span class="version">
-            Version 1.0
-        </span>
 
     </div>
 

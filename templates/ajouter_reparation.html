@@ -1,7 +1,10 @@
-
 {% extends "base.html" %}
 
-{% block title %}Nouvelle réparation{% endblock %}
+{% block title %}Modifier la réparation{% endblock %}
+
+{% block page_title %}
+Modifier la réparation
+{% endblock %}
 
 {% block content %}
 
@@ -34,10 +37,10 @@
     }
 
     .repair-card {
-        background: #ffffff;
+        background: #fff;
         border-radius: 18px;
         padding: 30px;
-        box-shadow: 0 8px 30px rgba(15, 23, 42, .08);
+        box-shadow: 0 8px 30px rgba(15,23,42,.08);
         border: 1px solid #e5e7eb;
     }
 
@@ -53,13 +56,9 @@
         border-bottom: 1px solid #e5e7eb;
     }
 
-    .section-title span {
-        font-size: 20px;
-    }
-
     .form-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2,1fr);
         gap: 20px;
     }
 
@@ -69,7 +68,7 @@
     }
 
     .form-group.full {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
     }
 
     label {
@@ -79,7 +78,7 @@
         margin-bottom: 8px;
     }
 
-    label .required {
+    .required {
         color: #dc2626;
     }
 
@@ -102,11 +101,11 @@
     select:focus,
     textarea:focus {
         border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+        box-shadow: 0 0 0 3px rgba(37,99,235,.10);
     }
 
     textarea {
-        min-height: 120px;
+        min-height: 130px;
         resize: vertical;
     }
 
@@ -137,6 +136,30 @@
         box-sizing: border-box;
     }
 
+    .payment-info {
+        margin-top: 18px;
+        padding: 15px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+    }
+
+    .payment-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 7px 0;
+        font-size: 14px;
+    }
+
+    .payment-line strong {
+        color: #1e293b;
+    }
+
+    .payment-line.reste strong {
+        color: #dc2626;
+    }
+
     .info-box {
         margin-top: 22px;
         padding: 14px 16px;
@@ -150,7 +173,7 @@
 
     .actions {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         gap: 12px;
         margin-top: 30px;
         padding-top: 22px;
@@ -191,13 +214,8 @@
         transform: translateY(-1px);
     }
 
-    .help-text {
-        font-size: 12px;
-        color: #64748b;
-        margin-top: 6px;
-    }
+    @media (max-width:750px) {
 
-    @media (max-width: 750px) {
         .form-grid,
         .money-grid {
             grid-template-columns: 1fr;
@@ -216,7 +234,7 @@
         }
 
         .actions {
-            flex-direction: column;
+            flex-direction: column-reverse;
         }
 
         .btn {
@@ -225,32 +243,41 @@
     }
 </style>
 
+
 <div class="repair-page">
 
     <!-- EN-TÊTE -->
+
     <div class="repair-header">
-        <h1>🔧 Nouvelle réparation</h1>
-        <p>Enregistrez une nouvelle réparation et suivez son paiement.</p>
+
+        <h1>🔧 Modifier la réparation</h1>
+
+        <p>
+            Mettez à jour les informations de cette réparation.
+        </p>
+
     </div>
+
 
     <div class="repair-card">
 
         <form method="POST"
-              action="{{ url_for('ajouter_reparation') }}">
+              action="{{ url_for('modifier_reparation', id=reparation.id) }}">
 
-            <!-- ============================= -->
-            <!-- INFORMATIONS RÉPARATION -->
-            <!-- ============================= -->
+            <!-- INFORMATIONS -->
 
             <h2 class="section-title">
                 <span>📋</span>
                 Informations de la réparation
             </h2>
 
+
             <div class="form-grid">
 
                 <!-- CLIENT -->
+
                 <div class="form-group">
+
                     <label for="client_id">
                         Client <span class="required">*</span>
                     </label>
@@ -260,23 +287,39 @@
                         name="client_id"
                         required
                     >
+
                         <option value="">
                             Sélectionner un client
                         </option>
 
                         {% for client in clients %}
-                            <option value="{{ client.id }}">
+
+                            <option
+                                value="{{ client.id }}"
+                                {% if reparation.client_id == client.id %}
+                                    selected
+                                {% endif %}
+                            >
+
                                 {{ client.nom }}
+
                                 {% if client.telephone %}
                                     — {{ client.telephone }}
                                 {% endif %}
+
                             </option>
+
                         {% endfor %}
+
                     </select>
+
                 </div>
 
+
                 <!-- APPAREIL -->
+
                 <div class="form-group">
+
                     <label for="appareil">
                         Appareil <span class="required">*</span>
                     </label>
@@ -285,13 +328,18 @@
                         type="text"
                         id="appareil"
                         name="appareil"
+                        value="{{ reparation.appareil or '' }}"
                         placeholder="Ex. TV Samsung 55 pouces"
                         required
                     >
+
                 </div>
 
+
                 <!-- PANNE -->
+
                 <div class="form-group full">
+
                     <label for="panne">
                         Description de la panne
                         <span class="required">*</span>
@@ -300,13 +348,17 @@
                     <textarea
                         id="panne"
                         name="panne"
-                        placeholder="Décrivez le problème constaté sur l'appareil..."
+                        placeholder="Décrivez le problème constaté..."
                         required
-                    ></textarea>
+                    >{{ reparation.panne or '' }}</textarea>
+
                 </div>
 
+
                 <!-- STATUT -->
+
                 <div class="form-group">
+
                     <label for="statut">
                         Statut
                     </label>
@@ -315,26 +367,52 @@
                         id="statut"
                         name="statut"
                     >
-                        <option value="En attente">
+
+                        <option
+                            value="En attente"
+                            {% if reparation.statut == 'En attente' %}
+                                selected
+                            {% endif %}
+                        >
                             En attente
                         </option>
 
-                        <option value="En réparation">
+                        <option
+                            value="En réparation"
+                            {% if reparation.statut == 'En réparation' %}
+                                selected
+                            {% endif %}
+                        >
                             En réparation
                         </option>
 
-                        <option value="Terminée">
+                        <option
+                            value="Terminée"
+                            {% if reparation.statut == 'Terminée' %}
+                                selected
+                            {% endif %}
+                        >
                             Terminée
                         </option>
 
-                        <option value="Livrée">
+                        <option
+                            value="Livrée"
+                            {% if reparation.statut == 'Livrée' %}
+                                selected
+                            {% endif %}
+                        >
                             Livrée
                         </option>
+
                     </select>
+
                 </div>
 
+
                 <!-- DATE RÉCUPÉRATION -->
+
                 <div class="form-group">
+
                     <label for="date_recuperation">
                         Date prévue de récupération
                     </label>
@@ -343,15 +421,15 @@
                         type="date"
                         id="date_recuperation"
                         name="date_recuperation"
+                        value="{{ reparation.date_recuperation or '' }}"
                     >
+
                 </div>
 
             </div>
 
 
-            <!-- ============================= -->
-            <!-- PAIEMENT -->
-            <!-- ============================= -->
+            <!-- FINANCES -->
 
             <div class="money-box">
 
@@ -360,12 +438,16 @@
                     Informations financières
                 </h2>
 
+
                 <div class="money-grid">
 
                     <!-- PRIX -->
+
                     <div class="form-group">
+
                         <label for="prix">
-                            Prix total <span class="required">*</span>
+                            Prix total
+                            <span class="required">*</span>
                         </label>
 
                         <input
@@ -374,14 +456,17 @@
                             name="prix"
                             min="0"
                             step="0.01"
-                            value="0"
-                            placeholder="0.00"
+                            value="{{ reparation.prix or 0 }}"
                             required
                         >
+
                     </div>
 
+
                     <!-- MONTANT PAYÉ -->
+
                     <div class="form-group">
+
                         <label for="montant_paye">
                             Montant payé
                         </label>
@@ -392,15 +477,19 @@
                             name="montant_paye"
                             min="0"
                             step="0.01"
-                            value="0"
-                            placeholder="0.00"
+                            value="{{ reparation.montant_paye or 0 }}"
                         >
+
                     </div>
 
+
                     <!-- DEVISE -->
+
                     <div class="form-group">
+
                         <label for="devise">
-                            Devise <span class="required">*</span>
+                            Devise
+                            <span class="required">*</span>
                         </label>
 
                         <select
@@ -408,53 +497,94 @@
                             name="devise"
                             required
                         >
-                            <option value="FC" selected>
+
+                            <option
+                                value="FC"
+                                {% if reparation.devise == 'FC' %}
+                                    selected
+                                {% endif %}
+                            >
                                 FC — Franc Congolais
                             </option>
 
-                            <option value="USD">
+                            <option
+                                value="USD"
+                                {% if reparation.devise == 'USD' %}
+                                    selected
+                                {% endif %}
+                            >
                                 USD — Dollar américain
                             </option>
+
                         </select>
 
-                        <div class="help-text">
-                            La devise sera utilisée pour l'entrée financière automatique.
-                        </div>
                     </div>
 
                 </div>
 
-                <!-- RESTE -->
-                <div style="margin-top:18px;">
-                    <label>Reste à payer</label>
 
-                    <div class="money-result">
-                        <span id="resteAffiche">
-                            0 FC
+                <!-- RÉSUMÉ PAIEMENT -->
+
+                <div class="payment-info">
+
+                    <div class="payment-line">
+
+                        <span>
+                            Prix total
                         </span>
+
+                        <strong id="totalAffiche">
+                            0 FC
+                        </strong>
+
                     </div>
+
+
+                    <div class="payment-line">
+
+                        <span>
+                            Déjà payé
+                        </span>
+
+                        <strong id="payeAffiche">
+                            0 FC
+                        </strong>
+
+                    </div>
+
+
+                    <div class="payment-line reste">
+
+                        <span>
+                            Reste à payer
+                        </span>
+
+                        <strong id="resteAffiche">
+                            0 FC
+                        </strong>
+
+                    </div>
+
                 </div>
 
             </div>
 
 
-            <!-- ============================= -->
-            <!-- INFORMATION AUTOMATISATION -->
-            <!-- ============================= -->
+            <!-- INFORMATION -->
 
             <div class="info-box">
-                <strong>💡 Paiement automatique</strong><br>
 
-                Si un montant est payé lors de l'enregistrement
-                de cette réparation, le système pourra l'enregistrer
-                automatiquement comme <strong>entrée financière</strong>
-                avec la devise sélectionnée.
+                <strong>💡 Gestion du paiement</strong><br>
+
+                Vérifiez bien la devise avant d'enregistrer.
+                Un montant en FC reste en FC et un montant en USD
+                reste en USD. Aucune conversion automatique n'est
+                effectuée.
+
             </div>
 
 
-            <!-- ============================= -->
             <!-- BOUTONS -->
-            <!-- ============================= -->
 
             <div class="actions">
 
@@ -465,11 +595,12 @@
                     ← Annuler
                 </a>
 
+
                 <button
                     type="submit"
                     class="btn btn-save"
                 >
-                    💾 Enregistrer la réparation
+                    💾 Enregistrer les modifications
                 </button>
 
             </div>
@@ -482,36 +613,113 @@
 
 
 <script>
-    const prixInput = document.getElementById("prix");
-    const payeInput = document.getElementById("montant_paye");
-    const deviseInput = document.getElementById("devise");
-    const resteAffiche = document.getElementById("resteAffiche");
 
-    function calculerReste() {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const prix = parseFloat(prixInput.value) || 0;
-        const paye = parseFloat(payeInput.value) || 0;
+    const prixInput =
+        document.getElementById("prix");
 
-        let reste = prix - paye;
+    const payeInput =
+        document.getElementById("montant_paye");
 
-        if (reste < 0) {
-            reste = 0;
-        }
+    const deviseInput =
+        document.getElementById("devise");
 
-        const devise = deviseInput.value || "FC";
+    const totalAffiche =
+        document.getElementById("totalAffiche");
 
-        resteAffiche.textContent =
-            reste.toLocaleString("fr-FR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) + " " + devise;
+    const payeAffiche =
+        document.getElementById("payeAffiche");
+
+    const resteAffiche =
+        document.getElementById("resteAffiche");
+
+
+    function formatMontant(montant) {
+
+        return montant.toLocaleString("fr-FR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
     }
 
-    prixInput.addEventListener("input", calculerReste);
-    payeInput.addEventListener("input", calculerReste);
-    deviseInput.addEventListener("change", calculerReste);
 
-    calculerReste();
+    function calculerPaiement() {
+
+        let prix =
+            parseFloat(prixInput.value) || 0;
+
+        let paye =
+            parseFloat(payeInput.value) || 0;
+
+        const devise =
+            deviseInput.value || "FC";
+
+
+        /*
+         * Le paiement ne peut pas dépasser
+         * le prix total.
+         */
+
+        if (paye > prix) {
+
+            paye = prix;
+
+            payeInput.value = prix;
+
+        }
+
+
+        if (paye < 0) {
+
+            paye = 0;
+
+            payeInput.value = 0;
+
+        }
+
+
+        const reste =
+            Math.max(prix - paye, 0);
+
+
+        totalAffiche.textContent =
+            formatMontant(prix) + " " + devise;
+
+
+        payeAffiche.textContent =
+            formatMontant(paye) + " " + devise;
+
+
+        resteAffiche.textContent =
+            formatMontant(reste) + " " + devise;
+
+    }
+
+
+    prixInput.addEventListener(
+        "input",
+        calculerPaiement
+    );
+
+
+    payeInput.addEventListener(
+        "input",
+        calculerPaiement
+    );
+
+
+    deviseInput.addEventListener(
+        "change",
+        calculerPaiement
+    );
+
+
+    calculerPaiement();
+
+});
+
 </script>
 
 {% endblock %}
