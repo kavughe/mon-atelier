@@ -2797,10 +2797,6 @@ def supprimer_reparation(id):
 # PAIEMENT D'UNE RÉPARATION
 # =========================================================
 
-# =========================================================
-# PAIEMENT D'UNE RÉPARATION
-# =========================================================
-
 @app.route("/paiement/<int:id>", methods=["GET", "POST"])
 @login_required
 def paiement(id):
@@ -2809,7 +2805,6 @@ def paiement(id):
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
-
         # =====================================================
         # 1. RÉCUPÉRER LA RÉPARATION
         # =====================================================
@@ -2818,6 +2813,7 @@ def paiement(id):
             SELECT *
             FROM reparations
             WHERE id = %s
+            FOR UPDATE
         """, (id,))
 
         reparation = cur.fetchone()
@@ -2827,155 +2823,144 @@ def paiement(id):
             return redirect(url_for("reparations"))
 
         # =====================================================
-        # 2. CALCULER LE TOTAL ET LE RESTE
+        # 2. INFORMATIONS ACTUELLES
         # =====================================================
 
-        prix = float(
-            reparation.get("prix") or 0
-        )
-
-        ancien_paye = float(
-            reparation.get("montant_paye") or 0
-        )
+        prix = float(reparation.get("prix") or 0)
+        ancien_paye = float(reparation.get("montant_paye") or 0)
 
         reste_a_payer = prix - ancien_paye
 
         if reste_a_payer < 0:
             reste_a_payer = 0
 
-        devise = (
-            reparation.get("devise")
-            or "FC"
+        # Devise
+        devise = str(
+            reparation.get("devise") or "FC"
+        ).strip().upper()
+
+        if devise not in ("FC", "USD"):
+            devise = "FC"
+
+        client_nom = (
+            reparation.get("client_nom")
+            or reparation.get("client")
+            or ""
+        )
+
+        appareil = (
+            reparation.get("appareil")
+            or ""
         )
 
         # =====================================================
-        # 3. ENREGISTREMENT DU PAIEMENT
+        # 3. ENREGISTRER LE PAIEMENT
         # =====================================================
 
         if request.method == "POST":
 
             montant_str = request.form.get(
-                "montant",
-                ""
+                "montant", ""
             ).strip()
 
             mode_paiement = request.form.get(
-                "mode_paiement",
-                ""
+                "mode_paiement", ""
             ).strip()
 
             observation = request.form.get(
-                "observation",
-                ""
+                "observation", ""
             ).strip()
 
             # =================================================
-            # VALIDATION DU MONTANT
+            # 4. VÉRIFIER LE MONTANT
             # =================================================
 
             try:
-
                 montant = float(
                     montant_str.replace(",", ".")
                 )
-
             except (ValueError, TypeError):
-
                 flash(
                     "Veuillez entrer un montant valide.",
                     "danger"
                 )
-
                 return render_template(
                     "paiement.html",
                     reparation=reparation
                 )
 
             if montant <= 0:
-
                 flash(
                     "Le montant doit être supérieur à zéro.",
                     "danger"
                 )
-
                 return render_template(
                     "paiement.html",
                     reparation=reparation
                 )
 
             if reste_a_payer <= 0:
-
                 flash(
                     "Cette réparation est déjà entièrement payée.",
                     "warning"
                 )
-
                 return render_template(
                     "paiement.html",
                     reparation=reparation
                 )
 
             if montant > reste_a_payer:
-
                 flash(
                     f"Le paiement dépasse le reste à payer : "
                     f"{reste_a_payer:,.2f} {devise}.",
                     "danger"
                 )
-
                 return render_template(
                     "paiement.html",
                     reparation=reparation
                 )
 
             # =================================================
-            # 4. NOUVEAUX MONTANTS
+            # 5. NOUVEAUX MONTANTS
             # =================================================
 
-            nouveau_paye = (
-                ancien_paye + montant
-            )
-
-            nouveau_reste = (
-                prix - nouveau_paye
-            )
+            nouveau_paye = ancien_paye + montant
+            nouveau_reste = prix - nouveau_paye
 
             if nouveau_reste < 0:
                 nouveau_reste = 0
 
             # =================================================
-            # 5. RÉCUPÉRER CLIENT ET APPAREIL
+            # 6. NOUVEAU STATUT
             # =================================================
 
-            client_nom = (
-                reparation.get("client_nom")
-                or reparation.get("client")
-                or ""
-            )
+            ancien_statut = reparation.get("statut") or "En attente"
 
-            appareil = (
-                reparation.get("appareil")
-                or ""
-            )
+            if nouveau_reste == 0:
+                nouveau_statut = "Terminée"
+            else:
+                nouveau_statut = ancien_statut
 
             # =================================================
-            # 6. METTRE À JOUR LA RÉPARATION
+            # 7. METTRE À JOUR LA RÉPARATION
             # =================================================
 
             cur.execute("""
                 UPDATE reparations
                 SET
                     montant_paye = %s,
-                    reste_a_payer = %s
+                    reste_a_payer = %s,
+                    statut = %s
                 WHERE id = %s
             """, (
                 nouveau_paye,
                 nouveau_reste,
+                nouveau_statut,
                 id
             ))
 
             # =================================================
-            # 7. ENREGISTRER DANS L'HISTORIQUE DES PAIEMENTS
+            # 8. HISTORIQUE DES PAIEMENTS
             # =================================================
 
             cur.execute("""
@@ -3018,7 +3003,26 @@ def paiement(id):
             ))
 
             # =================================================
-            # 8. PRÉPARER LA DESCRIPTION FINANCE
+            # 9. HISTORIQUE DE LA RÉPARATION
+            # =================================================
+
+            # Créer une copie avec les nouvelles valeurs
+            reparation_historique = dict(reparation)
+
+            reparation_historique["montant_paye"] = nouveau_paye
+            reparation_historique["reste_a_payer"] = nouveau_reste
+            reparation_historique["statut"] = nouveau_statut
+            reparation_historique["devise"] = devise
+
+            enregistrer_historique_reparation(
+                cur,
+                id,
+                reparation_historique,
+                "Paiement"
+            )
+
+            # =================================================
+            # 10. DESCRIPTION FINANCIÈRE
             # =================================================
 
             description = (
@@ -3026,31 +3030,19 @@ def paiement(id):
             )
 
             if client_nom:
-
-                description += (
-                    f" - {client_nom}"
-                )
+                description += f" - {client_nom}"
 
             if appareil:
-
-                description += (
-                    f" - {appareil}"
-                )
+                description += f" - {appareil}"
 
             if mode_paiement:
-
-                description += (
-                    f" - {mode_paiement}"
-                )
+                description += f" - {mode_paiement}"
 
             if observation:
-
-                description += (
-                    f" - {observation}"
-                )
+                description += f" - {observation}"
 
             # =================================================
-            # 9. AJOUTER LE PAIEMENT AUX FINANCES
+            # 11. AJOUTER UNE ENTRÉE DANS LES FINANCES
             # =================================================
 
             cur.execute("""
@@ -3083,13 +3075,13 @@ def paiement(id):
             ))
 
             # =================================================
-            # 10. VALIDER
+            # 12. VALIDER TOUTES LES OPÉRATIONS
             # =================================================
 
             conn.commit()
 
             # =================================================
-            # 11. MESSAGE DE SUCCÈS
+            # 13. MESSAGE
             # =================================================
 
             if nouveau_reste == 0:
@@ -3106,13 +3098,15 @@ def paiement(id):
                 flash(
                     f"Paiement de {montant:,.2f} {devise} "
                     f"enregistré avec succès. "
-                    f"Reste à payer : "
+                    f"Total payé : "
+                    f"{nouveau_paye:,.2f} {devise}. "
+                    f"Reste : "
                     f"{nouveau_reste:,.2f} {devise}.",
                     "success"
                 )
 
             # =================================================
-            # 12. RETOUR VERS FINANCES
+            # 14. RETOUR AUX FINANCES
             # =================================================
 
             return redirect(
@@ -3120,7 +3114,7 @@ def paiement(id):
             )
 
         # =====================================================
-        # 13. AFFICHER LA PAGE PAIEMENT
+        # 15. AFFICHER LA PAGE PAIEMENT
         # =====================================================
 
         return render_template(
