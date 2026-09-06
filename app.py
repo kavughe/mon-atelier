@@ -877,102 +877,164 @@ def supprimer_utilisateur(id):
 def index():
 
     conn = get_db()
-
-    cursor = conn.cursor(
-        cursor_factory=RealDictCursor
-    )
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
 
-        # =================================================
+        # =====================================================
         # TOTAL CLIENTS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM clients
         """)
 
-        resultat_clients = cursor.fetchone()
-
-        total_clients = (
-            resultat_clients["total"] or 0
-        )
+        total_clients = cursor.fetchone()["total"] or 0
 
 
-        # =================================================
+        # =====================================================
         # TOTAL RÉPARATIONS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM reparations
         """)
 
-        resultat_reparations = cursor.fetchone()
-
-        total_reparations = (
-            resultat_reparations["total"] or 0
-        )
+        total_reparations = cursor.fetchone()["total"] or 0
 
 
-        # =================================================
-        # RÉPARATIONS EN ATTENTE
-        # =================================================
-
-        cursor.execute("""
-            SELECT COUNT(*) AS total
-            FROM reparations
-            WHERE statut = 'En attente'
-        """)
-
-        resultat_attente = cursor.fetchone()
-
-        reparations_attente = (
-            resultat_attente["total"] or 0
-        )
-
-
-        # =================================================
-        # RÉPARATIONS TERMINÉES
-        # =================================================
+        # =====================================================
+        # RÉPARATIONS EN COURS
+        # =====================================================
 
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM reparations
             WHERE statut IN (
-                'Terminé',
-                'Terminee',
-                'Terminé'
+                'En attente',
+                'En réparation',
+                'En cours'
             )
         """)
 
-        resultat_terminees = cursor.fetchone()
-
-        reparations_terminees = (
-            resultat_terminees["total"] or 0
-        )
+        reparations_en_cours = cursor.fetchone()["total"] or 0
 
 
-        # =================================================
+        # =====================================================
+        # RÉPARATIONS TERMINÉES
+        # =====================================================
+
+        cursor.execute("""
+            SELECT COUNT(*) AS total
+            FROM reparations
+            WHERE statut IN (
+                'Terminée',
+                'Terminé',
+                'Terminee'
+            )
+        """)
+
+        reparations_terminees = cursor.fetchone()["total"] or 0
+
+
+        # =====================================================
         # TOTAL DEVIS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM devis
         """)
 
-        resultat_devis = cursor.fetchone()
-
-        total_devis = (
-            resultat_devis["total"] or 0
-        )
+        total_devis = cursor.fetchone()["total"] or 0
 
 
-        # =================================================
+        # =====================================================
+        # FINANCES RÉPARATIONS
+        # =====================================================
+
+        cursor.execute("""
+            SELECT
+                COALESCE(SUM(prix), 0) AS total,
+                COALESCE(SUM(montant_paye), 0) AS paye,
+                COALESCE(SUM(reste_a_payer), 0) AS reste
+            FROM reparations
+        """)
+
+        finances = cursor.fetchone()
+
+        total_montant = float(finances["total"] or 0)
+        recettes = float(finances["paye"] or 0)
+        total_restant = float(finances["reste"] or 0)
+
+
+        # =====================================================
+        # RÉPARATIONS AUJOURD'HUI
+        # =====================================================
+
+        cursor.execute("""
+            SELECT
+                COUNT(*) AS nombre,
+                COALESCE(SUM(montant_paye), 0) AS paye,
+                COALESCE(SUM(reste_a_payer), 0) AS reste
+            FROM reparations
+            WHERE DATE(date_depot) = CURRENT_DATE
+        """)
+
+        stats_jour = cursor.fetchone()
+
+        reparations_jour = stats_jour["nombre"] or 0
+        recettes_jour = float(stats_jour["paye"] or 0)
+        reste_jour = float(stats_jour["reste"] or 0)
+
+
+        # =====================================================
+        # RÉPARATIONS CETTE SEMAINE
+        # =====================================================
+
+        cursor.execute("""
+            SELECT
+                COUNT(*) AS nombre,
+                COALESCE(SUM(montant_paye), 0) AS paye,
+                COALESCE(SUM(reste_a_payer), 0) AS reste
+            FROM reparations
+            WHERE DATE(date_depot)
+                  >= CURRENT_DATE - INTERVAL '6 days'
+        """)
+
+        stats_semaine = cursor.fetchone()
+
+        reparations_semaine = stats_semaine["nombre"] or 0
+        recettes_semaine = float(stats_semaine["paye"] or 0)
+        reste_semaine = float(stats_semaine["reste"] or 0)
+
+
+        # =====================================================
+        # RÉPARATIONS CE MOIS
+        # =====================================================
+
+        cursor.execute("""
+            SELECT
+                COUNT(*) AS nombre,
+                COALESCE(SUM(montant_paye), 0) AS paye,
+                COALESCE(SUM(reste_a_payer), 0) AS reste
+            FROM reparations
+            WHERE DATE_TRUNC('month', date_depot)
+                  = DATE_TRUNC('month', CURRENT_DATE)
+        """)
+
+        stats_mois = cursor.fetchone()
+
+        reparations_mois = stats_mois["nombre"] or 0
+        recettes_mois = float(stats_mois["paye"] or 0)
+        reste_mois = float(stats_mois["reste"] or 0)
+
+
+        # =====================================================
         # DERNIERS CLIENTS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -988,9 +1050,9 @@ def index():
         derniers_clients = cursor.fetchall()
 
 
-        # =================================================
+        # =====================================================
         # DERNIÈRES RÉPARATIONS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -1011,9 +1073,9 @@ def index():
         dernieres_reparations = cursor.fetchall()
 
 
-        # =================================================
+        # =====================================================
         # DERNIERS DEVIS
-        # =================================================
+        # =====================================================
 
         cursor.execute("""
             SELECT
@@ -1034,61 +1096,44 @@ def index():
         derniers_devis = cursor.fetchall()
 
 
-        # =================================================
-        # MONTANTS DES RÉPARATIONS
-        # =================================================
-
-        cursor.execute("""
-            SELECT
-                COALESCE(SUM(prix), 0) AS total,
-                COALESCE(SUM(montant_paye), 0) AS paye,
-                COALESCE(SUM(reste_a_payer), 0) AS reste
-            FROM reparations
-        """)
-
-        finances_reparations = cursor.fetchone()
-
-        total_reparations_montant = float(
-            finances_reparations["total"] or 0
-        )
-
-        total_reparations_paye = float(
-            finances_reparations["paye"] or 0
-        )
-
-        total_reparations_reste = float(
-            finances_reparations["reste"] or 0
-        )
-
-
-        # =================================================
-        # RENDRE LE TABLEAU DE BORD
-        # =================================================
+        # =====================================================
+        # TABLEAU DE BORD
+        # =====================================================
 
         return render_template(
             "index.html",
 
+            # statistiques principales
             total_clients=total_clients,
-
             total_reparations=total_reparations,
-
-            reparations_attente=reparations_attente,
-
+            reparations_en_cours=reparations_en_cours,
             reparations_terminees=reparations_terminees,
-
             total_devis=total_devis,
 
+            # finances
+            total_montant=total_montant,
+            recettes=recettes,
+            total_restant=total_restant,
+
+            # aujourd'hui
+            reparations_jour=reparations_jour,
+            recettes_jour=recettes_jour,
+            reste_jour=reste_jour,
+
+            # semaine
+            reparations_semaine=reparations_semaine,
+            recettes_semaine=recettes_semaine,
+            reste_semaine=reste_semaine,
+
+            # mois
+            reparations_mois=reparations_mois,
+            recettes_mois=recettes_mois,
+            reste_mois=reste_mois,
+
+            # listes
             derniers_clients=derniers_clients,
-
             dernieres_reparations=dernieres_reparations,
-
-            derniers_devis=derniers_devis,
-
-            total_reparations_montant=total_reparations_montant,
-
-            total_reparations_paye=total_reparations_paye,
-
-            total_reparations_reste=total_reparations_reste
+            derniers_devis=derniers_devis
         )
 
     except Exception as e:
@@ -1104,36 +1149,36 @@ def index():
             "index.html",
 
             total_clients=0,
-
             total_reparations=0,
-
-            reparations_attente=0,
-
+            reparations_en_cours=0,
             reparations_terminees=0,
-
             total_devis=0,
 
+            total_montant=0,
+            recettes=0,
+            total_restant=0,
+
+            reparations_jour=0,
+            recettes_jour=0,
+            reste_jour=0,
+
+            reparations_semaine=0,
+            recettes_semaine=0,
+            reste_semaine=0,
+
+            reparations_mois=0,
+            recettes_mois=0,
+            reste_mois=0,
+
             derniers_clients=[],
-
             dernieres_reparations=[],
-
-            derniers_devis=[],
-
-            total_reparations_montant=0,
-
-            total_reparations_paye=0,
-
-            total_reparations_reste=0
+            derniers_devis=[]
         )
 
     finally:
 
         cursor.close()
         conn.close()
-
-
-
-
 # =========================================================
 # CONTEXT PROCESSOR
 # =========================================================
