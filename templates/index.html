@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}
@@ -44,7 +43,6 @@ Tableau de bord
     ================================== -->
 
     <div class="stats-grid">
-
 
         <!-- CLIENTS -->
 
@@ -115,9 +113,9 @@ Tableau de bord
         </div>
 
 
-        <!-- RECETTES -->
+        <!-- TOTAL PAYÉ -->
 
-        <div class="stat-card">
+        <div class="stat-card money-card">
 
             <div class="stat-icon money-icon">
                 💰
@@ -129,8 +127,14 @@ Tableau de bord
                     Total payé
                 </span>
 
-                <strong>
-                    {{ "%.2f"|format(recettes|default(0)|float) }}
+                <strong class="money-fc">
+                    {{ "{:,.2f}".format(recettes_fc|default(0)|float) }}
+                    FC
+                </strong>
+
+                <strong class="money-usd">
+                    ${{ "{:,.2f}".format(recettes_usd|default(0)|float) }}
+                    USD
                 </strong>
 
             </div>
@@ -138,9 +142,9 @@ Tableau de bord
         </div>
 
 
-        <!-- RESTE -->
+        <!-- RESTE À PAYER -->
 
-        <div class="stat-card">
+        <div class="stat-card money-card">
 
             <div class="stat-icon remaining-icon">
                 💳
@@ -152,20 +156,25 @@ Tableau de bord
                     Reste à payer
                 </span>
 
-                <strong>
-                    {{ "%.2f"|format(total_restant|default(0)|float) }}
+                <strong class="money-fc">
+                    {{ "{:,.2f}".format(total_restant_fc|default(0)|float) }}
+                    FC
+                </strong>
+
+                <strong class="money-usd">
+                    ${{ "{:,.2f}".format(total_restant_usd|default(0)|float) }}
+                    USD
                 </strong>
 
             </div>
 
         </div>
 
-
     </div>
 
 
     <!-- =================================
-         STATISTIQUES PAR PÉRIODE
+         ACTIVITÉ
     ================================== -->
 
     <h2 class="section-title">
@@ -176,42 +185,95 @@ Tableau de bord
     <div class="period-grid">
 
 
-        <!-- AUJOURD'HUI -->
+        <!-- =================================
+             AUJOURD'HUI
+        ================================== -->
 
         <div class="period-card">
 
             <div class="period-header">
+
                 <span>📅</span>
 
                 <h3>
                     Aujourd'hui
                 </h3>
+
             </div>
 
+
             <div class="period-number">
+
                 {{ reparations_jour|default(0) }}
+
             </div>
 
             <p>
                 réparation(s)
             </p>
 
+
             <div class="period-details">
 
                 <div>
-                    <span>Payé</span>
+
+                    <span>
+                        Payé FC
+                    </span>
 
                     <strong>
-                        {{ "%.2f"|format(recettes_jour|default(0)|float) }}
+                        {{ "{:,.2f}".format(
+                            recettes_jour_fc|default(0)|float
+                        ) }}
+                        FC
                     </strong>
+
                 </div>
 
+
                 <div>
-                    <span>Reste</span>
+
+                    <span>
+                        Payé USD
+                    </span>
 
                     <strong>
-                        {{ "%.2f"|format(reste_jour|default(0)|float) }}
+                        ${{ "{:,.2f}".format(
+                            recettes_jour_usd|default(0)|float
+                        ) }}
                     </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Reste FC
+                    </span>
+
+                    <strong>
+                        {{ "{:,.2f}".format(
+                            reste_jour_fc|default(0)|float
+                        ) }}
+                        FC
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Reste USD
+                    </span>
+
+                    <strong>
+                        ${{ "{:,.2f}".format(
+                            reste_jour_usd|default(0)|float
+                        ) }}
+                    </strong>
+
                 </div>
 
             </div>
@@ -219,42 +281,95 @@ Tableau de bord
         </div>
 
 
-        <!-- CETTE SEMAINE -->
+        <!-- =================================
+             CETTE SEMAINE
+        ================================== -->
 
         <div class="period-card">
 
             <div class="period-header">
+
                 <span>📆</span>
 
                 <h3>
                     Cette semaine
                 </h3>
+
             </div>
 
+
             <div class="period-number">
+
                 {{ reparations_semaine|default(0) }}
+
             </div>
 
             <p>
                 réparation(s)
             </p>
 
+
             <div class="period-details">
 
                 <div>
-                    <span>Payé</span>
+
+                    <span>
+                        Payé FC
+                    </span>
 
                     <strong>
-                        {{ "%.2f"|format(recettes_semaine|default(0)|float) }}
+                        {{ "{:,.2f}".format(
+                            recettes_semaine_fc|default(0)|float
+                        ) }}
+                        FC
                     </strong>
+
                 </div>
 
+
                 <div>
-                    <span>Reste</span>
+
+                    <span>
+                        Payé USD
+                    </span>
 
                     <strong>
-                        {{ "%.2f"|format(reste_semaine|default(0)|float) }}
+                        ${{ "{:,.2f}".format(
+                            recettes_semaine_usd|default(0)|float
+                        ) }}
                     </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Reste FC
+                    </span>
+
+                    <strong>
+                        {{ "{:,.2f}".format(
+                            reste_semaine_fc|default(0)|float
+                        ) }}
+                        FC
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Reste USD
+                    </span>
+
+                    <strong>
+                        ${{ "{:,.2f}".format(
+                            reste_semaine_usd|default(0)|float
+                        ) }}
+                    </strong>
+
                 </div>
 
             </div>
@@ -262,48 +377,100 @@ Tableau de bord
         </div>
 
 
-        <!-- CE MOIS -->
+        <!-- =================================
+             CE MOIS
+        ================================== -->
 
         <div class="period-card">
 
             <div class="period-header">
+
                 <span>🗓️</span>
 
                 <h3>
                     Ce mois
                 </h3>
+
             </div>
 
+
             <div class="period-number">
+
                 {{ reparations_mois|default(0) }}
+
             </div>
 
             <p>
                 réparation(s)
             </p>
 
+
             <div class="period-details">
 
                 <div>
-                    <span>Payé</span>
+
+                    <span>
+                        Payé FC
+                    </span>
 
                     <strong>
-                        {{ "%.2f"|format(recettes_mois|default(0)|float) }}
+                        {{ "{:,.2f}".format(
+                            recettes_mois_fc|default(0)|float
+                        ) }}
+                        FC
                     </strong>
+
                 </div>
 
+
                 <div>
-                    <span>Reste</span>
+
+                    <span>
+                        Payé USD
+                    </span>
 
                     <strong>
-                        {{ "%.2f"|format(reste_mois|default(0)|float) }}
+                        ${{ "{:,.2f}".format(
+                            recettes_mois_usd|default(0)|float
+                        ) }}
                     </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Reste FC
+                    </span>
+
+                    <strong>
+                        {{ "{:,.2f}".format(
+                            reste_mois_fc|default(0)|float
+                        ) }}
+                        FC
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Reste USD
+                    </span>
+
+                    <strong>
+                        ${{ "{:,.2f}".format(
+                            reste_mois_usd|default(0)|float
+                        ) }}
+                    </strong>
+
                 </div>
 
             </div>
 
         </div>
-
 
     </div>
 
@@ -328,6 +495,7 @@ Tableau de bord
             </span>
 
             <div>
+
                 <strong>
                     Clients
                 </strong>
@@ -335,6 +503,7 @@ Tableau de bord
                 <small>
                     Gérer les clients
                 </small>
+
             </div>
 
         </a>
@@ -348,6 +517,7 @@ Tableau de bord
             </span>
 
             <div>
+
                 <strong>
                     Réparations
                 </strong>
@@ -355,6 +525,7 @@ Tableau de bord
                 <small>
                     Voir les réparations
                 </small>
+
             </div>
 
         </a>
@@ -368,6 +539,7 @@ Tableau de bord
             </span>
 
             <div>
+
                 <strong>
                     Matériels
                 </strong>
@@ -375,6 +547,7 @@ Tableau de bord
                 <small>
                     Gérer le matériel
                 </small>
+
             </div>
 
         </a>
@@ -388,6 +561,7 @@ Tableau de bord
             </span>
 
             <div>
+
                 <strong>
                     Devis
                 </strong>
@@ -395,6 +569,7 @@ Tableau de bord
                 <small>
                     Gérer les devis
                 </small>
+
             </div>
 
         </a>
@@ -408,6 +583,7 @@ Tableau de bord
             </span>
 
             <div>
+
                 <strong>
                     Rapports
                 </strong>
@@ -415,6 +591,7 @@ Tableau de bord
                 <small>
                     Consulter les rapports
                 </small>
+
             </div>
 
         </a>
@@ -428,6 +605,7 @@ Tableau de bord
             </span>
 
             <div>
+
                 <strong>
                     Historique
                 </strong>
@@ -435,13 +613,12 @@ Tableau de bord
                 <small>
                     Historique des réparations
                 </small>
+
             </div>
 
         </a>
 
-
     </div>
-
 
 </div>
 
@@ -452,418 +629,524 @@ Tableau de bord
 
 <style>
 
-    .dashboard-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
+.dashboard-header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+
+}
 
 
-    .dashboard-header h1 {
-        font-size: 28px;
-        color: #111827;
-        margin-bottom: 8px;
-    }
+.dashboard-header h1 {
+
+    font-size: 28px;
+    color: #111827;
+    margin-bottom: 8px;
+
+}
 
 
-    .dashboard-header p {
-        color: #6b7280;
-        font-size: 14px;
-    }
+.dashboard-header p {
+
+    color: #6b7280;
+    font-size: 14px;
+
+}
 
 
-    .dashboard-add-btn {
-        background: #2563eb;
-        color: white;
-        text-decoration: none;
-        padding: 12px 18px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: bold;
-        white-space: nowrap;
-    }
+.dashboard-add-btn {
+
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+
+    padding: 12px 18px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    white-space: nowrap;
+
+}
 
 
-    .dashboard-add-btn:hover {
-        background: #1d4ed8;
-    }
+.dashboard-add-btn:hover {
+
+    background: #1d4ed8;
+
+}
 
 
-    /* =================================
-       STATISTIQUES
-    ================================== */
+/* =================================
+   STATISTIQUES
+================================== */
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 35px;
+
+}
+
+
+.stat-card {
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.05);
+
+}
+
+
+.stat-icon {
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+
+    flex-shrink: 0;
+
+}
+
+
+.clients-icon {
+
+    background: #dbeafe;
+
+}
+
+
+.repairs-icon {
+
+    background: #ede9fe;
+
+}
+
+
+.pending-icon {
+
+    background: #fef3c7;
+
+}
+
+
+.money-icon {
+
+    background: #dcfce7;
+
+}
+
+
+.remaining-icon {
+
+    background: #fee2e2;
+
+}
+
+
+.stat-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    min-width: 0;
+
+}
+
+
+.stat-label {
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.stat-info strong {
+
+    color: #111827;
+
+    font-size: 18px;
+
+    line-height: 1.3;
+
+}
+
+
+.money-fc {
+
+    font-weight: 700;
+
+}
+
+
+.money-usd {
+
+    font-weight: 700;
+
+}
+
+
+/* =================================
+   SECTIONS
+================================== */
+
+.section-title {
+
+    font-size: 20px;
+
+    margin-bottom: 18px;
+
+    color: #111827;
+
+}
+
+
+/* =================================
+   PÉRIODES
+================================== */
+
+.period-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 35px;
+
+}
+
+
+.period-card {
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.05);
+
+}
+
+
+.period-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.period-header span {
+
+    font-size: 22px;
+
+}
+
+
+.period-header h3 {
+
+    font-size: 16px;
+
+    color: #374151;
+
+}
+
+
+.period-number {
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+    color: #2563eb;
+
+}
+
+
+.period-card > p {
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.period-details {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 14px;
+
+    border-top:
+        1px solid #e5e7eb;
+
+    padding-top: 15px;
+
+}
+
+
+.period-details div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+
+.period-details span {
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.period-details strong {
+
+    color: #111827;
+
+    font-size: 14px;
+
+}
+
+
+/* =================================
+   ACCÈS RAPIDES
+================================== */
+
+.quick-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    padding-bottom: 30px;
+
+}
+
+
+.quick-card {
+
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    text-decoration: none;
+
+    color: #111827;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.05);
+
+    transition: 0.2s;
+
+}
+
+
+.quick-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.08);
+
+}
+
+
+.quick-icon {
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 10px;
+
+    background: #eff6ff;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+
+    flex-shrink: 0;
+
+}
+
+
+.quick-card div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+
+.quick-card strong {
+
+    font-size: 14px;
+
+}
+
+
+.quick-card small {
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+/* =================================
+   RESPONSIVE
+================================== */
+
+@media (max-width: 1100px) {
 
     .stats-grid {
-        display: grid;
 
         grid-template-columns:
-            repeat(5, minmax(0, 1fr));
+            repeat(3, 1fr);
 
-        gap: 18px;
-
-        margin-bottom: 35px;
     }
-
-
-    .stat-card {
-        background: white;
-
-        border-radius: 12px;
-
-        padding: 20px;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 15px;
-
-        box-shadow:
-            0 2px 8px rgba(0,0,0,0.05);
-    }
-
-
-    .stat-icon {
-        width: 50px;
-        height: 50px;
-
-        border-radius: 12px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        font-size: 24px;
-
-        flex-shrink: 0;
-    }
-
-
-    .clients-icon {
-        background: #dbeafe;
-    }
-
-
-    .repairs-icon {
-        background: #ede9fe;
-    }
-
-
-    .pending-icon {
-        background: #fef3c7;
-    }
-
-
-    .money-icon {
-        background: #dcfce7;
-    }
-
-
-    .remaining-icon {
-        background: #fee2e2;
-    }
-
-
-    .stat-info {
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 5px;
-
-        min-width: 0;
-    }
-
-
-    .stat-label {
-        color: #6b7280;
-
-        font-size: 12px;
-    }
-
-
-    .stat-info strong {
-        color: #111827;
-
-        font-size: 22px;
-    }
-
-
-    /* =================================
-       SECTIONS
-    ================================== */
-
-    .section-title {
-        font-size: 20px;
-
-        margin-bottom: 18px;
-
-        color: #111827;
-    }
-
-
-    /* =================================
-       PÉRIODES
-    ================================== */
 
     .period-grid {
-        display: grid;
 
         grid-template-columns:
             repeat(3, 1fr);
 
-        gap: 20px;
-
-        margin-bottom: 35px;
     }
-
-
-    .period-card {
-        background: white;
-
-        border-radius: 12px;
-
-        padding: 22px;
-
-        box-shadow:
-            0 2px 8px rgba(0,0,0,0.05);
-    }
-
-
-    .period-header {
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-
-        margin-bottom: 15px;
-    }
-
-
-    .period-header span {
-        font-size: 22px;
-    }
-
-
-    .period-header h3 {
-        font-size: 16px;
-
-        color: #374151;
-    }
-
-
-    .period-number {
-        font-size: 32px;
-
-        font-weight: bold;
-
-        color: #2563eb;
-    }
-
-
-    .period-card > p {
-        color: #6b7280;
-
-        font-size: 13px;
-
-        margin-bottom: 20px;
-    }
-
-
-    .period-details {
-        display: grid;
-
-        grid-template-columns: 1fr 1fr;
-
-        gap: 10px;
-
-        border-top:
-            1px solid #e5e7eb;
-
-        padding-top: 15px;
-    }
-
-
-    .period-details div {
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 5px;
-    }
-
-
-    .period-details span {
-        color: #6b7280;
-
-        font-size: 12px;
-    }
-
-
-    .period-details strong {
-        color: #111827;
-
-        font-size: 15px;
-    }
-
-
-    /* =================================
-       ACCÈS RAPIDES
-    ================================== */
 
     .quick-grid {
-        display: grid;
 
         grid-template-columns:
-            repeat(3, 1fr);
+            repeat(2, 1fr);
 
-        gap: 18px;
-
-        padding-bottom: 30px;
     }
 
-
-    .quick-card {
-        background: white;
-
-        border-radius: 10px;
-
-        padding: 18px;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 15px;
-
-        text-decoration: none;
-
-        color: #111827;
-
-        box-shadow:
-            0 2px 8px rgba(0,0,0,0.05);
-
-        transition: 0.2s;
-    }
+}
 
 
-    .quick-card:hover {
-        transform: translateY(-2px);
+@media (max-width: 700px) {
 
-        box-shadow:
-            0 5px 15px rgba(0,0,0,0.08);
-    }
+    .dashboard-header {
 
-
-    .quick-icon {
-        width: 45px;
-
-        height: 45px;
-
-        border-radius: 10px;
-
-        background: #eff6ff;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        font-size: 22px;
-
-        flex-shrink: 0;
-    }
-
-
-    .quick-card div {
-        display: flex;
+        align-items: flex-start;
 
         flex-direction: column;
 
-        gap: 5px;
     }
 
+    .stats-grid {
 
-    .quick-card strong {
-        font-size: 14px;
-    }
-
-
-    .quick-card small {
-        color: #6b7280;
-
-        font-size: 12px;
-    }
-
-
-    /* =================================
-       PETIT ÉCRAN
-    ================================== */
-
-    @media (max-width: 1100px) {
-
-        .stats-grid {
-            grid-template-columns:
-                repeat(3, 1fr);
-        }
-
-        .period-grid {
-            grid-template-columns:
-                repeat(3, 1fr);
-        }
-
-        .quick-grid {
-            grid-template-columns:
-                repeat(2, 1fr);
-        }
+        grid-template-columns:
+            repeat(2, 1fr);
 
     }
 
+    .period-grid {
 
-    @media (max-width: 700px) {
-
-        .dashboard-header {
-            align-items: flex-start;
-
-            flex-direction: column;
-        }
-
-        .stats-grid {
-            grid-template-columns:
-                repeat(2, 1fr);
-        }
-
-        .period-grid {
-            grid-template-columns:
-                1fr;
-        }
-
-        .quick-grid {
-            grid-template-columns:
-                1fr;
-        }
+        grid-template-columns:
+            1fr;
 
     }
 
+    .quick-grid {
 
-    @media (max-width: 500px) {
-
-        .stats-grid {
-            grid-template-columns:
-                1fr;
-        }
-
-        .dashboard-header h1 {
-            font-size: 23px;
-        }
+        grid-template-columns:
+            1fr;
 
     }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .stats-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .dashboard-header h1 {
+
+        font-size: 23px;
+
+    }
+
+}
 
 </style>
 
