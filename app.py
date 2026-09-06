@@ -2215,6 +2215,7 @@ def ajouter_sortie():
 # =========================================================
 # RÉPARATIONS
 # =========================================================
+
 @app.route("/reparations")
 @login_required
 @role_required("admin", "reception", "consultation")
@@ -2236,6 +2237,7 @@ def reparations():
                 prix,
                 montant_paye,
                 reste_a_payer,
+                devise,
                 statut,
                 date_depot,
                 date_recuperation
@@ -2254,6 +2256,11 @@ def reparations():
 
         conn.rollback()
 
+        print(
+            "ERREUR ROUTE /reparations :",
+            e
+        )
+
         flash(
             f"Erreur lors du chargement des réparations : {e}",
             "danger"
@@ -2267,6 +2274,7 @@ def reparations():
 
         cursor.close()
         conn.close()
+
 
 # =================================================
 # ajouter-reparation
