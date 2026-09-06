@@ -871,7 +871,6 @@ def supprimer_utilisateur(id):
 # =========================================================
 # DASHBOARD
 # =========================================================
-
 @app.route("/")
 @login_required
 def index():
@@ -952,22 +951,61 @@ def index():
 
 
         # =====================================================
-        # FINANCES RÉPARATIONS
+        # FINANCES TOTALES — FC / USD
         # =====================================================
 
         cursor.execute("""
             SELECT
-                COALESCE(SUM(prix), 0) AS total,
-                COALESCE(SUM(montant_paye), 0) AS paye,
-                COALESCE(SUM(reste_a_payer), 0) AS reste
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS paye_fc,
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS paye_usd,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS reste_fc,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS reste_usd,
+
+                COALESCE(
+                    SUM(prix)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS total_fc,
+
+                COALESCE(
+                    SUM(prix)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS total_usd
+
             FROM reparations
         """)
 
         finances = cursor.fetchone()
 
-        total_montant = float(finances["total"] or 0)
-        recettes = float(finances["paye"] or 0)
-        total_restant = float(finances["reste"] or 0)
+        recettes_fc = float(finances["paye_fc"] or 0)
+        recettes_usd = float(finances["paye_usd"] or 0)
+
+        total_restant_fc = float(finances["reste_fc"] or 0)
+        total_restant_usd = float(finances["reste_usd"] or 0)
+
+        total_montant_fc = float(finances["total_fc"] or 0)
+        total_montant_usd = float(finances["total_usd"] or 0)
 
 
         # =====================================================
@@ -976,18 +1014,57 @@ def index():
 
         cursor.execute("""
             SELECT
+
                 COUNT(*) AS nombre,
-                COALESCE(SUM(montant_paye), 0) AS paye,
-                COALESCE(SUM(reste_a_payer), 0) AS reste
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS paye_fc,
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS paye_usd,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS reste_fc,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS reste_usd
+
             FROM reparations
+
             WHERE DATE(date_depot) = CURRENT_DATE
         """)
 
         stats_jour = cursor.fetchone()
 
         reparations_jour = stats_jour["nombre"] or 0
-        recettes_jour = float(stats_jour["paye"] or 0)
-        reste_jour = float(stats_jour["reste"] or 0)
+
+        recettes_jour_fc = float(
+            stats_jour["paye_fc"] or 0
+        )
+
+        recettes_jour_usd = float(
+            stats_jour["paye_usd"] or 0
+        )
+
+        reste_jour_fc = float(
+            stats_jour["reste_fc"] or 0
+        )
+
+        reste_jour_usd = float(
+            stats_jour["reste_usd"] or 0
+        )
 
 
         # =====================================================
@@ -996,19 +1073,58 @@ def index():
 
         cursor.execute("""
             SELECT
+
                 COUNT(*) AS nombre,
-                COALESCE(SUM(montant_paye), 0) AS paye,
-                COALESCE(SUM(reste_a_payer), 0) AS reste
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS paye_fc,
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS paye_usd,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS reste_fc,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS reste_usd
+
             FROM reparations
+
             WHERE DATE(date_depot)
-                  >= CURRENT_DATE - INTERVAL '6 days'
+                >= CURRENT_DATE - INTERVAL '6 days'
         """)
 
         stats_semaine = cursor.fetchone()
 
         reparations_semaine = stats_semaine["nombre"] or 0
-        recettes_semaine = float(stats_semaine["paye"] or 0)
-        reste_semaine = float(stats_semaine["reste"] or 0)
+
+        recettes_semaine_fc = float(
+            stats_semaine["paye_fc"] or 0
+        )
+
+        recettes_semaine_usd = float(
+            stats_semaine["paye_usd"] or 0
+        )
+
+        reste_semaine_fc = float(
+            stats_semaine["reste_fc"] or 0
+        )
+
+        reste_semaine_usd = float(
+            stats_semaine["reste_usd"] or 0
+        )
 
 
         # =====================================================
@@ -1017,19 +1133,58 @@ def index():
 
         cursor.execute("""
             SELECT
+
                 COUNT(*) AS nombre,
-                COALESCE(SUM(montant_paye), 0) AS paye,
-                COALESCE(SUM(reste_a_payer), 0) AS reste
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS paye_fc,
+
+                COALESCE(
+                    SUM(montant_paye)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS paye_usd,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'FC'),
+                    0
+                ) AS reste_fc,
+
+                COALESCE(
+                    SUM(reste_a_payer)
+                    FILTER (WHERE UPPER(TRIM(devise)) = 'USD'),
+                    0
+                ) AS reste_usd
+
             FROM reparations
+
             WHERE DATE_TRUNC('month', date_depot)
-                  = DATE_TRUNC('month', CURRENT_DATE)
+                = DATE_TRUNC('month', CURRENT_DATE)
         """)
 
         stats_mois = cursor.fetchone()
 
         reparations_mois = stats_mois["nombre"] or 0
-        recettes_mois = float(stats_mois["paye"] or 0)
-        reste_mois = float(stats_mois["reste"] or 0)
+
+        recettes_mois_fc = float(
+            stats_mois["paye_fc"] or 0
+        )
+
+        recettes_mois_usd = float(
+            stats_mois["paye_usd"] or 0
+        )
+
+        reste_mois_fc = float(
+            stats_mois["reste_fc"] or 0
+        )
+
+        reste_mois_usd = float(
+            stats_mois["reste_usd"] or 0
+        )
 
 
         # =====================================================
@@ -1063,6 +1218,7 @@ def index():
                 prix,
                 montant_paye,
                 reste_a_payer,
+                devise,
                 statut,
                 date_depot
             FROM reparations
@@ -1097,44 +1253,80 @@ def index():
 
 
         # =====================================================
-        # TABLEAU DE BORD
+        # AFFICHAGE DU TABLEAU DE BORD
         # =====================================================
 
         return render_template(
             "index.html",
 
-            # statistiques principales
+            # ---------------------------------------------
+            # STATISTIQUES
+            # ---------------------------------------------
+
             total_clients=total_clients,
             total_reparations=total_reparations,
             reparations_en_cours=reparations_en_cours,
             reparations_terminees=reparations_terminees,
             total_devis=total_devis,
 
-            # finances
-            total_montant=total_montant,
-            recettes=recettes,
-            total_restant=total_restant,
+            # ---------------------------------------------
+            # FINANCES TOTALES
+            # ---------------------------------------------
 
-            # aujourd'hui
+            total_montant_fc=total_montant_fc,
+            total_montant_usd=total_montant_usd,
+
+            recettes_fc=recettes_fc,
+            recettes_usd=recettes_usd,
+
+            total_restant_fc=total_restant_fc,
+            total_restant_usd=total_restant_usd,
+
+            # ---------------------------------------------
+            # AUJOURD'HUI
+            # ---------------------------------------------
+
             reparations_jour=reparations_jour,
-            recettes_jour=recettes_jour,
-            reste_jour=reste_jour,
 
-            # semaine
+            recettes_jour_fc=recettes_jour_fc,
+            recettes_jour_usd=recettes_jour_usd,
+
+            reste_jour_fc=reste_jour_fc,
+            reste_jour_usd=reste_jour_usd,
+
+            # ---------------------------------------------
+            # SEMAINE
+            # ---------------------------------------------
+
             reparations_semaine=reparations_semaine,
-            recettes_semaine=recettes_semaine,
-            reste_semaine=reste_semaine,
 
-            # mois
+            recettes_semaine_fc=recettes_semaine_fc,
+            recettes_semaine_usd=recettes_semaine_usd,
+
+            reste_semaine_fc=reste_semaine_fc,
+            reste_semaine_usd=reste_semaine_usd,
+
+            # ---------------------------------------------
+            # MOIS
+            # ---------------------------------------------
+
             reparations_mois=reparations_mois,
-            recettes_mois=recettes_mois,
-            reste_mois=reste_mois,
 
-            # listes
+            recettes_mois_fc=recettes_mois_fc,
+            recettes_mois_usd=recettes_mois_usd,
+
+            reste_mois_fc=reste_mois_fc,
+            reste_mois_usd=reste_mois_usd,
+
+            # ---------------------------------------------
+            # LISTES
+            # ---------------------------------------------
+
             derniers_clients=derniers_clients,
             dernieres_reparations=dernieres_reparations,
             derniers_devis=derniers_devis
         )
+
 
     except Exception as e:
 
@@ -1154,21 +1346,38 @@ def index():
             reparations_terminees=0,
             total_devis=0,
 
-            total_montant=0,
-            recettes=0,
-            total_restant=0,
+            total_montant_fc=0,
+            total_montant_usd=0,
+
+            recettes_fc=0,
+            recettes_usd=0,
+
+            total_restant_fc=0,
+            total_restant_usd=0,
 
             reparations_jour=0,
-            recettes_jour=0,
-            reste_jour=0,
+
+            recettes_jour_fc=0,
+            recettes_jour_usd=0,
+
+            reste_jour_fc=0,
+            reste_jour_usd=0,
 
             reparations_semaine=0,
-            recettes_semaine=0,
-            reste_semaine=0,
+
+            recettes_semaine_fc=0,
+            recettes_semaine_usd=0,
+
+            reste_semaine_fc=0,
+            reste_semaine_usd=0,
 
             reparations_mois=0,
-            recettes_mois=0,
-            reste_mois=0,
+
+            recettes_mois_fc=0,
+            recettes_mois_usd=0,
+
+            reste_mois_fc=0,
+            reste_mois_usd=0,
 
             derniers_clients=[],
             dernieres_reparations=[],
@@ -1179,6 +1388,8 @@ def index():
 
         cursor.close()
         conn.close()
+
+
 # =========================================================
 # CONTEXT PROCESSOR
 # =========================================================
